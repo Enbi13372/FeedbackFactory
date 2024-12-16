@@ -1,0 +1,47 @@
+﻿<UserControl x:Class="FeedbackFactory.TeacherView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:FeedbackFactory"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid Margin="30">
+        <!-- Define two rows in the Grid -->
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <!-- For the title -->
+            <RowDefinition Height="*"/>
+            <!-- For the form (takes the remaining space) -->
+        </Grid.RowDefinitions>
+
+        <!-- Title Text -->
+        <TextBlock Text="Teacher Login" FontSize="28" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="0" Margin="0,30,0,30"/>
+
+        <!-- Form Panel (StackPanel) -->
+        <StackPanel Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center" Width="320" Grid.Row="1">
+            <!-- Username Label and TextBox -->
+            <StackPanel Orientation="Vertical" Margin="0,0,0,15">
+                <TextBlock Text="Username" FontSize="14" Foreground="#333" />
+                <TextBox Width="320" Height="40" Margin="0,5" Padding="10" VerticalContentAlignment="Center" BorderBrush="#ccc" BorderThickness="1" />
+            </StackPanel>
+
+            <!-- Password Label and PasswordBox -->
+            <StackPanel Orientation="Vertical" Margin="0,0,0,15">
+                <TextBlock Text="Password" FontSize="14" Foreground="#333" />
+                <PasswordBox Width="320" Height="40" Margin="0,5" Padding="10" VerticalContentAlignment="Center" BorderBrush="#ccc" BorderThickness="1" />
+            </StackPanel>
+
+            <!-- Login Button with rounded corners -->
+            <Button Content="Login" Width="320" Height="45" Margin="0,15,0,0" Background="#4CAF50" Foreground="White" BorderBrush="#4CAF50" BorderThickness="1" FontWeight="Bold">
+                <Button.Template>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="1" CornerRadius="5">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                    </ControlTemplate>
+                </Button.Template>
+            </Button>
+        </StackPanel>
+    </Grid>
+</UserControl>
