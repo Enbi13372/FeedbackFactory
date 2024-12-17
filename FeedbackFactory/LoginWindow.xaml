@@ -1,26 +1,33 @@
 ﻿<Window x:Class="FeedbackFactory.LoginWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:local="clr-namespace:FeedbackFactory"
-        Title="LoginWindow" Height="450" Width="800">
+        Title="LoginWindow" Height="550" Width="900"
+        Background="#F9F9F9" WindowStartupLocation="CenterScreen">
+
+    <!-- Reference to the ResourceDictionary -->
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Resources/LoginStyles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+
     <Grid>
         <!-- Define rows in the grid -->
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
-            <!-- Row for login content (buttons) -->
             <RowDefinition Height="*"/>
-            <!-- Row for content (TeacherView or StudentView) -->
         </Grid.RowDefinitions>
 
         <!-- Login Content (Buttons) -->
         <StackPanel x:Name="LoginContent" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Row="0">
-            <TextBlock Text="Login" FontSize="28" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,30,0,30"/>
-
-            <Button x:Name="LehrerButton" Content="Lehrer" Width="200" Height="50" Margin="0,10" Click="LehrerButton_Click"/>
-            <Button x:Name="SchuelerButton" Content="Schüler" Width="200" Height="50" Margin="0,10" Click="SchuelerButton_Click"/>
+            <TextBlock Text="Login" FontSize="32" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,30,0,30"/>
+            <Button x:Name="LehrerButton" Content="Lehrer" Click="LehrerButton_Click"/>
+            <Button x:Name="SchuelerButton" Content="Schüler" Click="SchuelerButton_Click"/>
         </StackPanel>
 
-        <!-- MainContent to display dynamic views (TeacherView, StudentView) -->
-        <ContentControl x:Name="MainContent" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="1" Margin="30"/>
+        <!-- Main Content Area -->
+        <ContentControl x:Name="MainContent" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="30"/>
     </Grid>
 </Window>

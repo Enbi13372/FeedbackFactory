@@ -24,5 +24,15 @@ namespace FeedbackFactory
         {
             InitializeComponent();
         }
+
+        private void BackButton_Click(object sender, RoutedEventArgs e)
+        {
+            // Navigate back to the LoginWindow
+            Window loginWindow = new LoginWindow();
+            loginWindow.Show();
+
+            // Close current view's window if it’s standalone
+            Window.GetWindow(this)?.Close();
+        }
     }
 }
