@@ -1,4 +1,8 @@
-﻿using System.Text;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -12,24 +16,13 @@ using System.Windows.Shapes;
 namespace FeedbackFactory
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Interaktionslogik für DashboardView.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class DashboardView : UserControl
     {
-        public MainWindow()
+        public DashboardView()
         {
             InitializeComponent();
         }
-
-        private void BtnDashboard(object sender, RoutedEventArgs e)
-        {
-            
-        }
-
-        private void BtnFormulare(object sender, RoutedEventArgs e)
-        {
-
-        }
     }
-
 }
