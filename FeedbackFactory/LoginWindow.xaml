@@ -2,7 +2,8 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="LoginWindow" Height="550" Width="900"
-        Background="#F9F9F9" WindowStartupLocation="CenterScreen">
+        Background="#F9F9F9" WindowStartupLocation="CenterScreen"
+        ResizeMode="NoResize">
 
     <!-- Reference to the ResourceDictionary -->
     <Window.Resources>
@@ -14,20 +15,14 @@
     </Window.Resources>
 
     <Grid>
-        <!-- Define rows in the grid -->
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
-
         <!-- Login Content (Buttons) -->
-        <StackPanel x:Name="LoginContent" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Row="0">
+        <StackPanel x:Name="LoginContent" VerticalAlignment="Center" HorizontalAlignment="Center" Panel.ZIndex="1">
             <TextBlock Text="Login" FontSize="32" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,30,0,30"/>
             <Button x:Name="LehrerButton" Content="Lehrer" Click="LehrerButton_Click"/>
             <Button x:Name="SchuelerButton" Content="Schüler" Click="SchuelerButton_Click"/>
         </StackPanel>
 
         <!-- Main Content Area -->
-        <ContentControl x:Name="MainContent" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="30"/>
+        <ContentControl x:Name="MainContent" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="30" Panel.ZIndex="0"/>
     </Grid>
 </Window>
