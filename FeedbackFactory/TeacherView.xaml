@@ -11,22 +11,23 @@
 
     <Grid Background="#F9F9F9" Margin="30">
         <!-- Back Button -->
-        <Button Content="← Zurück" Width="80" Height="35" Margin="10" 
-                HorizontalAlignment="Left" VerticalAlignment="Top" 
-                Background="#E0E0E0" Foreground="#333" Click="BackButton_Click"/>
+        <Button Content="← Zurück" Width="100" Height="40" Margin="10"
+                HorizontalAlignment="Left" VerticalAlignment="Top"
+                Style="{DynamicResource BackButtonStyle}"
+                Click="BackButton_Click"/>
 
         <!-- Title -->
-        <TextBlock Text="Lehrer Login" FontSize="28" FontWeight="Bold" 
+        <TextBlock Text="Lehrer Login" FontSize="28" FontWeight="Bold"
                    HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,50,0,20"/>
 
         <!-- Login Form -->
-        <StackPanel Orientation="Vertical" VerticalAlignment="Center" 
+        <StackPanel Orientation="Vertical" VerticalAlignment="Center"
                     HorizontalAlignment="Center" Margin="0,100,0,0">
             <TextBlock Text="Benutzername"/>
-            <TextBox Margin="0,5"/>
+            <TextBox x:Name="UsernameTB" Margin="0,5"/>
             <TextBlock Text="Passwort"/>
-            <PasswordBox Margin="0,5"/>
-            <Button Content="Login"/>
+            <PasswordBox x:Name="PasswordTB" Margin="0,5"/>
+            <Button Content="Login" Click="Button_Click"/>
         </StackPanel>
     </Grid>
 </UserControl>
