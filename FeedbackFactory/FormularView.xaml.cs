@@ -24,5 +24,19 @@ namespace FeedbackFactory
         {
             InitializeComponent();
         }
+        private void Formular1_Click(object sender, RoutedEventArgs e)
+        {
+         
+        }
+
+        private void Formular2_Click(object sender, RoutedEventArgs e)
+        {
+            
+        }
+
+        private void Formular3_Click(object sender, RoutedEventArgs e)
+        {
+           
+        }
     }
 }

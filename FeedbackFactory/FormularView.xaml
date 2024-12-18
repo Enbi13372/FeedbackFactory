@@ -1,12 +1,42 @@
 ﻿<UserControl x:Class="FeedbackFactory.FormularView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:FeedbackFactory"
-             mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             Background="#D7E4F2">
+    <UserControl.Resources>
+        <Style TargetType="Border" x:Key="HoverBorderStyle">
+            <Setter Property="Background" Value="White" />
+            <Setter Property="BorderBrush" Value="#B9D3EE" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="5" />
+            <Setter Property="Effect" Value="{x:Null}" />
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#E6F7FF" />
+                    <Setter Property="BorderBrush" Value="#0078D7" />
+                    <Setter Property="Effect">
+                        <Setter.Value>
+                            <DropShadowEffect Color="Gray" BlurRadius="10" ShadowDepth="2" />
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </UserControl.Resources>
+
     <Grid>
-            
+        <UniformGrid Columns="3" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10">
+            <Border Style="{StaticResource HoverBorderStyle}" Width="300" Height="500" Margin="5">
+                <Button Content="Formular 1" Background="Transparent" BorderThickness="0" Click="Formular1_Click" />
+            </Border>
+
+            <Border Style="{StaticResource HoverBorderStyle}" Width="300" Height="500" Margin="5">
+                <Button Content="Formular 2" Background="Transparent" BorderThickness="0" Click="Formular2_Click" />
+            </Border>
+
+            <Border Style="{StaticResource HoverBorderStyle}" Width="300" Height="500" Margin="5">
+                <Button Content="Formular 3" Background="Transparent" BorderThickness="0" Click="Formular3_Click" />
+            </Border>
+        </UniformGrid>
     </Grid>
 </UserControl>
