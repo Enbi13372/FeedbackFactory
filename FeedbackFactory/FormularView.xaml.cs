@@ -26,7 +26,21 @@ namespace FeedbackFactory
         }
         private void Formular1_Click(object sender, RoutedEventArgs e)
         {
-         
+
+            {
+                Window popupWindow = new Window
+                {
+                    Title = "Unterrichtsbeurteilung",
+                    Width = 800,
+                    Height = 800,
+                    Content = new UnterrichtsBeurteilung(),
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                    Owner = Application.Current.MainWindow
+                };
+
+                popupWindow.ShowDialog();
+            }
+
         }
 
         private void Formular2_Click(object sender, RoutedEventArgs e)
