@@ -2,6 +2,7 @@
 using System.Data.SqlClient;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace FeedbackFactory
 {
@@ -76,6 +77,16 @@ namespace FeedbackFactory
 
             // Close current view's window if it’s standalone
             Window.GetWindow(this)?.Close();
+        }
+
+        private void RegisterBTN_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            // Find the parent LoginWindow and update its MainContent
+            var parentWindow = Window.GetWindow(this) as LoginWindow;
+            if (parentWindow != null)
+            {
+                parentWindow.MainContent.Content = new RegisterView();
+            }
         }
     }
 }
