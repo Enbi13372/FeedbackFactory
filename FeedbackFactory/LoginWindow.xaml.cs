@@ -10,7 +10,7 @@ namespace FeedbackFactory
         }
 
         // Button click event for Lehrer
-        private void LehrerButton_Click(object sender, RoutedEventArgs e)
+        private void TeacherBTN_Click(object sender, RoutedEventArgs e)
         {
             // Hide the original login content
             LoginContent.Visibility = Visibility.Collapsed;
@@ -20,7 +20,7 @@ namespace FeedbackFactory
         }
 
         // Button click event for Schüler
-        private void SchuelerButton_Click(object sender, RoutedEventArgs e)
+        private void SchuelerBTN_Click(object sender, RoutedEventArgs e)
         {
             // Hide the original login content
             LoginContent.Visibility = Visibility.Collapsed;
