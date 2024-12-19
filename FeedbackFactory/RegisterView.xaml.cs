@@ -25,14 +25,24 @@ namespace FeedbackFactory
 
         private void RegisterBTN_Click(object sender, RoutedEventArgs e)
         {
-            // Retrieve the username and password
-            string username = UsernameTB.Text;
+            // Retrieve the passwords
             string password = PasswordTB.Password;
+            string confirmPassword = ConfirmPasswordTB.Password;
+
+            // Check if passwords match
+            if (password != confirmPassword)
+            {
+                MessageBox.Show("Passwords do not match. Please try again.");
+                return;
+            }
+
+            // Retrieve the username
+            string username = UsernameTB.Text;
 
             // Validate input
             if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
             {
-                MessageBox.Show("Please enter both Username and Password.");
+                MessageBox.Show("Please fill in all fields.");
                 return;
             }
 
@@ -75,5 +85,7 @@ namespace FeedbackFactory
                 MessageBox.Show($"An error occurred: {ex.Message}");
             }
         }
+
+
     }
 }
