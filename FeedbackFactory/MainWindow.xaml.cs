@@ -19,17 +19,26 @@ namespace FeedbackFactory
         public MainWindow()
         {
             InitializeComponent();
+            MainContent.Content = new DashboardView();
         }
 
-        private void BtnDashboard(object sender, RoutedEventArgs e)
+
+        private void BtnDashboard_Click(object sender, RoutedEventArgs e)
         {
-            
+            MainContent.Content = new DashboardView();
         }
 
-        private void BtnFormulare(object sender, RoutedEventArgs e)
+        private void BtnFormulare_Click(object sender, RoutedEventArgs e)
         {
-
+            MainContent.Content = new FormularView();
         }
+
+        private void BtnSettings_Click(object sender, RoutedEventArgs e)
+        {
+            {
+                MainContent.Content = new SettingsView();
+            }
+        }
+
     }
-
 }
