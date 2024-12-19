@@ -11,21 +11,21 @@
 
     <Grid Background="#F9F9F9" Margin="30">
         <!-- Back Button -->
-        <Button Content="← Zurück" Width="100" Height="40" Margin="10"
+        <Button x:Name="BackBTN" Content="← Zurück" Width="100" Height="40" Margin="10"
                 HorizontalAlignment="Left" VerticalAlignment="Top"
                 Style="{DynamicResource BackButtonStyle}" 
-                Click="BackButton_Click"/>
+                Click="BackBTN_Click"/>
 
         <!-- Title -->
-        <TextBlock Text="Schüler Login" FontSize="28" FontWeight="Bold"
+        <TextBlock x:Name="StudentLogin" Text="Schüler Login" FontSize="28" FontWeight="Bold"
                    HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,50,0,20"/>
 
         <!-- Key Input -->
         <StackPanel Orientation="Vertical" VerticalAlignment="Center"
                     HorizontalAlignment="Center" Margin="0,100,0,0">
-            <TextBlock Text="Schlüssel"/>
-            <TextBox Margin="0,5"/>
-            <Button Content="Weiter"/>
+            <TextBlock x:Name="KeyLBL" Text="Schlüssel"/>
+            <TextBox x:Name="KeyTB" Margin="0,5"/>
+            <Button x:Name="ContinueBTN" Content="Weiter"/>
         </StackPanel>
     </Grid>
 </UserControl>

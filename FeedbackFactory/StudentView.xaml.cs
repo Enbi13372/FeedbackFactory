@@ -25,7 +25,7 @@ namespace FeedbackFactory
             InitializeComponent();
         }
 
-        private void BackButton_Click(object sender, RoutedEventArgs e)
+        private void BackBTN_Click(object sender, RoutedEventArgs e)
         {
             // Navigate back to the LoginWindow
             Window loginWindow = new LoginWindow();

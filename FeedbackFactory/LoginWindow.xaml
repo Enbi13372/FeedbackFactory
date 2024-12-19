@@ -17,9 +17,9 @@
     <Grid>
         <!-- Login Content (Buttons) -->
         <StackPanel x:Name="LoginContent" VerticalAlignment="Center" HorizontalAlignment="Center" Panel.ZIndex="1">
-            <TextBlock Text="Login" FontSize="32" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,30,0,30"/>
-            <Button x:Name="LehrerButton" Content="Lehrer" Click="LehrerButton_Click"/>
-            <Button x:Name="SchuelerButton" Content="Schüler" Click="SchuelerButton_Click"/>
+            <TextBlock x:Name="LoginLBL" Text="Login" FontSize="32" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,30,0,30"/>
+            <Button x:Name="TeacherBTN" Content="Lehrer" Click="TeacherBTN_Click"/>
+            <Button x:Name="SchuelerBTN" Content="Schüler" Click="SchuelerBTN_Click"/>
         </StackPanel>
 
         <!-- Main Content Area -->
