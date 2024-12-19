@@ -1,0 +1,39 @@
+﻿<UserControl x:Class="FeedbackFactory.TeacherView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Resources/LoginStyles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <Grid Background="#F9F9F9" Margin="30">
+        <!-- Back Button -->
+        <Button x:Name="BackBTN" Content="← Zurück" Width="100" Height="40" Margin="10"
+                HorizontalAlignment="Left" VerticalAlignment="Top"
+                Style="{DynamicResource BackButtonStyle}"
+                Click="BackBTN_Click"/>
+
+        <!-- Title -->
+        <TextBlock x:Name="TeacherLogin" Text="Lehrer Login" FontSize="28" FontWeight="Bold"
+                   HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,50,0,20"/>
+
+        <!-- Login Form -->
+        <StackPanel Orientation="Vertical" VerticalAlignment="Center"
+                    HorizontalAlignment="Center" Margin="0,100,0,0">
+            <TextBlock x:Name="UsernameLBL" Text="Benutzername"/>
+            <TextBox x:Name="UsernameTB" Margin="0,5"/>
+            <TextBlock x:Name="PasswordLBL" Text="Passwort"/>
+            <PasswordBox x:Name="PasswordTB" Margin="0,5"/>
+            <Button x:Name="LoginBTN" Content="Login" Click="LoginBTN_Click" Margin="0,10"/>
+
+            <!-- Centered Register Label with Hover Effect -->
+            <TextBlock x:Name="RegisterLBL" Text="Noch kein Konto? Hier Registrieren!" 
+                       HorizontalAlignment="Center"
+                       Style="{DynamicResource HoverableTextBlockStyle}"
+                       MouseDown="RegisterLBL_MouseDown"/>
+        </StackPanel>
+    </Grid>
+</UserControl>
