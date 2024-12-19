@@ -21,52 +21,24 @@ namespace FeedbackFactory
             string username = UsernameTB.Text;
             string password = PasswordTB.Password;
 
-            // Validate input
-            if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
+            // Check if username and password are both "test"
+            if (username == "test" && password == "test")
             {
-                MessageBox.Show("Please enter both Username and Password.");
-                return;
+                // Show the MainWindow
+                MainWindow mainWindow = new MainWindow();
+                mainWindow.Show();
+
+                // Close the LoginWindow (the parent window)
+                Window.GetWindow(this).Close(); // This closes the LoginWindow, not the UserControl
             }
-
-            // Connection string
-            string connectionString = @"Server=10.0.125.31;Database=feedback;Uid=feedbackuser;Pwd=Test123#;";
-
-            // SQL Query
-            string query = "INSERT INTO Users (Username, Password) VALUES (@Username, @Password);";
-
-            // Connect to the database and execute the query
-            try
+            else
             {
-                using (SqlConnection connection = new SqlConnection(connectionString))
-                {
-                    connection.Open(); // Open connection
-
-                    using (SqlCommand cmd = new SqlCommand(query, connection))
-                    {
-                        // Add parameters to prevent SQL injection
-                        cmd.Parameters.AddWithValue("@Username", username);
-                        cmd.Parameters.AddWithValue("@Password", password);
-
-                        // Execute the query
-                        int rowsAffected = cmd.ExecuteNonQuery();
-
-                        if (rowsAffected > 0)
-                        {
-                            MessageBox.Show("User successfully registered!");
-                        }
-                        else
-                        {
-                            MessageBox.Show("Failed to register user.");
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                // Handle any errors
-                MessageBox.Show($"An error occurred: {ex.Message}");
+                // Display an error message
+                MessageBox.Show("Invalid username or password. Please try again.", "Login Failed", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
+
+
 
         // Back button click handler (optional)
         private void BackBTN_Click(object sender, RoutedEventArgs e)
@@ -88,5 +60,6 @@ namespace FeedbackFactory
                 parentWindow.MainContent.Content = new RegisterView();
             }
         }
+
     }
 }

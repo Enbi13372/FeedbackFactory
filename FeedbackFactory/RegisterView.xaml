@@ -10,24 +10,24 @@
     </UserControl.Resources>
     <Grid Background="#F9F9F9">
         <!-- Back Button -->
-        <Button Content="← Zurück" Style="{StaticResource BackButtonStyle}" 
+        <Button x:Name="BackBTN" Content="← Zurück" Style="{StaticResource BackButtonStyle}" 
                 HorizontalAlignment="Left" VerticalAlignment="Top" Margin="20" 
-                Click="BackButton_Click"/>
+                Click="BackBTN_Click"/>
 
         <StackPanel Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center">
-            <TextBlock Text="Registrieren" FontSize="28" FontWeight="Bold"
+            <TextBlock x:Name="RegisterLBL" Text="Registrieren" FontSize="28" FontWeight="Bold"
                        HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,50,0,20"/>
             <!-- Registration Form -->
-            <TextBlock Text="Benutzername" />
+            <TextBlock x:Name="UsernameLBL" Text="Benutzername" />
             <TextBox x:Name="UsernameTB" />
 
-            <TextBlock Text="Passwort" />
+            <TextBlock x:Name="PasswordLBL" Text="Passwort" />
             <PasswordBox x:Name="PasswordTB" />
 
-            <TextBlock Text="Passwort bestätigen" />
+            <TextBlock x:Name="ConfirmPasswordLBL" Text="Passwort bestätigen" />
             <PasswordBox x:Name="ConfirmPasswordTB" />
 
-            <Button Content="Registrieren" />
+            <Button x:Name="RegisterBTN" Content="Registrieren" Click="RegisterBTN_Click" />
         </StackPanel>
     </Grid>
 </UserControl>
