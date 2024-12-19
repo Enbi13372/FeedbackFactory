@@ -26,7 +26,7 @@ namespace FeedbackFactory
         }
 
         private void OnSaveClick(object sender, RoutedEventArgs e)
-        {.
+        {
             MessageBox.Show("Daten wurden erfasst (Platzhalter)!");
         }
     }
