@@ -3,10 +3,35 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:FeedbackFactory"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="450" Width="800" Background="#D7E4F2">
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="140" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
 
+        <StackPanel Grid.Row="0" Background="#D7E4F2" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="center">
+            <Label Content="LOGO" FontSize="18" FontWeight="Bold" FontStyle="Italic" RenderTransformOrigin="1.124,0.747"
+                   />
+        </StackPanel>
+
+        <StackPanel Background="#D7E4F2" Grid.Row="1" Grid.Column="0" Orientation="Vertical">
+            <Image x:Name="ImgBoxLogo" Height="70" Margin="10" Width="100" HorizontalAlignment="Center" />
+            <Button x:Name="BtnDashboard" Content="Dashboard" Height="40" Width="120" Margin="10" 
+                    Background="#FFB9D1EA" Click="BtnDashboard_Click"  />
+            <Button x:Name="BtnFormulare" Content="Formulare" Height="40" Width="120" Margin="10" 
+                    Background="#FFB9D1EA" Click="BtnFormulare_Click" />
+            <Button x:Name="BtnSettings" Content="Einstellungen" Height="40" Width="120" Margin="10" 
+                    Background="#FFB9D1EA" Click="BtnSettings_Click" />
+        </StackPanel>
+
+        <Grid Grid.Row="0" Grid.Column="1" Background="#D7E4F2">
+            <TextBlock Text="Willkommen {username}" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center" />
+        </Grid>
     </Grid>
 </Window>
