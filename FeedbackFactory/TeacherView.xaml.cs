@@ -15,7 +15,7 @@ namespace FeedbackFactory
         }
 
         // Click event handler for Login button
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void LoginBTN_Click(object sender, RoutedEventArgs e)
         {
             // Retrieve the username and password
             string username = UsernameTB.Text;
@@ -29,7 +29,7 @@ namespace FeedbackFactory
             }
 
             // Connection string
-            string connectionString = @"Server=10.0.125.31;Database=feedback;Uid=Root;Pwd=feedback;";
+            string connectionString = @"Server=10.0.125.31;Database=feedback;Uid=feedbackuser;Pwd=Test123#;";
 
             // SQL Query
             string query = "INSERT INTO Users (Username, Password) VALUES (@Username, @Password);";
@@ -69,7 +69,7 @@ namespace FeedbackFactory
         }
 
         // Back button click handler (optional)
-        private void BackButton_Click(object sender, RoutedEventArgs e)
+        private void BackBTN_Click(object sender, RoutedEventArgs e)
         {
             // Navigate back to the LoginWindow
             Window loginWindow = new LoginWindow();
@@ -79,7 +79,7 @@ namespace FeedbackFactory
             Window.GetWindow(this)?.Close();
         }
 
-        private void RegisterBTN_MouseDown(object sender, MouseButtonEventArgs e)
+        private void RegisterLBL_MouseDown(object sender, MouseButtonEventArgs e)
         {
             // Find the parent LoginWindow and update its MainContent
             var parentWindow = Window.GetWindow(this) as LoginWindow;
