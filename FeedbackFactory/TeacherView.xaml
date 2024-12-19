@@ -27,7 +27,13 @@
             <TextBox x:Name="UsernameTB" Margin="0,5"/>
             <TextBlock Text="Passwort"/>
             <PasswordBox x:Name="PasswordTB" Margin="0,5"/>
-            <Button Content="Login" Click="Button_Click"/>
+            <Button Content="Login" Click="Button_Click" Margin="0,10"/>
+
+            <!-- Centered Register Label with Hover Effect -->
+            <TextBlock x:Name="RegisterBTN" Text="Noch kein Konto? Hier Registrieren!" 
+                       HorizontalAlignment="Center"
+                       Style="{DynamicResource HoverableTextBlockStyle}"
+                       MouseDown="RegisterBTN_MouseDown"/>
         </StackPanel>
     </Grid>
 </UserControl>
