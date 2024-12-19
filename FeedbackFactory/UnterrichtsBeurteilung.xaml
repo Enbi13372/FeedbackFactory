@@ -7,7 +7,6 @@
              d:DesignHeight="800" d:DesignWidth="800" Background="White">
 
     <UserControl.Resources>
-        <!-- Farben und Brushes für ein moderneres Erscheinungsbild -->
         <SolidColorBrush x:Key="RadioNormalBorder" Color="#DDDDDD"/>
         <SolidColorBrush x:Key="RadioHoverBorder" Color="#CCCCCC"/>
         <SolidColorBrush x:Key="RadioCheckedBorder" Color="#005C99"/>
@@ -15,7 +14,6 @@
         <SolidColorBrush x:Key="RadioHoverBackground" Color="#F5F5F5"/>
         <SolidColorBrush x:Key="RadioNormalBackground" Color="White"/>
 
-        <!-- Moderner Stil für RadioButtons -->
         <Style x:Key="RatingRadioButtonStyle" TargetType="RadioButton">
             <Setter Property="Margin" Value="5,0"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
@@ -39,16 +37,13 @@
                             <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Border>
                         <ControlTemplate.Triggers>
-                            <!-- Hover -->
                             <Trigger Property="IsMouseOver" Value="True">
                                 <Setter TargetName="border" Property="Background" Value="{StaticResource RadioHoverBackground}"/>
                                 <Setter TargetName="border" Property="BorderBrush" Value="{StaticResource RadioHoverBorder}"/>
                             </Trigger>
-                            <!-- Focused -->
                             <Trigger Property="IsKeyboardFocusWithin" Value="True">
                                 <Setter TargetName="border" Property="BorderBrush" Value="{StaticResource RadioCheckedBorder}"/>
                             </Trigger>
-                            <!-- Checked -->
                             <Trigger Property="IsChecked" Value="True">
                                 <Setter TargetName="border" Property="Background" Value="{StaticResource RadioCheckedBackground}"/>
                                 <Setter TargetName="border" Property="BorderBrush" Value="{StaticResource RadioCheckedBorder}"/>
@@ -62,7 +57,6 @@
             </Setter>
         </Style>
 
-        <!-- Stil für Überschriften -->
         <Style TargetType="TextBlock" x:Key="HeaderStyle">
             <Setter Property="FontSize" Value="16"/>
             <Setter Property="FontWeight" Value="Bold"/>
@@ -70,7 +64,6 @@
             <Setter Property="TextAlignment" Value="Left"/>
         </Style>
 
-        <!-- Stil für Hauptüberschrift -->
         <Style TargetType="TextBlock" x:Key="MainHeaderStyle">
             <Setter Property="FontSize" Value="18"/>
             <Setter Property="FontWeight" Value="Bold"/>
@@ -78,7 +71,6 @@
             <Setter Property="TextAlignment" Value="Left"/>
         </Style>
 
-        <!-- Stil für Fragetexte -->
         <Style TargetType="TextBlock" x:Key="QuestionStyle">
             <Setter Property="FontSize" Value="14"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
@@ -93,10 +85,8 @@
 
                 <TextBlock Text="Unterrichtsbeurteilung durch Schülerinnen und Schüler" Style="{StaticResource MainHeaderStyle}"/>
 
-                <!-- Verhalten des Lehrers -->
                 <TextBlock Text="Verhalten des Lehrers" Style="{StaticResource HeaderStyle}"/>
 
-                <!-- Lehrer-Verhalten Fragen -->
                 <StackPanel Margin="0,10,0,0">
                     <TextBlock Text="Er/Sie ist ungeduldig." Style="{StaticResource QuestionStyle}"/>
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,0,0,10">
@@ -157,7 +147,6 @@
                     </StackPanel>
                 </StackPanel>
 
-                <!-- Weitere Aussagen -->
                 <TextBlock Text="Bewerten Sie folgende Aussagen" Style="{StaticResource HeaderStyle}"/>
 
                 <StackPanel Margin="0,10,0,0">
@@ -210,7 +199,6 @@
                     </StackPanel>
                 </StackPanel>
 
-                <!-- Wie ist der Unterricht? -->
                 <TextBlock Text="Wie ist der Unterricht?" Style="{StaticResource HeaderStyle}"/>
 
                 <StackPanel Margin="0,10,0,0">
@@ -303,7 +291,6 @@
                     </StackPanel>
                 </StackPanel>
 
-                <!-- Weitere Behauptungen -->
                 <TextBlock Text="Bewerten Sie folgende Behauptungen" Style="{StaticResource HeaderStyle}"/>
 
                 <StackPanel Margin="0,10,0,0">
@@ -336,7 +323,6 @@
                     </StackPanel>
                 </StackPanel>
 
-                <!-- Freitextfelder -->
                 <TextBlock Text="Das hat mir besonders gut gefallen:" Style="{StaticResource HeaderStyle}"/>
                 <TextBox Height="60" VerticalScrollBarVisibility="Auto" AcceptsReturn="True" HorizontalAlignment="Left" Width="400" Margin="0,0,0,15"/>
 
@@ -346,7 +332,6 @@
                 <TextBlock Text="Verbesserungsvorschläge:" Style="{StaticResource HeaderStyle}"/>
                 <TextBox Height="60" VerticalScrollBarVisibility="Auto" AcceptsReturn="True" HorizontalAlignment="Left" Width="400" Margin="0,0,0,15"/>
 
-                <!-- Speichern-Button -->
                 <Button Content="Speichern" Margin="0,20,0,0" HorizontalAlignment="Left" Width="100" Height="30"/>
             </StackPanel>
         </ScrollViewer>

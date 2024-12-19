@@ -26,9 +26,7 @@ namespace FeedbackFactory
         }
 
         private void OnSaveClick(object sender, RoutedEventArgs e)
-        {
-            // Hier könnte Logik zum Speichern stehen.
-            // Derzeit nur ein Platzhalter, um den Fehler zu vermeiden.
+        {.
             MessageBox.Show("Daten wurden erfasst (Platzhalter)!");
         }
     }
