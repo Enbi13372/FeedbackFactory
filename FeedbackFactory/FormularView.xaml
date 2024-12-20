@@ -30,24 +30,22 @@
             <Border Style="{StaticResource HoverBorderStyle}" Width="300" Height="500" Margin="5">
                 <Button Background="Transparent" BorderThickness="0" Click="Formular1_Click">
                     <Viewbox Stretch="Fill">
-                        <local:UnterrichtsBeurteilung />
+                        <local:UnterrichtsBeurteilung IsHitTestVisible="False"/>
                     </Viewbox>
                 </Button>
             </Border>
 
             <Border Style="{StaticResource HoverBorderStyle}" Width="300" Height="500" Margin="5">
-                <Button Background="Transparent" BorderThickness="0" Click="Formular2_Click">
+                <Button Background="Transparent" BorderThickness="0" Click="Formular2_Click" >
                     <Viewbox Stretch="Fill">
-                        <Grid Background="White">
-                            <TextBlock Text="2" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="16" FontWeight="Bold" Foreground="Gray" />
-                        </Grid>
+                        <local:Zielscheibe IsHitTestVisible="False" />
                     </Viewbox>
                 </Button>
             </Border>
 
             <Border Style="{StaticResource HoverBorderStyle}" Width="300" Height="500" Margin="5">
                 <Button Background="Transparent" BorderThickness="0" Click="Formular3_Click">
-                    <Viewbox Stretch="Fill">
+                    <Viewbox Stretch="fill">
                         <Grid Background="White">
                             <TextBlock Text="3" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="16" FontWeight="Bold" Foreground="Gray" />
                         </Grid>

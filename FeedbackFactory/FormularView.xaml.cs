@@ -45,7 +45,22 @@ namespace FeedbackFactory
 
         private void Formular2_Click(object sender, RoutedEventArgs e)
         {
-            
+
+            {
+                
+                Window popupWindow = new Window
+                {
+                    Title = "Zielscheibe",
+                    Width = 800,
+                    Height = 800,
+                    Content = new Zielscheibe(),
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                    Owner = Application.Current.MainWindow
+                };
+
+                popupWindow.ShowDialog();
+            }
+
         }
 
         private void Formular3_Click(object sender, RoutedEventArgs e)
