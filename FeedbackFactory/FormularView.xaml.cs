@@ -47,6 +47,7 @@ namespace FeedbackFactory
         {
 
             {
+                
                 Window popupWindow = new Window
                 {
                     Title = "Zielscheibe",
