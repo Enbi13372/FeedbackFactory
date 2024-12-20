@@ -61,5 +61,14 @@ namespace FeedbackFactory
             }
         }
 
+        private void UserControl_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                // Trigger the login button's click event
+                LoginBTN_Click(sender, e);
+            }
+        }
+
     }
 }
