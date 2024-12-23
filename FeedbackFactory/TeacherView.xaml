@@ -1,6 +1,10 @@
 ﻿<UserControl x:Class="FeedbackFactory.TeacherView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             KeyDown="TeacherView_KeyDown"
+             Focusable="True"
+             KeyUp="TeacherView_KeyDown"
+             Loaded="TeacherView_Loaded">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -13,8 +17,10 @@
         <!-- Back Button -->
         <Button x:Name="BackBTN" Content="← Zurück" Width="100" Height="40" Margin="10"
                 HorizontalAlignment="Left" VerticalAlignment="Top"
-                Style="{DynamicResource BackButtonStyle}"
-                Click="BackBTN_Click"/>
+                Style="{DynamicResource BackButtonStyle}" 
+                Click="BackBTN_Click"
+                TabIndex="4"/>
+        <!-- Set TabIndex to 4 for Back Button -->
 
         <!-- Title -->
         <TextBlock x:Name="TeacherLogin" Text="Lehrer Login" FontSize="28" FontWeight="Bold"
@@ -24,10 +30,18 @@
         <StackPanel Orientation="Vertical" VerticalAlignment="Center"
                     HorizontalAlignment="Center" Margin="0,100,0,0">
             <TextBlock x:Name="UsernameLBL" Text="Benutzername"/>
-            <TextBox x:Name="UsernameTB" Margin="0,5"/>
+            <TextBox x:Name="UsernameTB" Margin="0,5"
+                     TabIndex="1"/>
+            <!-- Set TabIndex to 1 for UsernameTB -->
+
             <TextBlock x:Name="PasswordLBL" Text="Passwort"/>
-            <PasswordBox x:Name="PasswordTB" Margin="0,5"/>
-            <Button x:Name="LoginBTN" Content="Login" Click="LoginBTN_Click" Margin="0,10"/>
+            <PasswordBox x:Name="PasswordTB" Margin="0,5"
+                         TabIndex="2"/>
+            <!-- Set TabIndex to 2 for PasswordTB -->
+
+            <Button x:Name="LoginBTN" Content="Login" Click="LoginBTN_Click" Margin="0,10"
+                    TabIndex="3"/>
+            <!-- Set TabIndex to 3 for LoginBTN -->
 
             <!-- Centered Register Label with Hover Effect -->
             <TextBlock x:Name="RegisterLBL" Text="Noch kein Konto? Hier Registrieren!" 
