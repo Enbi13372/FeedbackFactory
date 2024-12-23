@@ -61,7 +61,7 @@ namespace FeedbackFactory
             // Check if passwords match
             if (password != confirmPassword)
             {
-                MessageBox.Show("Passwords do not match. Please try again.");
+                MessageBox.Show("Passwörter stimmen nicht überein. Bitte versuchen Sie es erneut.", "Registrierung Fehlgeschlagen", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
@@ -115,7 +115,7 @@ namespace FeedbackFactory
                 if (success)
                 {
                     // Registration successful
-                    MessageBox.Show("User successfully registered!");
+                    MessageBox.Show("Benutzer erfolgreich registriert!");
 
                     // Navigate back to TeacherView
                     var parentWindow = Window.GetWindow(this) as LoginWindow;
@@ -126,12 +126,12 @@ namespace FeedbackFactory
                 }
                 else
                 {
-                    MessageBox.Show("Failed to register user.", "Registrierung Fehlgeschlagen", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show("FBenutzer konnte nicht registriert werden.", "Registrierung Fehlgeschlagen", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"An error occurred: {ex.Message}");
+                MessageBox.Show($"Es ist ein Fehler aufgetreten: {ex.Message}");
             }
         }
 

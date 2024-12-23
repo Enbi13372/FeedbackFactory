@@ -28,11 +28,11 @@ namespace FeedbackFactory
             {
                 string json = File.ReadAllText(filePath);
                 var config = JsonSerializer.Deserialize<DatabaseConfig>(json);
-                return config?.ConnectionString ?? throw new Exception("Connection string not found in configuration file.");
+                return config?.ConnectionString ?? throw new Exception("ConnectionString wurde nicht in der config Datei gefunden.");
             }
             catch (Exception ex)
             {
-                throw new Exception($"Failed to read the configuration file: {ex.Message}", ex);
+                throw new Exception($"Fehler beim lesen der config Datei: {ex.Message}", ex);
             }
         }
 
@@ -58,7 +58,7 @@ namespace FeedbackFactory
             }
             catch (Exception ex)
             {
-                throw new Exception($"Database operation failed: {ex.Message}", ex);
+                throw new Exception($"Datenbankvorgang fehlgeschlagen: {ex.Message}", ex);
             }
         }
 
