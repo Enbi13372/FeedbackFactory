@@ -1,4 +1,4 @@
-﻿using MySql.Data.MySqlClient;
+using MySql.Data.MySqlClient;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;

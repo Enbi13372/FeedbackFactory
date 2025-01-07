@@ -26,17 +26,33 @@
 
     <Grid>
         <UniformGrid Columns="3" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10">
+
             <Border Style="{StaticResource HoverBorderStyle}" Width="300" Height="500" Margin="5">
-                <Button Content="Formular 1" Background="Transparent" BorderThickness="0" Click="Formular1_Click" />
+                <Button Background="Transparent" BorderThickness="0" Click="Formular1_Click">
+                    <Viewbox Stretch="Fill">
+                        <local:UnterrichtsBeurteilung IsHitTestVisible="False"/>
+                    </Viewbox>
+                </Button>
             </Border>
 
             <Border Style="{StaticResource HoverBorderStyle}" Width="300" Height="500" Margin="5">
-                <Button Content="Formular 2" Background="Transparent" BorderThickness="0" Click="Formular2_Click" />
+                <Button Background="Transparent" BorderThickness="0" Click="Formular2_Click" >
+                    <Viewbox Stretch="Fill">
+                        <local:Zielscheibe IsHitTestVisible="False" />
+                    </Viewbox>
+                </Button>
             </Border>
 
             <Border Style="{StaticResource HoverBorderStyle}" Width="300" Height="500" Margin="5">
-                <Button Content="Formular 3" Background="Transparent" BorderThickness="0" Click="Formular3_Click" />
+                <Button Background="Transparent" BorderThickness="0" Click="Formular3_Click">
+                    <Viewbox Stretch="fill">
+                        <Grid Background="White">
+                            <TextBlock Text="3" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="16" FontWeight="Bold" Foreground="Gray" />
+                        </Grid>
+                    </Viewbox>
+                </Button>
             </Border>
+
         </UniformGrid>
     </Grid>
 </UserControl>
