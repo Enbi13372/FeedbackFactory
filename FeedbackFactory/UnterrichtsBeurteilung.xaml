@@ -1,0 +1,339 @@
+﻿<UserControl x:Class="FeedbackFactory.UnterrichtsBeurteilung"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"  
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"  
+             d:DesignHeight="800" d:DesignWidth="800" Background="White">
+
+    <UserControl.Resources>
+        <SolidColorBrush x:Key="RadioNormalBorder" Color="#DDDDDD"/>
+        <SolidColorBrush x:Key="RadioHoverBorder" Color="#CCCCCC"/>
+        <SolidColorBrush x:Key="RadioCheckedBorder" Color="#005C99"/>
+        <SolidColorBrush x:Key="RadioCheckedBackground" Color="#CCE7FF"/>
+        <SolidColorBrush x:Key="RadioHoverBackground" Color="#F5F5F5"/>
+        <SolidColorBrush x:Key="RadioNormalBackground" Color="White"/>
+
+        <Style x:Key="RatingRadioButtonStyle" TargetType="RadioButton">
+            <Setter Property="Margin" Value="5,0"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Foreground" Value="Black"/>
+            <Setter Property="Background" Value="{StaticResource RadioNormalBackground}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource RadioNormalBorder}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="8,4"/>
+            <Setter Property="Focusable" Value="True"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="FontWeight" Value="Normal"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="RadioButton">
+                        <Border x:Name="border"
+                                CornerRadius="4"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="{StaticResource RadioHoverBackground}"/>
+                                <Setter TargetName="border" Property="BorderBrush" Value="{StaticResource RadioHoverBorder}"/>
+                            </Trigger>
+                            <Trigger Property="IsKeyboardFocusWithin" Value="True">
+                                <Setter TargetName="border" Property="BorderBrush" Value="{StaticResource RadioCheckedBorder}"/>
+                            </Trigger>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="{StaticResource RadioCheckedBackground}"/>
+                                <Setter TargetName="border" Property="BorderBrush" Value="{StaticResource RadioCheckedBorder}"/>
+                                <Setter TargetName="border" Property="BorderThickness" Value="2"/>
+                                <Setter Property="Foreground" Value="#003660"/>
+                                <Setter Property="FontWeight" Value="Bold"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style TargetType="TextBlock" x:Key="HeaderStyle">
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Margin" Value="0,20,0,5"/>
+            <Setter Property="TextAlignment" Value="Left"/>
+        </Style>
+
+        <Style TargetType="TextBlock" x:Key="MainHeaderStyle">
+            <Setter Property="FontSize" Value="18"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Margin" Value="0,0,0,10"/>
+            <Setter Property="TextAlignment" Value="Left"/>
+        </Style>
+
+        <Style TargetType="TextBlock" x:Key="QuestionStyle">
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Margin" Value="0,0,0,8"/>
+            <Setter Property="TextAlignment" Value="Left"/>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid Background="White">
+        <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalAlignment="Stretch" VerticalAlignment="Top">
+            <StackPanel Margin="20" HorizontalAlignment="Stretch">
+
+                <TextBlock Text="Unterrichtsbeurteilung durch Schülerinnen und Schüler" Style="{StaticResource MainHeaderStyle}"/>
+
+                <TextBlock Text="Verhalten des Lehrers" Style="{StaticResource HeaderStyle}"/>
+
+                <StackPanel Margin="0,10,0,0">
+                    <TextBlock Text="Er/Sie ist ungeduldig." Style="{StaticResource QuestionStyle}"/>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,0,0,10">
+                        <RadioButton Content="trifft voll zu" Style="{StaticResource RatingRadioButtonStyle}" GroupName="Verhalten1"/>
+                        <RadioButton Content="trifft eher zu" Style="{StaticResource RatingRadioButtonStyle}" GroupName="Verhalten1"/>
+                        <RadioButton Content="trifft eher nicht zu" Style="{StaticResource RatingRadioButtonStyle}" GroupName="Verhalten1"/>
+                        <RadioButton Content="trifft überhaupt nicht zu" Style="{StaticResource RatingRadioButtonStyle}" GroupName="Verhalten1"/>
+                    </StackPanel>
+                </StackPanel>
+
+                <StackPanel Margin="0,10,0,0">
+                    <TextBlock Text="Er/Sie ist sicher im Auftreten." Style="{StaticResource QuestionStyle}"/>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,0,0,10">
+                        <RadioButton Content="trifft voll zu" Style="{StaticResource RatingRadioButtonStyle}" GroupName="Verhalten2"/>
+                        <RadioButton Content="trifft eher zu" Style="{StaticResource RatingRadioButtonStyle}" GroupName="Verhalten2"/>
+                        <RadioButton Content="trifft eher nicht zu" Style="{StaticResource RatingRadioButtonStyle}" GroupName="Verhalten2"/>
+                        <RadioButton Content="trifft überhaupt nicht zu" Style="{StaticResource RatingRadioButtonStyle}" GroupName="Verhalten2"/>
+                    </StackPanel>
+                </StackPanel>
+
+                <StackPanel Margin="0,10,0,0">
+                    <TextBlock Text="Er/Sie ist freundlich." Style="{StaticResource QuestionStyle}"/>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,0,0,10">
+                        <RadioButton Content="trifft voll zu" Style="{StaticResource RatingRadioButtonStyle}" GroupName="Verhalten3"/>
+                        <RadioButton Content="trifft eher zu" Style="{StaticResource RatingRadioButtonStyle}" GroupName="Verhalten3"/>
+                        <RadioButton Content="trifft eher nicht zu" Style="{StaticResource RatingRadioButtonStyle}" GroupName="Verhalten3"/>
+                        <RadioButton Content="trifft überhaupt nicht zu" Style="{StaticResource RatingRadioButtonStyle}" GroupName="Verhalten3"/>
+                    </StackPanel>
+                </StackPanel>
+
+                <StackPanel Margin="0,10,0,0">
+                    <TextBlock Text="Er/Sie ist erregbar und aufbrausend." Style="{StaticResource QuestionStyle}"/>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,0,0,10">
+                        <RadioButton Content="trifft voll zu" Style="{StaticResource RatingRadioButtonStyle}" GroupName="Verhalten4"/>
+                        <RadioButton Content="trifft eher zu" Style="{StaticResource RatingRadioButtonStyle}" GroupName="Verhalten4"/>
+                        <RadioButton Content="trifft eher nicht zu" Style="{StaticResource RatingRadioButtonStyle}" GroupName="Verhalten4"/>
+                        <RadioButton Content="trifft überhaupt nicht zu" Style="{StaticResource RatingRadioButtonStyle}" GroupName="Verhalten4"/>
+                    </StackPanel>
+                </StackPanel>
+
+                <StackPanel Margin="0,10,0,0">
+                    <TextBlock Text="Er/Sie ist tatkräftig, aktiv." Style="{StaticResource QuestionStyle}"/>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,0,0,10">
+                        <RadioButton Content="trifft voll zu" Style="{StaticResource RatingRadioButtonStyle}" GroupName="Verhalten5"/>
+                        <RadioButton Content="trifft eher zu" Style="{StaticResource RatingRadioButtonStyle}" GroupName="Verhalten5"/>
+                        <RadioButton Content="trifft eher nicht zu" Style="{StaticResource RatingRadioButtonStyle}" GroupName="Verhalten5"/>
+                        <RadioButton Content="trifft überhaupt nicht zu" Style="{StaticResource RatingRadioButtonStyle}" GroupName="Verhalten5"/>
+                    </StackPanel>
+                </StackPanel>
+
+                <StackPanel Margin="0,10,0,0">
+                    <TextBlock Text="Er/Sie ist aufgeschlossen." Style="{StaticResource QuestionStyle}"/>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,0,0,10">
+                        <RadioButton Content="trifft voll zu" Style="{StaticResource RatingRadioButtonStyle}" GroupName="Verhalten6"/>
+                        <RadioButton Content="trifft eher zu" Style="{StaticResource RatingRadioButtonStyle}" GroupName="Verhalten6"/>
+                        <RadioButton Content="trifft eher nicht zu" Style="{StaticResource RatingRadioButtonStyle}" GroupName="Verhalten6"/>
+                        <RadioButton Content="trifft überhaupt nicht zu" Style="{StaticResource RatingRadioButtonStyle}" GroupName="Verhalten6"/>
+                    </StackPanel>
+                </StackPanel>
+
+                <TextBlock Text="Bewerten Sie folgende Aussagen" Style="{StaticResource HeaderStyle}"/>
+
+                <StackPanel Margin="0,10,0,0">
+                    <TextBlock Text="Bevorzugt manche Schülerinnen oder Schüler." Style="{StaticResource QuestionStyle}"/>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,0,0,10">
+                        <RadioButton Content="trifft voll zu" Style="{StaticResource RatingRadioButtonStyle}" GroupName="Aussage1"/>
+                        <RadioButton Content="trifft eher zu" Style="{StaticResource RatingRadioButtonStyle}" GroupName="Aussage1"/>
+                        <RadioButton Content="trifft eher nicht zu" Style="{StaticResource RatingRadioButtonStyle}" GroupName="Aussage1"/>
+                        <RadioButton Content="trifft überhaupt nicht zu" Style="{StaticResource RatingRadioButtonStyle}" GroupName="Aussage1"/>
+                    </StackPanel>
+                </StackPanel>
+
+                <StackPanel Margin="0,10,0,0">
+                    <TextBlock Text="Nimmt die Schülerinnen und Schüler ernst." Style="{StaticResource QuestionStyle}"/>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,0,0,10">
+                        <RadioButton Content="trifft voll zu" Style="{StaticResource RatingRadioButtonStyle}" GroupName="Aussage2"/>
+                        <RadioButton Content="trifft eher zu" Style="{StaticResource RatingRadioButtonStyle}" GroupName="Aussage2"/>
+                        <RadioButton Content="trifft eher nicht zu" Style="{StaticResource RatingRadioButtonStyle}" GroupName="Aussage2"/>
+                        <RadioButton Content="trifft überhaupt nicht zu" Style="{StaticResource RatingRadioButtonStyle}" GroupName="Aussage2"/>
+                    </StackPanel>
+                </StackPanel>
+
+                <StackPanel Margin="0,10,0,0">
+                    <TextBlock Text="Ermutigt und lobt viel." Style="{StaticResource QuestionStyle}"/>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,0,0,10">
+                        <RadioButton Content="trifft voll zu" Style="{StaticResource RatingRadioButtonStyle}" GroupName="Aussage3"/>
+                        <RadioButton Content="trifft eher zu" Style="{StaticResource RatingRadioButtonStyle}" GroupName="Aussage3"/>
+                        <RadioButton Content="trifft eher nicht zu" Style="{StaticResource RatingRadioButtonStyle}" GroupName="Aussage3"/>
+                        <RadioButton Content="trifft überhaupt nicht zu" Style="{StaticResource RatingRadioButtonStyle}" GroupName="Aussage3"/>
+                    </StackPanel>
+                </StackPanel>
+
+                <StackPanel Margin="0,10,0,0">
+                    <TextBlock Text="Entscheidet immer allein." Style="{StaticResource QuestionStyle}"/>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,0,0,10">
+                        <RadioButton Content="trifft voll zu" Style="{StaticResource RatingRadioButtonStyle}" GroupName="Aussage4"/>
+                        <RadioButton Content="trifft eher zu" Style="{StaticResource RatingRadioButtonStyle}" GroupName="Aussage4"/>
+                        <RadioButton Content="trifft eher nicht zu" Style="{StaticResource RatingRadioButtonStyle}" GroupName="Aussage4"/>
+                        <RadioButton Content="trifft überhaupt nicht zu" Style="{StaticResource RatingRadioButtonStyle}" GroupName="Aussage4"/>
+                    </StackPanel>
+                </StackPanel>
+
+                <StackPanel Margin="0,10,0,0">
+                    <TextBlock Text="Gesteht eigene Fehler ein." Style="{StaticResource QuestionStyle}"/>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,0,0,10">
+                        <RadioButton Content="trifft voll zu" Style="{StaticResource RatingRadioButtonStyle}" GroupName="Aussage5"/>
+                        <RadioButton Content="trifft eher zu" Style="{StaticResource RatingRadioButtonStyle}" GroupName="Aussage5"/>
+                        <RadioButton Content="trifft eher nicht zu" Style="{StaticResource RatingRadioButtonStyle}" GroupName="Aussage5"/>
+                        <RadioButton Content="trifft überhaupt nicht zu" Style="{StaticResource RatingRadioButtonStyle}" GroupName="Aussage5"/>
+                    </StackPanel>
+                </StackPanel>
+
+                <TextBlock Text="Wie ist der Unterricht?" Style="{StaticResource HeaderStyle}"/>
+
+                <StackPanel Margin="0,10,0,0">
+                    <TextBlock Text="Die Ziele des Unterrichts sind klar erkennbar." Style="{StaticResource QuestionStyle}"/>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,0,0,10">
+                        <RadioButton Content="trifft voll zu" Style="{StaticResource RatingRadioButtonStyle}" GroupName="Unterricht1"/>
+                        <RadioButton Content="trifft eher zu" Style="{StaticResource RatingRadioButtonStyle}" GroupName="Unterricht1"/>
+                        <RadioButton Content="trifft eher nicht zu" Style="{StaticResource RatingRadioButtonStyle}" GroupName="Unterricht1"/>
+                        <RadioButton Content="trifft überhaupt nicht zu" Style="{StaticResource RatingRadioButtonStyle}" GroupName="Unterricht1"/>
+                    </StackPanel>
+                </StackPanel>
+
+                <StackPanel Margin="0,10,0,0">
+                    <TextBlock Text="Der Lehrer redet zu viel." Style="{StaticResource QuestionStyle}"/>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,0,0,10">
+                        <RadioButton Content="trifft voll zu" Style="{StaticResource RatingRadioButtonStyle}" GroupName="Unterricht2"/>
+                        <RadioButton Content="trifft eher zu" Style="{StaticResource RatingRadioButtonStyle}" GroupName="Unterricht2"/>
+                        <RadioButton Content="trifft eher nicht zu" Style="{StaticResource RatingRadioButtonStyle}" GroupName="Unterricht2"/>
+                        <RadioButton Content="trifft überhaupt nicht zu" Style="{StaticResource RatingRadioButtonStyle}" GroupName="Unterricht2"/>
+                    </StackPanel>
+                </StackPanel>
+
+                <StackPanel Margin="0,10,0,0">
+                    <TextBlock Text="Der Lehrer schweift oft vom Thema ab." Style="{StaticResource QuestionStyle}"/>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,0,0,10">
+                        <RadioButton Content="trifft voll zu" Style="{StaticResource RatingRadioButtonStyle}" GroupName="Unterricht3"/>
+                        <RadioButton Content="trifft eher zu" Style="{StaticResource RatingRadioButtonStyle}" GroupName="Unterricht3"/>
+                        <RadioButton Content="trifft eher nicht zu" Style="{StaticResource RatingRadioButtonStyle}" GroupName="Unterricht3"/>
+                        <RadioButton Content="trifft überhaupt nicht zu" Style="{StaticResource RatingRadioButtonStyle}" GroupName="Unterricht3"/>
+                    </StackPanel>
+                </StackPanel>
+
+                <StackPanel Margin="0,10,0,0">
+                    <TextBlock Text="Die Fragen und Beiträge der Schüler werden ernst genommen." Style="{StaticResource QuestionStyle}"/>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,0,0,10">
+                        <RadioButton Content="trifft voll zu" Style="{StaticResource RatingRadioButtonStyle}" GroupName="Unterricht4"/>
+                        <RadioButton Content="trifft eher zu" Style="{StaticResource RatingRadioButtonStyle}" GroupName="Unterricht4"/>
+                        <RadioButton Content="trifft eher nicht zu" Style="{StaticResource RatingRadioButtonStyle}" GroupName="Unterricht4"/>
+                        <RadioButton Content="trifft überhaupt nicht zu" Style="{StaticResource RatingRadioButtonStyle}" GroupName="Unterricht4"/>
+                    </StackPanel>
+                </StackPanel>
+
+                <StackPanel Margin="0,10,0,0">
+                    <TextBlock Text="Die Sprache des Lehrers ist gut verständlich." Style="{StaticResource QuestionStyle}"/>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,0,0,10">
+                        <RadioButton Content="trifft voll zu" Style="{StaticResource RatingRadioButtonStyle}" GroupName="Unterricht5"/>
+                        <RadioButton Content="trifft eher zu" Style="{StaticResource RatingRadioButtonStyle}" GroupName="Unterricht5"/>
+                        <RadioButton Content="trifft eher nicht zu" Style="{StaticResource RatingRadioButtonStyle}" GroupName="Unterricht5"/>
+                        <RadioButton Content="trifft überhaupt nicht zu" Style="{StaticResource RatingRadioButtonStyle}" GroupName="Unterricht5"/>
+                    </StackPanel>
+                </StackPanel>
+
+                <StackPanel Margin="0,10,0,0">
+                    <TextBlock Text="Der Lehrer achtet auf Ruhe und Disziplin." Style="{StaticResource QuestionStyle}"/>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,0,0,10">
+                        <RadioButton Content="trifft voll zu" Style="{StaticResource RatingRadioButtonStyle}" GroupName="Unterricht6"/>
+                        <RadioButton Content="trifft eher zu" Style="{StaticResource RatingRadioButtonStyle}" GroupName="Unterricht6"/>
+                        <RadioButton Content="trifft eher nicht zu" Style="{StaticResource RatingRadioButtonStyle}" GroupName="Unterricht6"/>
+                        <RadioButton Content="trifft überhaupt nicht zu" Style="{StaticResource RatingRadioButtonStyle}" GroupName="Unterricht6"/>
+                    </StackPanel>
+                </StackPanel>
+
+                <StackPanel Margin="0,10,0,0">
+                    <TextBlock Text="Der Unterricht ist abwechslungsreich." Style="{StaticResource QuestionStyle}"/>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,0,0,10">
+                        <RadioButton Content="trifft voll zu" Style="{StaticResource RatingRadioButtonStyle}" GroupName="Unterricht7"/>
+                        <RadioButton Content="trifft eher zu" Style="{StaticResource RatingRadioButtonStyle}" GroupName="Unterricht7"/>
+                        <RadioButton Content="trifft eher nicht zu" Style="{StaticResource RatingRadioButtonStyle}" GroupName="Unterricht7"/>
+                        <RadioButton Content="trifft überhaupt nicht zu" Style="{StaticResource RatingRadioButtonStyle}" GroupName="Unterricht7"/>
+                    </StackPanel>
+                </StackPanel>
+
+                <StackPanel Margin="0,10,0,0">
+                    <TextBlock Text="Unterrichtsmaterialien sind ansprechend und verständlich gestaltet." Style="{StaticResource QuestionStyle}"/>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,0,0,10">
+                        <RadioButton Content="trifft voll zu" Style="{StaticResource RatingRadioButtonStyle}" GroupName="Unterricht8"/>
+                        <RadioButton Content="trifft eher zu" Style="{StaticResource RatingRadioButtonStyle}" GroupName="Unterricht8"/>
+                        <RadioButton Content="trifft eher nicht zu" Style="{StaticResource RatingRadioButtonStyle}" GroupName="Unterricht8"/>
+                        <RadioButton Content="trifft überhaupt nicht zu" Style="{StaticResource RatingRadioButtonStyle}" GroupName="Unterricht8"/>
+                    </StackPanel>
+                </StackPanel>
+
+                <StackPanel Margin="0,10,0,0">
+                    <TextBlock Text="Der Stoff wird ausreichend wiederholt und geübt." Style="{StaticResource QuestionStyle}"/>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,0,0,10">
+                        <RadioButton Content="trifft voll zu" Style="{StaticResource RatingRadioButtonStyle}" GroupName="Unterricht9"/>
+                        <RadioButton Content="trifft eher zu" Style="{StaticResource RatingRadioButtonStyle}" GroupName="Unterricht9"/>
+                        <RadioButton Content="trifft eher nicht zu" Style="{StaticResource RatingRadioButtonStyle}" GroupName="Unterricht9"/>
+                        <RadioButton Content="trifft überhaupt nicht zu" Style="{StaticResource RatingRadioButtonStyle}" GroupName="Unterricht9"/>
+                    </StackPanel>
+                </StackPanel>
+
+                <TextBlock Text="Bewerten Sie folgende Behauptungen" Style="{StaticResource HeaderStyle}"/>
+
+                <StackPanel Margin="0,10,0,0">
+                    <TextBlock Text="Die Themen der Schulaufgaben werden rechtzeitig bekannt gegeben." Style="{StaticResource QuestionStyle}"/>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,0,0,10">
+                        <RadioButton Content="trifft voll zu" Style="{StaticResource RatingRadioButtonStyle}" GroupName="Behauptung1"/>
+                        <RadioButton Content="trifft eher zu" Style="{StaticResource RatingRadioButtonStyle}" GroupName="Behauptung1"/>
+                        <RadioButton Content="trifft eher nicht zu" Style="{StaticResource RatingRadioButtonStyle}" GroupName="Behauptung1"/>
+                        <RadioButton Content="trifft überhaupt nicht zu" Style="{StaticResource RatingRadioButtonStyle}" GroupName="Behauptung1"/>
+                    </StackPanel>
+                </StackPanel>
+
+                <StackPanel Margin="0,10,0,0">
+                    <TextBlock Text="Der Schwierigkeitsgrad der Leistungsnachweise entspricht den Unterrichtsinhalten." Style="{StaticResource QuestionStyle}"/>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,0,0,10">
+                        <RadioButton Content="trifft voll zu" Style="{StaticResource RatingRadioButtonStyle}" GroupName="Behauptung2"/>
+                        <RadioButton Content="trifft eher zu" Style="{StaticResource RatingRadioButtonStyle}" GroupName="Behauptung2"/>
+                        <RadioButton Content="trifft eher nicht zu" Style="{StaticResource RatingRadioButtonStyle}" GroupName="Behauptung2"/>
+                        <RadioButton Content="trifft überhaupt nicht zu" Style="{StaticResource RatingRadioButtonStyle}" GroupName="Behauptung2"/>
+                    </StackPanel>
+                </StackPanel>
+
+                <StackPanel Margin="0,10,0,0">
+                    <TextBlock Text="Die Bewertungen sind nachvollziehbar und verständlich." Style="{StaticResource QuestionStyle}"/>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,0,0,10">
+                        <RadioButton Content="trifft voll zu" Style="{StaticResource RatingRadioButtonStyle}" GroupName="Behauptung3"/>
+                        <RadioButton Content="trifft eher zu" Style="{StaticResource RatingRadioButtonStyle}" GroupName="Behauptung3"/>
+                        <RadioButton Content="trifft eher nicht zu" Style="{StaticResource RatingRadioButtonStyle}" GroupName="Behauptung3"/>
+                        <RadioButton Content="trifft überhaupt nicht zu" Style="{StaticResource RatingRadioButtonStyle}" GroupName="Behauptung3"/>
+                    </StackPanel>
+                </StackPanel>
+
+                <TextBlock Text="Das hat mir besonders gut gefallen:" Style="{StaticResource HeaderStyle}"/>
+                <TextBox Height="60" VerticalScrollBarVisibility="Auto" AcceptsReturn="True" HorizontalAlignment="Left" Width="400" Margin="0,0,0,15"/>
+
+                <TextBlock Text="Das hat mir nicht gefallen:" Style="{StaticResource HeaderStyle}"/>
+                <TextBox Height="60" VerticalScrollBarVisibility="Auto" AcceptsReturn="True" HorizontalAlignment="Left" Width="400" Margin="0,0,0,15"/>
+
+                <TextBlock Text="Verbesserungsvorschläge:" Style="{StaticResource HeaderStyle}"/>
+                <TextBox Height="60" VerticalScrollBarVisibility="Auto" AcceptsReturn="True" HorizontalAlignment="Left" Width="400" Margin="0,0,0,15"/>
+
+                <Button Content="Speichern" Margin="0,20,0,0" HorizontalAlignment="Left" Width="100" Height="30"/>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

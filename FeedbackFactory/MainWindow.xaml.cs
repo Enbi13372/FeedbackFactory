@@ -40,5 +40,10 @@ namespace FeedbackFactory
             }
         }
 
+        private void BtnAdminView_Click(object sender, RoutedEventArgs e)
+        {
+            MainContent.Content = new AdminView();
+        }
+
     }
 }
