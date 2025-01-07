@@ -1,6 +1,4 @@
-﻿using BCrypt.Net; // Import the BCrypt.Net namespace for password hashing
-using System;
-using System.Data.SqlClient;
+﻿using System.Data.SqlClient;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
