@@ -1,7 +1,7 @@
 ﻿using System;
-using System.Data.SqlClient;
 using System.IO;
 using System.Text.Json;
+using MySql.Data.MySqlClient;
 
 namespace FeedbackFactory
 {
@@ -32,19 +32,19 @@ namespace FeedbackFactory
             }
             catch (Exception ex)
             {
-                throw new Exception($"Fehler beim lesen der config Datei: {ex.Message}", ex);
+                throw new Exception($"Fehler beim Lesen der Config Datei: {ex.Message}", ex);
             }
         }
 
         // Execute a non-query (INSERT, UPDATE, DELETE)
-        public bool ExecuteNonQuery(string query, SqlParameter[] parameters)
+        public bool ExecuteNonQuery(string query, MySqlParameter[] parameters)
         {
             try
             {
-                using (SqlConnection connection = new SqlConnection(_connectionString))
+                using (MySqlConnection connection = new MySqlConnection(_connectionString))
                 {
                     connection.Open();
-                    using (SqlCommand cmd = new SqlCommand(query, connection))
+                    using (MySqlCommand cmd = new MySqlCommand(query, connection))
                     {
                         if (parameters != null)
                         {

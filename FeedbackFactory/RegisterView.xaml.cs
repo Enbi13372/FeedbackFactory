@@ -1,6 +1,4 @@
-﻿using BCrypt.Net; // Add the BCrypt.Net namespace
-using System;
-using System.Data.SqlClient;
+﻿using MySql.Data.MySqlClient;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
@@ -23,28 +21,22 @@ namespace FeedbackFactory
             _dbHandler = new DBConnectionHandler(configPath);
         }
 
-        // Event handler for PreviewKeyDown to capture Enter key press
         private void RegisterView_PreviewKeyDown(object sender, KeyEventArgs e)
         {
-            // Check if the Enter key is pressed
             if (e.Key == Key.Enter)
             {
-                // Trigger the Register button click event
                 RegisterBTN_Click(RegisterBTN, new RoutedEventArgs());
-                e.Handled = true; // Mark the event as handled
+                e.Handled = true;
             }
         }
 
-        // Event handler for when the UserControl is loaded
         private void RegisterView_Loaded(object sender, RoutedEventArgs e)
         {
-            // Set focus to the UsernameTB (TextBox for the username) when the view is loaded
             UsernameTB.Focus();
         }
 
         private void BackBTN_Click(object sender, RoutedEventArgs e)
         {
-            // Navigate back to TeacherView
             var parentWindow = Window.GetWindow(this) as LoginWindow;
             if (parentWindow != null)
             {
@@ -54,70 +46,61 @@ namespace FeedbackFactory
 
         private void RegisterBTN_Click(object sender, RoutedEventArgs e)
         {
-            // Retrieve the passwords
             string password = PasswordTB.Password;
             string confirmPassword = ConfirmPasswordTB.Password;
 
-            // Check if passwords match
             if (password != confirmPassword)
             {
                 MessageBox.Show("Passwörter stimmen nicht überein. Bitte versuchen Sie es erneut.", "Registrierung Fehlgeschlagen", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
-            // Retrieve the username
             string username = UsernameTB.Text;
 
-            // Validate input
             if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
             {
                 MessageBox.Show("Alle Felder müssen ausgefüllt werden. Bitte versuchen Sie es erneut.", "Registrierung Fehlgeschlagen", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
-            // First, check if the username already exists in the database
             string checkQuery = "SELECT COUNT(*) FROM Users WHERE Username = @Username;";
-            var checkParameters = new SqlParameter[]
+            var checkParameters = new MySqlParameter[]
             {
-                new SqlParameter("@Username", username)
+                new MySqlParameter("@Username", username)
             };
 
             try
             {
-                using (SqlConnection connection = new SqlConnection(_dbHandler.ConnectionString))
+                using (MySqlConnection connection = new MySqlConnection(_dbHandler.ConnectionString))
                 {
                     connection.Open();
-                    using (SqlCommand cmd = new SqlCommand(checkQuery, connection))
+                    using (MySqlCommand cmd = new MySqlCommand(checkQuery, connection))
                     {
                         cmd.Parameters.AddRange(checkParameters);
-                        int userCount = (int)cmd.ExecuteScalar();
+                        int userCount = Convert.ToInt32(cmd.ExecuteScalar());
 
                         if (userCount > 0)
                         {
-                            // User already exists
                             MessageBox.Show("Dieser Nutzer existiert bereits.", "Registrierung Fehlgeschlagen", MessageBoxButton.OK, MessageBoxImage.Error);
                             return;
                         }
                     }
                 }
 
-                // If user doesn't exist, proceed with registration
-                string hashedPassword = BCrypt.Net.BCrypt.HashPassword(password); // Hash the password using bcrypt
+                string hashedPassword = BCrypt.Net.BCrypt.HashPassword(password);
                 string query = "INSERT INTO Users (Username, Password) VALUES (@Username, @Password);";
-                var parameters = new SqlParameter[]
+                var parameters = new MySqlParameter[]
                 {
-                    new SqlParameter("@Username", username),
-                    new SqlParameter("@Password", hashedPassword) // Save the hashed password
+                    new MySqlParameter("@Username", username),
+                    new MySqlParameter("@Password", hashedPassword)
                 };
 
                 bool success = _dbHandler.ExecuteNonQuery(query, parameters);
 
                 if (success)
                 {
-                    // Registration successful
                     MessageBox.Show("Benutzer erfolgreich registriert!");
 
-                    // Navigate back to TeacherView
                     var parentWindow = Window.GetWindow(this) as LoginWindow;
                     if (parentWindow != null)
                     {
@@ -126,7 +109,7 @@ namespace FeedbackFactory
                 }
                 else
                 {
-                    MessageBox.Show("FBenutzer konnte nicht registriert werden.", "Registrierung Fehlgeschlagen", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show("Benutzer konnte nicht registriert werden.", "Registrierung Fehlgeschlagen", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
             catch (Exception ex)
@@ -137,7 +120,6 @@ namespace FeedbackFactory
 
         private void RegisterLBL_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            // Find the parent LoginWindow and update its MainContent
             var parentWindow = Window.GetWindow(this) as LoginWindow;
             if (parentWindow != null)
             {

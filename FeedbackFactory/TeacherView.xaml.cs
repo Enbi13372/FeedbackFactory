@@ -1,4 +1,4 @@
-﻿using System.Data.SqlClient;
+﻿using MySql.Data.MySqlClient;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -18,24 +18,19 @@ namespace FeedbackFactory
             _dbHandler = new DBConnectionHandler(configPath);
         }
 
-        // Event handler for when the UserControl is loaded
         private void TeacherView_Loaded(object sender, RoutedEventArgs e)
         {
-            // Set focus to the UsernameTB (TextBox for the username) when the view is loaded
             UsernameTB.Focus();
         }
 
-        // Event handler for KeyDown and KeyUp (capturing Enter key to trigger login)
         private void TeacherView_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Enter)
             {
-                // Trigger the Login button click event
                 LoginBTN_Click(LoginBTN, new RoutedEventArgs());
             }
         }
 
-        // Click event handler for Login button
         private void LoginBTN_Click(object sender, RoutedEventArgs e)
         {
             string username = UsernameTB.Text;
@@ -50,26 +45,27 @@ namespace FeedbackFactory
 
             // Query to retrieve the hashed password from the database
             string query = "SELECT Password FROM Users WHERE Username = @Username;";
-            var parameters = new SqlParameter[]
+            var parameters = new MySqlParameter[]
             {
-                new SqlParameter("@Username", username)
+                new MySqlParameter("@Username", username)
             };
 
             try
             {
                 string storedHashedPassword = null;
 
-                using (SqlConnection connection = new SqlConnection(_dbHandler.ConnectionString))
+                using (MySqlConnection connection = new MySqlConnection(_dbHandler.ConnectionString))
                 {
                     connection.Open();
-                    using (SqlCommand cmd = new SqlCommand(query, connection))
+                    using (MySqlCommand cmd = new MySqlCommand(query, connection))
                     {
                         cmd.Parameters.AddRange(parameters);
-                        SqlDataReader reader = cmd.ExecuteReader();
-
-                        if (reader.Read())
+                        using (var reader = cmd.ExecuteReader())
                         {
-                            storedHashedPassword = reader["Password"].ToString();
+                            if (reader.Read())
+                            {
+                                storedHashedPassword = reader["Password"].ToString();
+                            }
                         }
                     }
                 }
@@ -103,18 +99,14 @@ namespace FeedbackFactory
             }
         }
 
-        // Back button click handler (optional)
         private void BackBTN_Click(object sender, RoutedEventArgs e)
         {
-            // Navigate back to the LoginWindow (or your desired window)
             Window loginWindow = new LoginWindow();
             loginWindow.Show();
 
-            // Close the current view's window (if standalone)
             Window.GetWindow(this)?.Close();
         }
 
-        // Register link click handler to open RegisterView
         private void RegisterLBL_MouseDown(object sender, MouseButtonEventArgs e)
         {
             var parentWindow = Window.GetWindow(this) as LoginWindow;
