@@ -88,7 +88,7 @@ namespace FeedbackFactory
                 }
 
                 string hashedPassword = BCrypt.Net.BCrypt.HashPassword(password);
-                string query = "INSERT INTO Users (Username, Password) VALUES (@Username, @Password);";
+                string query = "INSERT INTO Users (Username, Password, Role) VALUES (@Username, @Password, 0);";
                 var parameters = new MySqlParameter[]
                 {
                     new MySqlParameter("@Username", username),
