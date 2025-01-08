@@ -20,11 +20,11 @@ Setting up FeedbackFactory:
     Role VARCHAR(50) NULL
 );
 
-CREATE TABLE RegistrationKeys (
+   CREATE TABLE RegistrationKeys (
     `Key` VARCHAR(50) PRIMARY KEY
 );
 
-CREATE TABLE Feedbackkeys (
+   CREATE TABLE Feedbackkeys (
     `Key` VARCHAR(50) PRIMARY KEY,
         UsesRemaining INT
 );
