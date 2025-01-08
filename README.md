@@ -26,7 +26,7 @@ Setting up FeedbackFactory:
 
    CREATE TABLE Feedbackkeys (
     `Key` VARCHAR(50) PRIMARY KEY,
-        UsesRemaining INT
+        UsesRemaining INT NOT NULL
 );
 
 4. An initial Admin account has to be created:
