@@ -17,7 +17,7 @@ Setting up FeedbackFactory:
    CREATE TABLE Users (
     Username VARCHAR(50) PRIMARY KEY,
     Password VARCHAR(100) NOT NULL,
-    Role VARCHAR(50) NULL
+    Role INT NOT NULL
 );
 
    CREATE TABLE RegistrationKeys (
