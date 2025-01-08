@@ -29,7 +29,7 @@ CREATE TABLE Feedbackkeys (
         UsesRemaining INT
 );
 
-3. an initial Admin account has to be created:
+4. An initial Admin account has to be created:
 
    INSERT INTO Users (Username, Password, Role)
 VALUES ('YourNameHere', 'YourPasswordHere', '1');
