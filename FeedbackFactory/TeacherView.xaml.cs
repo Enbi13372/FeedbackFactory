@@ -20,8 +20,16 @@ namespace FeedbackFactory
 
         private void TeacherView_Loaded(object sender, RoutedEventArgs e)
         {
-            UsernameTB.Focus();
+            // Reset keyboard state to avoid handling residual key presses
+            Keyboard.ClearFocus();
+
+            // Optionally, delay focus setup slightly to prevent immediate key handling
+            Dispatcher.BeginInvoke(new Action(() =>
+            {
+                UsernameTB.Focus();
+            }), System.Windows.Threading.DispatcherPriority.Input);
         }
+
 
         private void TeacherView_KeyDown(object sender, KeyEventArgs e)
         {
