@@ -16,9 +16,39 @@ namespace FeedbackFactory
     /// </summary>
     public partial class MainWindow : Window
     {
-        public MainWindow()
+        private readonly string _username;
+
+        public MainWindow(string username)
         {
             InitializeComponent();
+            
+            MainContent.Content = new DashboardView();
+            _username = username;
+            TxtWelcome.Text = $"Willkommen, {_username}";
         }
+
+
+        private void BtnDashboard_Click(object sender, RoutedEventArgs e)
+        {
+            MainContent.Content = new DashboardView();
+        }
+
+        private void BtnFormulare_Click(object sender, RoutedEventArgs e)
+        {
+            MainContent.Content = new FormularView();
+        }
+
+        private void BtnSettings_Click(object sender, RoutedEventArgs e)
+        {
+            {
+                MainContent.Content = new SettingsView();
+            }
+        }
+
+        private void BtnAdminView_Click(object sender, RoutedEventArgs e)
+        {
+            MainContent.Content = new AdminView();
+        }
+
     }
 }
