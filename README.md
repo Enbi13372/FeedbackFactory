@@ -29,6 +29,16 @@ Setting up FeedbackFactory:
         UsesRemaining INT NOT NULL
 );
 
+   CREATE TABLE Classes (
+    Teacher VARCHAR(255) NOT NULL,
+    ClassName VARCHAR(255) NOT NULL PRIMARY KEY,
+    SchoolYear VARCHAR(255) NOT NULL,
+    Department VARCHAR(255) NOT NULL,
+    Class VARCHAR(255) NOT NULL,
+    Grade VARCHAR(255) NOT NULL
+);
+
+
 4. An initial Admin account has to be created:
 
    INSERT INTO Users (Username, Password, Role)
