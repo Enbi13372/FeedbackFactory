@@ -39,8 +39,12 @@
             <PasswordBox x:Name="ConfirmPasswordTB" Margin="0,5"
                          TabIndex="3"/>
 
+            <TextBlock x:Name="RegistrationKeyLBL" Text="Registrierungs-Schlüssel"/>
+            <TextBox x:Name="RegistrationKeyTB" Margin="0,5"
+                     TabIndex="4"/>
+
             <Button x:Name="RegisterBTN" Content="Registrieren" Click="RegisterBTN_Click" Margin="0,10"
-                    TabIndex="4"/>
+                    TabIndex="5"/>
         </StackPanel>
     </Grid>
 </UserControl>
