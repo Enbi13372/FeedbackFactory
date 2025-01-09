@@ -50,5 +50,9 @@ namespace FeedbackFactory
             MainContent.Content = new AdminView();
         }
 
+        private void BtnClasses_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }
