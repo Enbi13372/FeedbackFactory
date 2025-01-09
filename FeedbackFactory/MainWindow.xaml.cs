@@ -40,9 +40,7 @@ namespace FeedbackFactory
 
         private void BtnSettings_Click(object sender, RoutedEventArgs e)
         {
-            {
-                MainContent.Content = new SettingsView();
-            }
+            MainContent.Content = new SettingsView();  
         }
 
         private void BtnAdminView_Click(object sender, RoutedEventArgs e)
@@ -52,7 +50,8 @@ namespace FeedbackFactory
 
         private void BtnClasses_Click(object sender, RoutedEventArgs e)
         {
-
+            MainContent.Content = new ClassView();
         }
+
     }
 }
