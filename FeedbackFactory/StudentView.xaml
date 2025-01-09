@@ -31,8 +31,8 @@
                      TabIndex="1"/>
             <!-- Set TabIndex to 1 for KeyTB -->
 
-            <Button x:Name="ContinueBTN" Content="Weiter"
-                    TabIndex="2"/>
+            <Button x:Name="ContinueBTN" Content="Weiter" 
+                    TabIndex="2" Click="ContinueBTN_Click"/>
             <!-- Set TabIndex to 2 for ContinueBTN -->
         </StackPanel>
     </Grid>
