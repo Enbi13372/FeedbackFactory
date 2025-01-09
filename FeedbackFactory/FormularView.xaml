@@ -37,7 +37,7 @@
 
             <Border Style="{StaticResource HoverBorderStyle}" Width="300" Height="500" Margin="5">
                 <Button Background="Transparent" BorderThickness="0" Click="Formular2_Click" >
-                    <Viewbox Stretch="Fill">
+                    <Viewbox Stretch="Uniform">
                         <local:Zielscheibe IsHitTestVisible="False" />
                     </Viewbox>
                 </Button>

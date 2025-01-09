@@ -62,6 +62,11 @@ namespace FeedbackFactory
             }
         }
 
+        internal object ExecuteQuery(string query)
+        {
+            throw new NotImplementedException();
+        }
+
         // Helper class to deserialize the JSON configuration
         private class DatabaseConfig
         {
