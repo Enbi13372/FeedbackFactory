@@ -9,6 +9,7 @@ namespace FeedbackFactory
             InitializeComponent();
         }
 
+
         // Button click event for Lehrer
         private void TeacherBTN_Click(object sender, RoutedEventArgs e)
         {
