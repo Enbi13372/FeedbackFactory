@@ -31,10 +31,10 @@ Setting up FeedbackFactory:
 
    CREATE TABLE Classes (
     Teacher VARCHAR(255) NOT NULL,
-    ClassName VARCHAR(255) NOT NULL PRIMARY KEY,
+    ClassName VARCHAR(255) NOT NULL,
     SchoolYear VARCHAR(9) NOT NULL,
     Department VARCHAR(255) NOT NULL,
-    Class VARCHAR(255) NOT NULL,
+    Subject VARCHAR(255) NOT NULL,
     Grade INT NOT NULL,
     ClassSize INT NOT NULL
 );
