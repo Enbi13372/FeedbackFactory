@@ -5,12 +5,21 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:FeedbackFactory"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="500" d:DesignWidth="900">
     <Grid Background="#D7E4F2">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="10" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
         <!-- ListView to show assigned classes -->
-        <ListView x:Name="ClassesListView" HorizontalAlignment="Left" VerticalAlignment="Top" Width="330" Height="400">
+        <ListView x:Name="ClassesListView" Grid.Column="0" Grid.Row="0" Width="330" Height="400">
             <ListView.Resources>
-                <!-- Override the ListViewItem style to center content -->
                 <Style TargetType="ListViewItem">
                     <Setter Property="HorizontalContentAlignment" Value="Center" />
                     <Setter Property="VerticalContentAlignment" Value="Center" />
@@ -18,51 +27,82 @@
             </ListView.Resources>
             <ListView.View>
                 <GridView>
-                    <!-- Teacher Column -->
-                    <GridViewColumn Header="Teacher" Width="80">
+                    <GridViewColumn Header="Lehrer" Width="80">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding Teacher}" 
-                                           HorizontalAlignment="Center" 
-                                           VerticalAlignment="Center" />
+                                <TextBlock Text="{Binding Teacher}" HorizontalAlignment="Center" VerticalAlignment="Center" />
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
-
-                    <!-- Class Name Column -->
-                    <GridViewColumn Header="Class Name" Width="80">
+                    <GridViewColumn Header="Klasse" Width="80">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding ClassName}" 
-                                           HorizontalAlignment="Center" 
-                                           VerticalAlignment="Center" />
+                                <TextBlock Text="{Binding ClassName}" HorizontalAlignment="Center" VerticalAlignment="Center" />
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
-
-                    <!-- Subject Column -->
-                    <GridViewColumn Header="Subject" Width="80">
+                    <GridViewColumn Header="Fach" Width="80">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding Subject}" 
-                                           HorizontalAlignment="Center" 
-                                           VerticalAlignment="Center" />
+                                <TextBlock Text="{Binding Subject}" HorizontalAlignment="Center" VerticalAlignment="Center" />
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
-
-                    <!-- School Year Column -->
-                    <GridViewColumn Header="SchoolYear" Width="80">
+                    <GridViewColumn Header="Schuljahr" Width="80">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding SchoolYear}" 
-                                           HorizontalAlignment="Center" 
-                                           VerticalAlignment="Center" />
+                                <TextBlock Text="{Binding SchoolYear}" HorizontalAlignment="Center" VerticalAlignment="Center" />
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
                 </GridView>
             </ListView.View>
         </ListView>
+
+        <!-- Buttons to add and remove classes -->
+        <StackPanel Grid.Column="0" Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Left">
+            <!-- Widened buttons -->
+            <Button x:Name="AddButton" Content="➕ Hinzufügen" Width="120" Margin="5" Click="AddButton_Click" />
+            <Button x:Name="RemoveButton" Content="➖ Entfernen" Width="120" Margin="5" Click="RemoveButton_Click" />
+        </StackPanel>
+
+        <!-- Details Panel -->
+        <StackPanel Grid.Column="2" Grid.Row="0" Margin="10,84,10,8" Orientation="Vertical">
+            <StackPanel Orientation="Horizontal" Margin="0,5">
+                <Label Content="Lehrer:" Width="100" />
+                <TextBox x:Name="TeacherTextBox" Width="200" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Margin="0,5">
+                <Label Content="Klasse:" Width="100" />
+                <TextBox x:Name="ClassNameTextBox" Width="200" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Margin="0,5">
+                <Label Content="Fach:" Width="100" />
+                <TextBox x:Name="SubjectTextBox" Width="200" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Margin="0,5">
+                <Label Content="Schuljahr:" Width="100" />
+                <TextBox x:Name="SchoolYearTextBox" Width="200" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Margin="0,5">
+                <Label Content="Abteilung:" Width="100" />
+                <TextBox x:Name="DepartmentTextBox" Width="200" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Margin="0,5">
+                <Label Content="Jahrgang:" Width="100" />
+                <TextBox x:Name="GradeTextBox" Width="200" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Margin="0,5">
+                <Label Content="Klassengröße:" Width="100" />
+                <TextBox x:Name="ClassSizeTextBox" Width="200" />
+            </StackPanel>
+
+            <!-- Save and Abort Buttons -->
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10">
+                <!-- Widened buttons for save and abort -->
+                <Button x:Name="SaveButton" Content="💾 Speichern" Width="120" Margin="5" Click="SaveButton_Click" />
+                <Button x:Name="AbortButton" Content="❌ Abbrechen" Width="120" Margin="5" Click="AbortButton_Click" />
+            </StackPanel>
+        </StackPanel>
     </Grid>
 </UserControl>
