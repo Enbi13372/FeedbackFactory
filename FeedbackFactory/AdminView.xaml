@@ -7,6 +7,12 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800" Background="Beige">
     <Grid>
-            
+        <!-- ListBox, um die Benutzernamen anzuzeigen -->
+        <ListBox x:Name="UserListBox" 
+                 HorizontalAlignment="Left" 
+                 Width="400" 
+                 DisplayMemberPath="Users" Margin="400,0,0,0"/>
     </Grid>
 </UserControl>
+
+    
