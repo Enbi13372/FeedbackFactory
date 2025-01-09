@@ -1,13 +1,17 @@
 using MySql.Data.MySqlClient;
+using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Threading;
 
 namespace FeedbackFactory
 {
     public partial class TeacherView : UserControl
     {
         private readonly DBConnectionHandler _dbHandler;
+        private bool _isMessageBoxOpen = false; // Flag to track if a MessageBox is open
+        private bool _suppressKeyDown = false; // Flag to suppress KeyDown events temporarily
 
         public TeacherView()
         {
@@ -27,27 +31,33 @@ namespace FeedbackFactory
             Dispatcher.BeginInvoke(new Action(() =>
             {
                 UsernameTB.Focus();
-            }), System.Windows.Threading.DispatcherPriority.Input);
+            }), DispatcherPriority.Input);
         }
-
 
         private void TeacherView_KeyDown(object sender, KeyEventArgs e)
         {
+            if (_isMessageBoxOpen || _suppressKeyDown)
+                return;
+
             if (e.Key == Key.Enter)
             {
                 LoginBTN_Click(LoginBTN, new RoutedEventArgs());
+                e.Handled = true; // Mark the event as handled to prevent further propagation
             }
         }
 
         private void LoginBTN_Click(object sender, RoutedEventArgs e)
         {
+            if (_isMessageBoxOpen)
+                return;
+
             string username = UsernameTB.Text;
             string password = PasswordTB.Password;
 
             // Check if username and password are filled
             if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
             {
-                MessageBox.Show("Bitte geben Sie sowohl Benutzernamen als auch Passwort ein.", "Login Fehlgeschlagen", MessageBoxButton.OK, MessageBoxImage.Error);
+                ShowMessageBox("Bitte geben Sie sowohl Benutzernamen als auch Passwort ein.", "Login Fehlgeschlagen");
                 return;
             }
 
@@ -81,7 +91,7 @@ namespace FeedbackFactory
                 if (storedHashedPassword == null)
                 {
                     // Username not found in the database
-                    MessageBox.Show("Benutzername nicht gefunden.", "Login Fehlgeschlagen", MessageBoxButton.OK, MessageBoxImage.Error);
+                    ShowMessageBox("Benutzername nicht gefunden.", "Login Fehlgeschlagen");
                     return;
                 }
 
@@ -98,17 +108,47 @@ namespace FeedbackFactory
                 else
                 {
                     // Incorrect password
-                    MessageBox.Show("Ungültiger Benutzername oder Passwort. Bitte versuchen Sie es erneut.", "Login Fehlgeschlagen", MessageBoxButton.OK, MessageBoxImage.Error);
+                    ShowMessageBox("Ungültiger Benutzername oder Passwort. Bitte versuchen Sie es erneut.", "Login Fehlgeschlagen");
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Fehler beim Login: {ex.Message}", "Login Fehlgeschlagen", MessageBoxButton.OK, MessageBoxImage.Error);
+                ShowMessageBox($"Fehler beim Login: {ex.Message}", "Login Fehlgeschlagen");
             }
+        }
+
+        private void ShowMessageBox(string message, string title)
+        {
+            _isMessageBoxOpen = true; // Set the flag to indicate the MessageBox is open
+            MessageBox.Show(message, title, MessageBoxButton.OK, MessageBoxImage.Error);
+            _isMessageBoxOpen = false; // Reset the flag when the MessageBox is closed
+
+            // Suppress KeyDown events for a short duration to prevent re-triggering
+            SuppressKeyDownTemporarily();
+        }
+
+        private void SuppressKeyDownTemporarily()
+        {
+            _suppressKeyDown = true;
+
+            // Use a timer to reset the suppression after a short delay
+            DispatcherTimer timer = new DispatcherTimer
+            {
+                Interval = TimeSpan.FromMilliseconds(200) // Adjust delay as needed
+            };
+            timer.Tick += (s, e) =>
+            {
+                _suppressKeyDown = false;
+                timer.Stop();
+            };
+            timer.Start();
         }
 
         private void BackBTN_Click(object sender, RoutedEventArgs e)
         {
+            if (_isMessageBoxOpen)
+                return;
+
             Window loginWindow = new LoginWindow();
             loginWindow.Show();
 
@@ -117,6 +157,9 @@ namespace FeedbackFactory
 
         private void RegisterLBL_MouseDown(object sender, MouseButtonEventArgs e)
         {
+            if (_isMessageBoxOpen)
+                return;
+
             var parentWindow = Window.GetWindow(this) as LoginWindow;
             if (parentWindow != null)
             {
