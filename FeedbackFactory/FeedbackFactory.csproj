@@ -9,7 +9,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="System.Data.SqlClient" Version="4.9.0" />
+    <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
+    <PackageReference Include="Microsoft.AspNet.SignalR.Core" Version="2.4.3" />
+    <PackageReference Include="MySql.Data" Version="9.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Resources\config.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>
