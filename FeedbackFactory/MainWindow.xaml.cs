@@ -78,5 +78,9 @@ namespace FeedbackFactory
             keyGeneratorWindow.ShowDialog();  // Mit ShowDialog wird das Fenster als Modal-Fenster geöffnet.
         }
 
+        private void BtnClasses_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }
