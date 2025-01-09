@@ -1,4 +1,4 @@
-﻿<Window x:Class="FeedbackFactory.MainWindow"
+<Window x:Class="FeedbackFactory.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -86,8 +86,8 @@
 
 <Button x:Name="BtnDashboard" Content="🏠 Dashboard" Height="50" Width="180" Grid.Row="0" Click="BtnDashboard_Click"/>
 <Button x:Name="BtnFormulare" Content="📝 Formulare" Height="50" Width="180" Grid.Row="1" Click="BtnFormulare_Click"/>
-<Button x:Name="BtnKlassen" Content="🎓 Klassen" Height="50" Width="180" Grid.Row="2" Click="BtnClasses_Click"/>
-<Button x:Name="BtnAdmin" Content="👤 Admin" Grid.Row="3" Height="50" Width="180" VerticalAlignment="Top" Click="BtnAdminView_Click"/>
+            <Button x:Name="BtnKlassen" Content="🎓 Klassen" Height="50" Width="180" Grid.Row="2" Click="BtnKlassen_Click"/>
+            <Button x:Name="BtnAdmin" Content="👤 Admin" Grid.Row="3" Height="50" Width="180" VerticalAlignment="Top" Click="BtnAdminView_Click"/>
 <Button x:Name="BtnSettings" Content="⚙️ Einstellungen" Height="40" Width="180" Grid.Row="4" FontSize="16" Click="BtnSettings_Click"/>
 
 
