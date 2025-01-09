@@ -57,7 +57,7 @@ namespace FeedbackFactory
 
             string username = UsernameTB.Text;
 
-            if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
+            if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password) || string.IsNullOrEmpty(confirmPassword))
             {
                 MessageBox.Show("Alle Felder müssen ausgefüllt werden. Bitte versuchen Sie es erneut.", "Registrierung Fehlgeschlagen", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
