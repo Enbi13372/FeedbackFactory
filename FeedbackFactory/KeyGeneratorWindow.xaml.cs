@@ -44,6 +44,9 @@ namespace FeedbackFactory
             GeneratedKeyText.Text = generatedKey;
             GeneratedKeyText.Visibility = Visibility.Visible;
 
+            // Den Button zum Kopieren sichtbar machen
+            CopyButton.Visibility = Visibility.Visible;
+
             // Den Button deaktivieren, sodass der Schlüssel nicht mehrmals generiert werden kann
             GenerateKeyButton.IsEnabled = false;
         }
@@ -56,6 +59,16 @@ namespace FeedbackFactory
             const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
             string key = string.Join(string.Empty, Enumerable.Range(0, 16).Select(_ => chars[random.Next(chars.Length)]));
             return key;
+        }
+
+        // Event-Handler zum Kopieren des Schlüssels in die Zwischenablage
+        private void CopyToClipboard_Click(object sender, RoutedEventArgs e)
+        {
+            if (!string.IsNullOrEmpty(GeneratedKeyText.Text))
+            {
+                Clipboard.SetText(GeneratedKeyText.Text);  // Schlüssel in die Zwischenablage kopieren
+                MessageBox.Show("Der Schlüssel wurde in die Zwischenablage kopiert.", "Erfolg", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
         }
     }
 }
