@@ -89,7 +89,7 @@ namespace FeedbackFactory
                 if (BCrypt.Net.BCrypt.Verify(password, storedHashedPassword))
                 {
                     // Open the main application window
-                    MainWindow mainWindow = new MainWindow();
+                    MainWindow mainWindow = new MainWindow(username);
                     mainWindow.Show();
 
                     // Close the login window (this view)
