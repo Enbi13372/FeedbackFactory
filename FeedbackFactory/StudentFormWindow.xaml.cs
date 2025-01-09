@@ -14,14 +14,35 @@ using System.Windows.Shapes;
 
 namespace FeedbackFactory
 {
-    /// <summary>
-    /// Interaktionslogik für StudentFormWindow.xaml
-    /// </summary>
+
     public partial class StudentFormWindow : Window
     {
-        public StudentFormWindow()
+        private Dictionary<string, UserControl> _keyViewMapping;
+        public StudentFormWindow(string inputKey)
         {
             InitializeComponent();
+
+
+            _keyViewMapping = new Dictionary<string, UserControl>
+            {
+                { "Key1", new UnterrichtsBeurteilung() },
+                { "Key2", new Zielscheibe() }
+            };
+
+            if (_keyViewMapping.TryGetValue(inputKey, out UserControl selectedView))
+            {
+
+                ViewContentControl.Content = selectedView;
+            }
+            else
+            {
+                MessageBox.Show("Ungültiger Schlüssel. Bitte versuchen Sie es erneut.");
+            }
+
+
+
+
         }
     }
 }
+

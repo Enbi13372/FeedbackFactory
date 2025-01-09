@@ -28,5 +28,24 @@ namespace FeedbackFactory
             // Close current view's window if it’s standalone
             Window.GetWindow(this)?.Close();
         }
+        private void ContinueBTN_Click(object sender, RoutedEventArgs e)
+        {
+           
+            string inputKey = KeyTB.Text;
+
+            if (string.IsNullOrWhiteSpace(inputKey))
+            {
+                MessageBox.Show("Bitte geben Sie einen gültigen Schlüssel ein.", "Fehler", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            
+            StudentFormWindow studentFormWindow = new StudentFormWindow(inputKey);
+            studentFormWindow.Show();
+
+            Window.GetWindow(this)?.Close();
+        }
+
+        
     }
 }
