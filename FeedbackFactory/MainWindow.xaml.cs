@@ -80,7 +80,7 @@ namespace FeedbackFactory
 
         private void BtnClasses_Click(object sender, RoutedEventArgs e)
         {
-
+            MainContent.Content = new ClassView();
         }
     }
 }
