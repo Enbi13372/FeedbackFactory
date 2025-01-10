@@ -42,7 +42,7 @@ namespace FeedbackFactory
             else
             {
                 BtnAdmin.Visibility = Visibility.Collapsed;
-                BtnClasses.Visibility= Visibility.Collapsed;
+                BtnClasses.Visibility = Visibility.Collapsed;
             }
         }
 
@@ -88,8 +88,8 @@ namespace FeedbackFactory
 
         private void BtnFormularErstellen_Click(object sender, RoutedEventArgs e)
         {
-            // Open the KeyGeneratorWindow as a modal window
-            KeyGeneratorWindow keyGeneratorWindow = new KeyGeneratorWindow();
+            // Pass the username to the KeyGeneratorWindow
+            KeyGeneratorWindow keyGeneratorWindow = new KeyGeneratorWindow(_username);
             keyGeneratorWindow.ShowDialog(); // ShowDialog opens it as a modal window
         }
 
