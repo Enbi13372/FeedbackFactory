@@ -50,7 +50,7 @@
         <Grid Grid.Row="0" Grid.ColumnSpan="2" Background="#D7E4F2">
             <DockPanel LastChildFill="True" Margin="10">
 
-                <Image Source="C:\Users\tobia\Source\Repos\FeedbackFactory\FeedbackFactory\Resources\ImageLogo\logoBsLif.png" />
+                <Image Source="pack://application:,,,/Resources/ImageLogo/logoBsLif.png"  />
                 <TextBlock x:Name= "TxtWelcome" FontSize="16" Foreground="black"
 
                            VerticalAlignment="Center" DockPanel.Dock="Right" HorizontalAlignment="Center"/>
