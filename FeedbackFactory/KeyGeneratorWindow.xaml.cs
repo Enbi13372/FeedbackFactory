@@ -24,7 +24,7 @@ namespace FeedbackFactory
             InitializeComponent();
 
             _username = username;
-            MessageBox.Show($"Username: {_username}", "Username Information", MessageBoxButton.OK, MessageBoxImage.Information);
+        
 
             string configPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources", "config.json");
             _dbHandler = new DBConnectionHandler(configPath);
