@@ -34,6 +34,7 @@
 
         <DataGrid Grid.Row="1" ItemsSource="{Binding BenutzerListe}" 
                   AutoGenerateColumns="False" 
+                  CanUserAddRows="False"
                   HorizontalAlignment="Stretch" 
                   VerticalAlignment="Stretch" 
                   Margin="10">
