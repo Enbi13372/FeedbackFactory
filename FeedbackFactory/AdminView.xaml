@@ -8,15 +8,24 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        
+       
         <StackPanel Orientation="Horizontal" Margin="10">
-            <TextBox x:Name="UsernameInput" Width="200" Margin="5" />
-            <PasswordBox x:Name="PasswordInput" Width="200" Margin="5"  />
-            <ComboBox x:Name="RoleInput" Width="150" Margin="5">
-                <ComboBoxItem Content="Lehrer" Tag="0" />
-                <ComboBoxItem Content="Admin" Tag="1" />
-            </ComboBox>
-            <Button Content="Benutzer hinzufügen" Click="AddUserButton_Click" Width="150" Margin="5" />
+            <StackPanel Margin="5">
+                <TextBlock Text="Benutzername:" />
+                <TextBox x:Name="UsernameInput" Width="200" />
+            </StackPanel>
+            <StackPanel Margin="5">
+                <TextBlock Text="Passwort:" />
+                <PasswordBox x:Name="PasswordInput" Width="200" />
+            </StackPanel>
+            <StackPanel Margin="5">
+                <TextBlock Text="Rolle:" />
+                <ComboBox x:Name="RoleInput" Width="150">
+                    <ComboBoxItem Content="Lehrer" Tag="0" />
+                    <ComboBoxItem Content="Admin" Tag="1" />
+                </ComboBox>
+            </StackPanel>
+            <Button Content="Benutzer hinzufügen" Click="AddUserButton_Click" Width="150" Margin="5" VerticalAlignment="Bottom" />
         </StackPanel>
 
         
