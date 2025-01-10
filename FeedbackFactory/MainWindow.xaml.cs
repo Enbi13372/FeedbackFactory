@@ -1,14 +1,8 @@
-using System.Text;
+using System;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+
 namespace FeedbackFactory
 {
     /// <summary>
@@ -17,27 +11,48 @@ namespace FeedbackFactory
     public partial class MainWindow : Window
     {
         private readonly string _username;
+        private readonly int _role; // Store the role
 
-        public MainWindow(string username)
+        public MainWindow(string username, int role)
         {
             InitializeComponent();
 
-            MainContent.Content = new DashboardView();
             _username = username;
+            _role = role;
+
+            MainContent.Content = new DashboardView();
             TxtWelcome.Text = $"Willkommen, {_username}";
+
+            // Adjust UI based on the user's role
+            ConfigureUIBasedOnRole();
 
             // Überwache die Content-Eigenschaft des ContentControls
             DependencyPropertyDescriptor.FromProperty(ContentControl.ContentProperty, typeof(ContentControl))
                 .AddValueChanged(MainContent, MainContent_ContentChanged);
         }
 
-        // Event-Handler für Änderungen der Content-Eigenschaft
+        // Adjust UI based on role
+        private void ConfigureUIBasedOnRole()
+        {
+            if (_role == 1)
+            {
+                BtnAdmin.Visibility = Visibility.Visible;
+                BtnClasses.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                BtnAdmin.Visibility = Visibility.Collapsed;
+                BtnClasses.Visibility= Visibility.Collapsed;
+            }
+        }
+
+        // Event-Handler for changes in the Content property
         private void MainContent_ContentChanged(object sender, EventArgs e)
         {
             AktualisiereButtonSichtbarkeit();
         }
 
-        // Aktualisiert die Sichtbarkeit des Formular erstellen Buttons
+        // Updates the visibility of the "Formular erstellen" button
         private void AktualisiereButtonSichtbarkeit()
         {
             if (MainContent.Content is FormularView)
@@ -50,7 +65,7 @@ namespace FeedbackFactory
             }
         }
 
-        // Event-Handler für Button-Klicks
+        // Event-Handler for button clicks
         private void BtnDashboard_Click(object sender, RoutedEventArgs e)
         {
             MainContent.Content = new DashboardView();
@@ -70,12 +85,12 @@ namespace FeedbackFactory
         {
             MainContent.Content = new AdminView();
         }
-        //Formular Button
+
         private void BtnFormularErstellen_Click(object sender, RoutedEventArgs e)
         {
-            // Öffne das KeyGeneratorWindow als Modal-Fenster
+            // Open the KeyGeneratorWindow as a modal window
             KeyGeneratorWindow keyGeneratorWindow = new KeyGeneratorWindow();
-            keyGeneratorWindow.ShowDialog();  // Mit ShowDialog wird das Fenster als Modal-Fenster geöffnet
+            keyGeneratorWindow.ShowDialog(); // ShowDialog opens it as a modal window
         }
 
         private void BtnClasses_Click(object sender, RoutedEventArgs e)

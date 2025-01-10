@@ -30,7 +30,6 @@ namespace FeedbackFactory
             }), System.Windows.Threading.DispatcherPriority.Input);
         }
 
-
         private void TeacherView_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Enter)
@@ -51,8 +50,8 @@ namespace FeedbackFactory
                 return;
             }
 
-            // Query to retrieve the hashed password from the database
-            string query = "SELECT Password FROM Users WHERE Username = @Username;";
+            // Query to retrieve the hashed password and role from the database
+            string query = "SELECT Password, Role FROM Users WHERE Username = @Username;";
             var parameters = new MySqlParameter[]
             {
                 new MySqlParameter("@Username", username)
@@ -61,6 +60,7 @@ namespace FeedbackFactory
             try
             {
                 string storedHashedPassword = null;
+                int? role = null;
 
                 using (MySqlConnection connection = new MySqlConnection(_dbHandler.ConnectionString))
                 {
@@ -73,12 +73,13 @@ namespace FeedbackFactory
                             if (reader.Read())
                             {
                                 storedHashedPassword = reader["Password"].ToString();
+                                role = reader["Role"] != DBNull.Value ? Convert.ToInt32(reader["Role"]) : (int?)null;
                             }
                         }
                     }
                 }
 
-                if (storedHashedPassword == null)
+                if (storedHashedPassword == null || role == null)
                 {
                     // Username not found in the database
                     MessageBox.Show("Benutzername nicht gefunden.", "Login Fehlgeschlagen", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -88,8 +89,8 @@ namespace FeedbackFactory
                 // Verify the entered password with the hashed password in the database using bcrypt
                 if (BCrypt.Net.BCrypt.Verify(password, storedHashedPassword))
                 {
-                    // Open the main application window
-                    MainWindow mainWindow = new MainWindow(username);
+                    // Open the main application window with the role
+                    MainWindow mainWindow = new MainWindow(username, role.Value);
                     mainWindow.Show();
 
                     // Close the login window (this view)
