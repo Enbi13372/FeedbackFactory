@@ -18,6 +18,7 @@ using System.Data;
 using System.Reflection.PortableExecutable;
 using System.Data.Common;
 using System.Collections.ObjectModel;
+using System.Globalization;
 
 
 namespace FeedbackFactory
@@ -26,14 +27,22 @@ namespace FeedbackFactory
     {
         private readonly DBConnectionHandler _dbHandler;
 
-       
+        public ICommand DeleteUserCommand { get; }
+        public ICommand ChangeRoleCommand { get; }
+
+
         public ObservableCollection<Benutzer> BenutzerListe { get; set; } = new ObservableCollection<Benutzer>();
 
         public AdminView()
         {
             InitializeComponent();
 
-            
+            DeleteUserCommand = new RelayCommand<Benutzer>(DeleteUser);
+            ChangeRoleCommand = new RelayCommand<Benutzer>(ChangeRole);
+
+            this.DataContext = this;
+
+
             string configPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources", "config.json");
             _dbHandler = new DBConnectionHandler(configPath);
 
@@ -42,6 +51,63 @@ namespace FeedbackFactory
 
            
             LadeBenutzerAusDatenbank();
+        }
+
+        private void DeleteUser(Benutzer benutzer)
+        {
+            if (benutzer == null) return;
+
+            string query = "DELETE FROM Users WHERE Username = @Username";
+
+            try
+            {
+                using (MySqlConnection connection = new MySqlConnection(_dbHandler.ConnectionString))
+                {
+                    connection.Open();
+                    using (MySqlCommand cmd = new MySqlCommand(query, connection))
+                    {
+                        cmd.Parameters.AddWithValue("@Username", benutzer.Name);
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+
+                BenutzerListe.Remove(benutzer);
+
+                MessageBox.Show("Benutzer erfolgreich gelöscht.", "Erfolg", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Fehler beim Löschen des Benutzers: {ex.Message}", "Fehler", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void ChangeRole(Benutzer benutzer)
+        {
+            if (benutzer == null) return;
+
+            benutzer.Rolle = benutzer.Rolle == 0 ? 1 : 0;
+
+            string query = "UPDATE Users SET Role = @Role WHERE Username = @Username";
+
+            try
+            {
+                using (MySqlConnection connection = new MySqlConnection(_dbHandler.ConnectionString))
+                {
+                    connection.Open();
+                    using (MySqlCommand cmd = new MySqlCommand(query, connection))
+                    {
+                        cmd.Parameters.AddWithValue("@Role", benutzer.Rolle);
+                        cmd.Parameters.AddWithValue("@Username", benutzer.Name);
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+
+                MessageBox.Show("Rolle erfolgreich geändert.", "Erfolg", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Fehler beim Ändern der Rolle: {ex.Message}", "Fehler", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private void LadeBenutzerAusDatenbank()
@@ -139,4 +205,35 @@ namespace FeedbackFactory
         public string Name { get; set; }
         public int Rolle { get; set; }    
     }
+
+    public class RelayCommand<T> : ICommand
+    {
+        private readonly Action<T> _execute;
+        private readonly Predicate<T> _canExecute;
+
+        public RelayCommand(Action<T> execute, Predicate<T> canExecute = null)
+        {
+            _execute = execute ?? throw new ArgumentNullException(nameof(execute));
+            _canExecute = canExecute;
+        }
+
+        public bool CanExecute(object parameter)
+        {
+            return _canExecute == null || _canExecute((T)parameter);
+        }
+
+        public void Execute(object parameter)
+        {
+            _execute((T)parameter);
+        }
+
+        public event EventHandler CanExecuteChanged
+        {
+            add { CommandManager.RequerySuggested += value; }
+            remove { CommandManager.RequerySuggested -= value; }
+        }
+    }
+    
+
+
 }
