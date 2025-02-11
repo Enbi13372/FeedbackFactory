@@ -36,13 +36,10 @@ namespace FeedbackFactory
         {
             if (_role == 1)
             {
-                BtnAdmin.Visibility = Visibility.Visible;
-                BtnClasses.Visibility = Visibility.Visible;
-            }
+                BtnAdmin.Visibility = Visibility.Visible;            }
             else
             {
                 BtnAdmin.Visibility = Visibility.Collapsed;
-                BtnClasses.Visibility = Visibility.Collapsed;
             }
         }
 
