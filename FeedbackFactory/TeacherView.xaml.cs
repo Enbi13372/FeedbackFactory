@@ -124,5 +124,14 @@ namespace FeedbackFactory
                 parentWindow.MainContent.Content = new RegisterView();
             }
         }
+
+        private void ResetLBL_MouseDOwn(object sender, MouseButtonEventArgs e)
+        {
+            var parentWindow = Window.GetWindow(this) as LoginWindow;
+            if (parentWindow != null)
+            {
+                parentWindow.MainContent.Content = new ResetPasswordView();
+            }
+        }
     }
 }

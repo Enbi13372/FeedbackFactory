@@ -48,6 +48,10 @@
                        HorizontalAlignment="Center"
                        Style="{DynamicResource HoverableTextBlockStyle}"
                        MouseDown="RegisterLBL_MouseDown"/>
+            <TextBlock x:Name="ResetLBL" Text="Passwort vergessen? Hier Zurücksetzen!" 
+                       HorizontalAlignment="Center"
+                       Style="{DynamicResource HoverableTextBlockStyle}"
+                       MouseDown="ResetLBL_MouseDOwn"/>
         </StackPanel>
     </Grid>
 </UserControl>
