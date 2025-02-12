@@ -1,4 +1,5 @@
 ﻿using MySql.Data.MySqlClient;
+using System;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
@@ -14,10 +15,7 @@ namespace FeedbackFactory
         {
             InitializeComponent();
 
-            // Specify the path to the JSON configuration file
             string configPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources", "config.json");
-
-            // Initialize the DB handler
             _dbHandler = new DBConnectionHandler(configPath);
         }
 
@@ -48,6 +46,8 @@ namespace FeedbackFactory
         {
             string password = PasswordTB.Password;
             string confirmPassword = ConfirmPasswordTB.Password;
+            string username = UsernameTB.Text;
+            string registrationKey = RegistrationKeyTB.Text;
 
             if (password != confirmPassword)
             {
@@ -55,25 +55,46 @@ namespace FeedbackFactory
                 return;
             }
 
-            string username = UsernameTB.Text;
-
-            if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password) || string.IsNullOrEmpty(confirmPassword))
+            if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password) || string.IsNullOrEmpty(confirmPassword) || string.IsNullOrEmpty(registrationKey))
             {
                 MessageBox.Show("Alle Felder müssen ausgefüllt werden. Bitte versuchen Sie es erneut.", "Registrierung Fehlgeschlagen", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
-            string checkQuery = "SELECT COUNT(*) FROM Users WHERE Username = @Username;";
-            var checkParameters = new MySqlParameter[]
-            {
-                new MySqlParameter("@Username", username)
-            };
+            string keyQuery = "SELECT Expiration FROM Registrationkeys WHERE `Key` = @Key";
+            var keyParameter = new MySqlParameter("@Key", registrationKey);
 
             try
             {
                 using (MySqlConnection connection = new MySqlConnection(_dbHandler.ConnectionString))
                 {
                     connection.Open();
+
+                    using (MySqlCommand cmd = new MySqlCommand(keyQuery, connection))
+                    {
+                        cmd.Parameters.Add(keyParameter);
+                        var expirationDateObj = cmd.ExecuteScalar();
+
+                        if (expirationDateObj == null)
+                        {
+                            MessageBox.Show("Schlüssel ungültig, bitte kontaktieren Sie den Systemadministrator.", "Registrierung Fehlgeschlagen", MessageBoxButton.OK, MessageBoxImage.Error);
+                            return;
+                        }
+
+                        DateTime expirationDate = Convert.ToDateTime(expirationDateObj);
+                        if ((DateTime.Now - expirationDate).TotalDays > 7)
+                        {
+                            MessageBox.Show("Schlüssel abgelaufen, bitte kontaktieren Sie den Systemadministrator.", "Registrierung Fehlgeschlagen", MessageBoxButton.OK, MessageBoxImage.Error);
+                            return;
+                        }
+                    }
+
+                    string checkQuery = "SELECT COUNT(*) FROM Users WHERE Username = @Username;";
+                    var checkParameters = new MySqlParameter[]
+                    {
+                        new MySqlParameter("@Username", username)
+                    };
+
                     using (MySqlCommand cmd = new MySqlCommand(checkQuery, connection))
                     {
                         cmd.Parameters.AddRange(checkParameters);
