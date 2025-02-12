@@ -10,10 +10,52 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <StackPanel Orientation="Horizontal" Margin="10">
+        <!-- Top section with key labels and buttons -->
+        <StackPanel Orientation="Horizontal" Margin="10" HorizontalAlignment="Right">
+            <!-- Vertical StackPanel grouping each label pair -->
+            <StackPanel Orientation="Vertical">
+                <!-- First row: Schlüssel label pair -->
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="Schlüssel:" Width="80" />
+                    <!-- This label will hold the generated key dynamically -->
+                    <Label x:Name="GeneratedKeyLabel" Content="" Width="165" />
+                </StackPanel>
+                <!-- Second row: Gültigkeit label pair -->
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="Gültigkeit:" Width="80" />
+                    <!-- This label will hold the validity info dynamically -->
+                    <Label x:Name="ValidityLabel" Content="" Width="165" />
+                </StackPanel>
+            </StackPanel>
+            <!-- Copy button with hover and pressed effects -->
+            <Button Background="Transparent" BorderThickness="0" Margin="5" ToolTip="Kopieren" Click="CopyKeyButton_Click" Content="⎘">
+                <Button.Style>
+                    <Style TargetType="Button">
+                        <Setter Property="Background" Value="Transparent"/>
+                        <Setter Property="Foreground" Value="Black"/>
+                        <Setter Property="BorderBrush" Value="Transparent"/>
+                        <Style.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#E0E0E0"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter Property="Background" Value="#C0C0C0"/>
+                                <Setter Property="Foreground" Value="DarkGray"/>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </Button.Style>
+            </Button>
+            <Button Content="Schlüssel Generieren" Click="GenerateKeyButton_Click" Width="175" Height="22" />
+            <!-- Generate key button -->
+        </StackPanel>
+
+        <!-- Middle section for user input -->
+        <StackPanel Orientation="Horizontal" Margin="10" Grid.Row="1">
             <StackPanel Margin="5">
                 <TextBlock Text="Benutzername:" />
                 <TextBox x:Name="UsernameInput" Width="200" />
@@ -29,10 +71,11 @@
                     <ComboBoxItem Content="Admin" Tag="1" />
                 </ComboBox>
             </StackPanel>
-            <Button Content="Benutzer hinzufügen" Click="AddUserButton_Click" Width="150" Margin="5" VerticalAlignment="Bottom" />
+            <Button Content="Benutzer hinzufügen" Click="AddUserButton_Click" Width="175" Height="22" Margin="5" VerticalAlignment="Bottom" />
         </StackPanel>
 
-        <DataGrid Grid.Row="1" ItemsSource="{Binding BenutzerListe}" 
+        <!-- DataGrid section -->
+        <DataGrid Grid.Row="2" ItemsSource="{Binding BenutzerListe}" 
                   AutoGenerateColumns="False" 
                   CanUserAddRows="False"
                   HorizontalAlignment="Stretch" 
@@ -40,9 +83,7 @@
                   Margin="10">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Benutzername" Binding="{Binding Name}" />
-
                 <DataGridTextColumn Header="Rolle" Binding="{Binding Rolle, Converter={StaticResource RoleConverter}}" />
-
                 <DataGridTemplateColumn Header="Aktionen">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
@@ -50,7 +91,6 @@
                                 <Button Content="Rolle ändern" Margin="5" 
                                         Command="{Binding DataContext.ChangeRoleCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}" 
                                         CommandParameter="{Binding}" />
-
                                 <Button Content="Löschen" Margin="5" 
                                         Command="{Binding DataContext.DeleteUserCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}" 
                                         CommandParameter="{Binding}" />
