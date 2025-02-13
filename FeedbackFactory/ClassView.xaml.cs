@@ -70,7 +70,7 @@ namespace FeedbackFactory
 
             if (_selectedClass != null)
             {
-                
+
                 ClassNameTextBox.Text = _selectedClass.ClassName;
                 SubjectTextBox.Text = _selectedClass.Subject;
                 SchoolYearTextBox.Text = _selectedClass.SchoolYear;
@@ -95,7 +95,7 @@ namespace FeedbackFactory
             };
 
             // Populate the details panel with the new class data for editing
-            
+
             ClassNameTextBox.Text = _newClass.ClassName;
             SubjectTextBox.Text = _newClass.Subject;
             SchoolYearTextBox.Text = _newClass.SchoolYear;
@@ -121,7 +121,7 @@ namespace FeedbackFactory
             if (_selectedClass != null)
             {
                 // Save the edited class to the database
-                
+
                 _selectedClass.ClassName = ClassNameTextBox.Text;
                 _selectedClass.Subject = SubjectTextBox.Text;
                 _selectedClass.SchoolYear = SchoolYearTextBox.Text;
@@ -134,7 +134,7 @@ namespace FeedbackFactory
             }
             else if (_newClass != null) // Save the new class if there's one
             {
-                
+
                 _newClass.ClassName = ClassNameTextBox.Text;
                 _newClass.Subject = SubjectTextBox.Text;
                 _newClass.SchoolYear = SchoolYearTextBox.Text;
@@ -168,7 +168,7 @@ namespace FeedbackFactory
             else if (_newClass != null)
             {
                 // If it's a new class that hasn't been saved, clear the details
-                
+
                 ClassNameTextBox.Clear();
                 SubjectTextBox.Clear();
                 SchoolYearTextBox.Clear();
@@ -236,6 +236,17 @@ namespace FeedbackFactory
             {
                 MessageBox.Show($"Database operation failed: {ex.Message}");
             }
+        }
+        private void BtnKlasse_Click(object sender, RoutedEventArgs e)
+        {
+            panelKlasse.Visibility = Visibility.Visible;
+            panelFach.Visibility = Visibility.Collapsed;
+        }
+
+        private void BtnFach_Click(object sender, RoutedEventArgs e)
+        {
+            panelKlasse.Visibility = Visibility.Collapsed;
+            panelFach.Visibility = Visibility.Visible;
         }
     }
 
