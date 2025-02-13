@@ -103,15 +103,15 @@
                     <!-- Hover and Press Triggers -->
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="ButtonBorder" Property="Background" Value="#005A9E"/>
+                            <Setter TargetName="ButtonBorder" Property="Background" Value="#88b1db"/>
                             <!-- Darker blue -->
-                            <Setter TargetName="ButtonBorder" Property="BorderBrush" Value="#005A9E"/>
+                            <Setter TargetName="ButtonBorder" Property="BorderBrush" Value="#77a3d1"/>
                             <Setter Property="Cursor" Value="Hand"/>
                         </Trigger>
                         <Trigger Property="IsPressed" Value="True">
-                            <Setter TargetName="ButtonBorder" Property="Background" Value="#004377"/>
+                            <Setter TargetName="ButtonBorder" Property="Background" Value="#699bcf"/>
                             <!-- Even darker blue -->
-                            <Setter TargetName="ButtonBorder" Property="BorderBrush" Value="#004377"/>
+                            <Setter TargetName="ButtonBorder" Property="BorderBrush" Value="#699bcf"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>

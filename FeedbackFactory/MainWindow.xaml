@@ -9,10 +9,14 @@
     <Window.Resources>
 
         <ResourceDictionary>
+            
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="Resources/styles.xaml"/>
             </ResourceDictionary.MergedDictionaries>
+            
+
         </ResourceDictionary>
+        
 
     </Window.Resources>
 
@@ -63,10 +67,10 @@
             </Grid.RowDefinitions>
 
 
-<Button x:Name="BtnDashboard" Content="🏠 Dashboard" Height="50" Width="180" Grid.Row="0" Click="BtnDashboard_Click"/>
-<Button x:Name="BtnFormulare" Content="📝 Formulare" Height="50" Width="180" Grid.Row="1" Click="BtnFormulare_Click"/>
-            <Button x:Name="BtnClasses" Content="🎓 Klassen" Height="50" Width="180" Grid.Row="2" Click="BtnClasses_Click"/>
-            <Button x:Name="BtnAdmin" Content="👤 Admin" Grid.Row="3" Height="50" Width="180" VerticalAlignment="Top" Click="BtnAdminView_Click"/>
+            <Button x:Name="BtnDashboard" Content="🏠 Dashboard" Height="50" Width="180" Grid.Row="0" FontSize="16" Click="BtnDashboard_Click"/>
+            <Button x:Name="BtnFormulare" Content="📝 Formulare" Height="50" Width="180" Grid.Row="1" FontSize="16" Click="BtnFormulare_Click"/>
+            <Button x:Name="BtnClasses" Content="🎓 Klassen" Height="50" Width="180" Grid.Row="2" FontSize="16" Click="BtnClasses_Click"/>
+            <Button x:Name="BtnAdmin" Content="👤 Admin" Grid.Row="3" Height="50" Width="180" FontSize="16" VerticalAlignment="Top" Click="BtnAdminView_Click"/>
 <Button x:Name="BtnSettings" Content="⚙️ Einstellungen" Height="40" Width="180" Grid.Row="4" FontSize="16" Click="BtnSettings_Click"/>
 
 
