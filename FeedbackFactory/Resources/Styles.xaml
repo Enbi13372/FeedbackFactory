@@ -83,9 +83,9 @@
         <Setter Property="Width" Value="320"/>
         <Setter Property="Height" Value="45"/>
         <Setter Property="Margin" Value="0,10"/>
-        <Setter Property="Background" Value="#0078D7"/>
+        <Setter Property="Background" Value="#B9D3EE"/>
         <!-- Primary Blue -->
-        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="Foreground" Value="Black"/>
         <Setter Property="FontWeight" Value="Bold"/>
         <Setter Property="BorderBrush" Value="#0078D7"/>
         <Setter Property="BorderThickness" Value="1"/>
