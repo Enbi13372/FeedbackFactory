@@ -10,35 +10,36 @@
     <Grid Margin="20">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
-            <!-- Überschrift -->
             <RowDefinition Height="*"/>
-            <!-- Fragen und Textfelder -->
         </Grid.RowDefinitions>
 
-        <!-- Überschrift -->
-        <TextBlock 
-                   FontSize="24" FontWeight="Bold" 
-                   HorizontalAlignment="Center" 
-                   Margin="0,0,0,20"><Run Language="de-de" Text="Zielscheibe"/></TextBlock>
+        <TextBlock FontSize="24" FontWeight="Bold" 
+                   HorizontalAlignment="Center" Margin="0,0,0,20">
+            <Run Language="de-de" Text="Zielscheibe"/>
+        </TextBlock>
 
-        <!-- Inhalt mit ScrollViewer -->
+        <!-- Inhalt mit Scroll -->
         <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
             <StackPanel>
-                <!-- Zahlen-Zeile -->
+                
                 <Grid Margin="0,0,0,10">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="3*"/>
-                        <!-- Textspalte -->
                         <ColumnDefinition Width="2*"/>
-                        <!-- Bewertungsleiste -->
                     </Grid.ColumnDefinitions>
-
                     <TextBlock Text="" Grid.Column="0"/>
-                    <!-- Leer, nur Platzhalter -->
-                    <TextBlock 
-                               Grid.Column="1" 
-                               HorizontalAlignment="Center" 
-                               FontWeight="Bold" Width="106" ><Run Text="5   "/><Run Language="de-de" Text="  "/><Run Text="4   "/><Run Language="de-de" Text="   "/><Run Text="3   "/><Run Language="de-de" Text="  "/><Run Text="2   "/><Run Language="de-de" Text="   "/><Run Text="1"/></TextBlock>
+                    
+                    <TextBlock Grid.Column="1" HorizontalAlignment="Center" FontWeight="Bold" Width="106">
+                        <Run Text="5   "/>
+                        <Run Language="de-de" Text="  "/>
+                        <Run Text="4   "/>
+                        <Run Language="de-de" Text="   "/>
+                        <Run Text="3   "/>
+                        <Run Language="de-de" Text="  "/>
+                        <Run Text="2   "/>
+                        <Run Language="de-de" Text="   "/>
+                        <Run Text="1"/>
+                    </TextBlock>
                 </Grid>
 
                 <!-- Fragen mit Radiobuttons -->
@@ -54,7 +55,6 @@
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
-
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="3*"/>
                         <!-- Fragen -->
@@ -62,103 +62,107 @@
                         <!-- Radiobuttons -->
                     </Grid.ColumnDefinitions>
 
-                    <!-- Erste Frage -->
+                    <!-- Frage 1 -->
                     <TextBlock Text="Der Lehrer hat ein großes Hintergrundwissen" 
                                Grid.Row="0" Grid.Column="0" VerticalAlignment="Center" Margin="5"/>
                     <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center">
-                        <RadioButton GroupName="Question1" Margin="5"/>
-                        <RadioButton GroupName="Question1" Margin="5"/>
-                        <RadioButton GroupName="Question1" Margin="5"/>
-                        <RadioButton GroupName="Question1" Margin="5"/>
-                        <RadioButton GroupName="Question1" Margin="5"/>
+                        <!-- Höchster Wert = 5 -->
+                        <RadioButton x:Name="rdoQ1_5" GroupName="Question1" Margin="5"/>
+                        <RadioButton x:Name="rdoQ1_4" GroupName="Question1" Margin="5"/>
+                        <RadioButton x:Name="rdoQ1_3" GroupName="Question1" Margin="5"/>
+                        <RadioButton x:Name="rdoQ1_2" GroupName="Question1" Margin="5"/>
+                        <RadioButton x:Name="rdoQ1_1" GroupName="Question1" Margin="5"/>
                     </StackPanel>
 
-                    <!-- Zweite Frage -->
+                    <!-- Frage 2 -->
                     <TextBlock Text="Die Lehrkraft ist immer gut vorbereitet" 
                                Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" Margin="5"/>
                     <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center">
-                        <RadioButton GroupName="Question2" Margin="5"/>
-                        <RadioButton GroupName="Question2" Margin="5"/>
-                        <RadioButton GroupName="Question2" Margin="5"/>
-                        <RadioButton GroupName="Question2" Margin="5"/>
-                        <RadioButton GroupName="Question2" Margin="5"/>
+                        <RadioButton x:Name="rdoQ2_5" GroupName="Question2" Margin="5"/>
+                        <RadioButton x:Name="rdoQ2_4" GroupName="Question2" Margin="5"/>
+                        <RadioButton x:Name="rdoQ2_3" GroupName="Question2" Margin="5"/>
+                        <RadioButton x:Name="rdoQ2_2" GroupName="Question2" Margin="5"/>
+                        <RadioButton x:Name="rdoQ2_1" GroupName="Question2" Margin="5"/>
                     </StackPanel>
 
-                    <!-- Dritte Frage -->
+                    <!-- Frage 3 -->
                     <TextBlock Text="Die Lehrkraft zeigt Interesse an ihren Schülern" 
                                Grid.Row="2" Grid.Column="0" VerticalAlignment="Center" Margin="5"/>
                     <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center">
-                        <RadioButton GroupName="Question3" Margin="5"/>
-                        <RadioButton GroupName="Question3" Margin="5"/>
-                        <RadioButton GroupName="Question3" Margin="5"/>
-                        <RadioButton GroupName="Question3" Margin="5"/>
-                        <RadioButton GroupName="Question3" Margin="5"/>
+                        <RadioButton x:Name="rdoQ3_5" GroupName="Question3" Margin="5"/>
+                        <RadioButton x:Name="rdoQ3_4" GroupName="Question3" Margin="5"/>
+                        <RadioButton x:Name="rdoQ3_3" GroupName="Question3" Margin="5"/>
+                        <RadioButton x:Name="rdoQ3_2" GroupName="Question3" Margin="5"/>
+                        <RadioButton x:Name="rdoQ3_1" GroupName="Question3" Margin="5"/>
                     </StackPanel>
 
-                    <!-- Vierte Frage -->
+                    <!-- Frage 4 -->
                     <TextBlock Text="Die Lehrkraft sorgt für ein gutes Lernklima in der Klasse" 
                                Grid.Row="3" Grid.Column="0" VerticalAlignment="Center" Margin="5"/>
                     <StackPanel Grid.Row="3" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center">
-                        <RadioButton GroupName="Question4" Margin="5"/>
-                        <RadioButton GroupName="Question4" Margin="5"/>
-                        <RadioButton GroupName="Question4" Margin="5"/>
-                        <RadioButton GroupName="Question4" Margin="5"/>
-                        <RadioButton GroupName="Question4" Margin="5"/>
+                        <RadioButton x:Name="rdoQ4_5" GroupName="Question4" Margin="5"/>
+                        <RadioButton x:Name="rdoQ4_4" GroupName="Question4" Margin="5"/>
+                        <RadioButton x:Name="rdoQ4_3" GroupName="Question4" Margin="5"/>
+                        <RadioButton x:Name="rdoQ4_2" GroupName="Question4" Margin="5"/>
+                        <RadioButton x:Name="rdoQ4_1" GroupName="Question4" Margin="5"/>
                     </StackPanel>
 
-                    <!-- Fünfte Frage -->
+                    <!-- Frage 5 -->
                     <TextBlock Text="Notengebung ist fair und nachvollziehbar" 
                                Grid.Row="4" Grid.Column="0" VerticalAlignment="Center" Margin="5"/>
                     <StackPanel Grid.Row="4" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center">
-                        <RadioButton GroupName="Question5" Margin="5"/>
-                        <RadioButton GroupName="Question5" Margin="5"/>
-                        <RadioButton GroupName="Question5" Margin="5"/>
-                        <RadioButton GroupName="Question5" Margin="5"/>
-                        <RadioButton GroupName="Question5" Margin="5"/>
+                        <RadioButton x:Name="rdoQ5_5" GroupName="Question5" Margin="5"/>
+                        <RadioButton x:Name="rdoQ5_4" GroupName="Question5" Margin="5"/>
+                        <RadioButton x:Name="rdoQ5_3" GroupName="Question5" Margin="5"/>
+                        <RadioButton x:Name="rdoQ5_2" GroupName="Question5" Margin="5"/>
+                        <RadioButton x:Name="rdoQ5_1" GroupName="Question5" Margin="5"/>
                     </StackPanel>
 
-                    <!-- Sechste Frage -->
+                    <!-- Frage 6 -->
                     <TextBlock Text="Ich konnte dem Unterricht immer gut folgen" 
                                Grid.Row="5" Grid.Column="0" VerticalAlignment="Center" Margin="5"/>
                     <StackPanel Grid.Row="5" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center">
-                        <RadioButton GroupName="Question6" Margin="5"/>
-                        <RadioButton GroupName="Question6" Margin="5"/>
-                        <RadioButton GroupName="Question6" Margin="5"/>
-                        <RadioButton GroupName="Question6" Margin="5"/>
-                        <RadioButton GroupName="Question6" Margin="5"/>
+                        <RadioButton x:Name="rdoQ6_5" GroupName="Question6" Margin="5"/>
+                        <RadioButton x:Name="rdoQ6_4" GroupName="Question6" Margin="5"/>
+                        <RadioButton x:Name="rdoQ6_3" GroupName="Question6" Margin="5"/>
+                        <RadioButton x:Name="rdoQ6_2" GroupName="Question6" Margin="5"/>
+                        <RadioButton x:Name="rdoQ6_1" GroupName="Question6" Margin="5"/>
                     </StackPanel>
 
-                    <!-- Siebte Frage -->
+                    <!-- Frage 7 -->
                     <TextBlock Text="Der Unterricht wird vielfältig gestaltet" 
                                Grid.Row="6" Grid.Column="0" VerticalAlignment="Center" Margin="5"/>
                     <StackPanel Grid.Row="6" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center">
-                        <RadioButton GroupName="Question7" Margin="5"/>
-                        <RadioButton GroupName="Question7" Margin="5"/>
-                        <RadioButton GroupName="Question7" Margin="5"/>
-                        <RadioButton GroupName="Question7" Margin="5"/>
-                        <RadioButton GroupName="Question7" Margin="5"/>
+                        <RadioButton x:Name="rdoQ7_5" GroupName="Question7" Margin="5"/>
+                        <RadioButton x:Name="rdoQ7_4" GroupName="Question7" Margin="5"/>
+                        <RadioButton x:Name="rdoQ7_3" GroupName="Question7" Margin="5"/>
+                        <RadioButton x:Name="rdoQ7_2" GroupName="Question7" Margin="5"/>
+                        <RadioButton x:Name="rdoQ7_1" GroupName="Question7" Margin="5"/>
                     </StackPanel>
 
-                    <!-- Achte Frage -->
+                    <!-- Frage 8 -->
                     <TextBlock Text="Ich lerne viel im Unterricht" 
                                Grid.Row="7" Grid.Column="0" VerticalAlignment="Center" Margin="5"/>
                     <StackPanel Grid.Row="7" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center">
-                        <RadioButton GroupName="Question8" Margin="5"/>
-                        <RadioButton GroupName="Question8" Margin="5"/>
-                        <RadioButton GroupName="Question8" Margin="5"/>
-                        <RadioButton GroupName="Question8" Margin="5"/>
-                        <RadioButton GroupName="Question8" Margin="5"/>
+                        <RadioButton x:Name="rdoQ8_5" GroupName="Question8" Margin="5"/>
+                        <RadioButton x:Name="rdoQ8_4" GroupName="Question8" Margin="5"/>
+                        <RadioButton x:Name="rdoQ8_3" GroupName="Question8" Margin="5"/>
+                        <RadioButton x:Name="rdoQ8_2" GroupName="Question8" Margin="5"/>
+                        <RadioButton x:Name="rdoQ8_1" GroupName="Question8" Margin="5"/>
                     </StackPanel>
                 </Grid>
 
                 <!-- Textfelder -->
                 <TextBlock Text="Das machen Sie richtig gut:" 
                            FontWeight="Bold" Margin="0,20,0,5"/>
-                <TextBox Height="100" TextWrapping="Wrap" AcceptsReturn="True"/>
+                <TextBox x:Name="txtTextRichtig" Height="100" TextWrapping="Wrap" AcceptsReturn="True"/>
 
                 <TextBlock Text="Das können Sie anders machen:" 
                            FontWeight="Bold" Margin="0,20,0,5"/>
-                <TextBox Height="100" TextWrapping="Wrap" AcceptsReturn="True"/>
+                <TextBox x:Name="txtTextAnders" Height="100" TextWrapping="Wrap" AcceptsReturn="True"/>
+
+                <!-- Absenden Button -->
+                <Button Content="Absenden" Click="Submit_Click" HorizontalAlignment="Center" Margin="10"/>
             </StackPanel>
         </ScrollViewer>
     </Grid>
