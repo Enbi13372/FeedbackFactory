@@ -27,7 +27,7 @@ namespace FeedbackFactory
         private void LoadClasses()
         {
             _classes = new ObservableCollection<Class>();
-            string query = "SELECT Teacher, ClassName, Subject, SchoolYear, Department, Grade, ClassSize FROM Classes;";
+            string query = "SELECT Teacher, ClassName, SchoolYear, Department, Grade, ClassSize FROM Classes;";
 
             try
             {
@@ -44,7 +44,7 @@ namespace FeedbackFactory
                                 {
                                     Teacher = reader.GetString("Teacher"),
                                     ClassName = reader.GetString("ClassName"),
-                                    Subject = reader.GetString("Subject"),
+                                    // Subject = reader.GetString("Subject"),
                                     SchoolYear = reader.GetString("SchoolYear"),
                                     Department = reader.GetString("Department"),
                                     Grade = reader.GetInt32("Grade"),
@@ -70,7 +70,7 @@ namespace FeedbackFactory
 
             if (_selectedClass != null)
             {
-                TeacherTextBox.Text = _selectedClass.Teacher;
+                
                 ClassNameTextBox.Text = _selectedClass.ClassName;
                 SubjectTextBox.Text = _selectedClass.Subject;
                 SchoolYearTextBox.Text = _selectedClass.SchoolYear;
@@ -95,7 +95,7 @@ namespace FeedbackFactory
             };
 
             // Populate the details panel with the new class data for editing
-            TeacherTextBox.Text = _newClass.Teacher;
+            
             ClassNameTextBox.Text = _newClass.ClassName;
             SubjectTextBox.Text = _newClass.Subject;
             SchoolYearTextBox.Text = _newClass.SchoolYear;
@@ -121,7 +121,7 @@ namespace FeedbackFactory
             if (_selectedClass != null)
             {
                 // Save the edited class to the database
-                _selectedClass.Teacher = TeacherTextBox.Text;
+                
                 _selectedClass.ClassName = ClassNameTextBox.Text;
                 _selectedClass.Subject = SubjectTextBox.Text;
                 _selectedClass.SchoolYear = SchoolYearTextBox.Text;
@@ -134,7 +134,7 @@ namespace FeedbackFactory
             }
             else if (_newClass != null) // Save the new class if there's one
             {
-                _newClass.Teacher = TeacherTextBox.Text;
+                
                 _newClass.ClassName = ClassNameTextBox.Text;
                 _newClass.Subject = SubjectTextBox.Text;
                 _newClass.SchoolYear = SchoolYearTextBox.Text;
@@ -168,7 +168,7 @@ namespace FeedbackFactory
             else if (_newClass != null)
             {
                 // If it's a new class that hasn't been saved, clear the details
-                TeacherTextBox.Clear();
+                
                 ClassNameTextBox.Clear();
                 SubjectTextBox.Clear();
                 SchoolYearTextBox.Clear();

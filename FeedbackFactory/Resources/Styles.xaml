@@ -1,34 +1,39 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-    <!-- Shared TextBlock Style -->
-    <Style TargetType="TextBlock">
-        <Setter Property="FontFamily" Value="Segoe UI"/>
-        <Setter Property="Foreground" Value="#333"/>
-        <Setter Property="FontSize" Value="14"/>
+
+    <!-- Light Blue Background for Login Window -->
+    <Style TargetType="Window">
+        <Setter Property="Background" Value="#D7E4F2"/>
+        <!-- Matches MainWindow -->
     </Style>
 
-    <!-- Hoverable TextBlock Style -->
+    <!-- Clickable Labels (Hoverable TextBlock) -->
     <Style x:Key="HoverableTextBlockStyle" TargetType="TextBlock">
         <Setter Property="Foreground" Value="Blue"/>
+        <!-- Default color -->
         <Setter Property="Cursor" Value="Hand"/>
-        <Setter Property="TextDecorations" Value="Underline"/>
+        <Setter Property="TextDecorations" Value="None"/>
         <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
                 <Setter Property="Foreground" Value="DarkBlue"/>
+                <!-- On hover -->
                 <Setter Property="TextDecorations" Value="Underline"/>
             </Trigger>
         </Style.Triggers>
     </Style>
 
-    <!-- Shared TextBox Style with Rounded Edges -->
+    <!-- Shared TextBox Style -->
     <Style TargetType="TextBox">
         <Setter Property="Width" Value="320"/>
         <Setter Property="Height" Value="40"/>
         <Setter Property="Padding" Value="10"/>
-        <Setter Property="BorderBrush" Value="#ccc"/>
+        <Setter Property="BorderBrush" Value="#B9D3EE"/>
+        <!-- Light blue border -->
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="VerticalContentAlignment" Value="Center"/>
         <Setter Property="HorizontalAlignment" Value="Center"/>
+        <Setter Property="Foreground" Value="#333"/>
+        <!-- Dark gray text -->
         <Setter Property="Background" Value="White"/>
         <Setter Property="Margin" Value="0,5"/>
         <Setter Property="Template">
@@ -45,15 +50,18 @@
         </Setter>
     </Style>
 
-    <!-- Shared PasswordBox Style with Rounded Edges -->
+    <!-- Shared PasswordBox Style -->
     <Style TargetType="PasswordBox">
         <Setter Property="Width" Value="320"/>
         <Setter Property="Height" Value="40"/>
         <Setter Property="Padding" Value="10"/>
-        <Setter Property="BorderBrush" Value="#ccc"/>
+        <Setter Property="BorderBrush" Value="#B9D3EE"/>
+        <!-- Light blue border -->
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="VerticalContentAlignment" Value="Center"/>
         <Setter Property="HorizontalAlignment" Value="Center"/>
+        <Setter Property="Foreground" Value="#333"/>
+        <!-- Dark gray text -->
         <Setter Property="Background" Value="White"/>
         <Setter Property="Margin" Value="0,5"/>
         <Setter Property="Template">
@@ -70,15 +78,16 @@
         </Setter>
     </Style>
 
-    <!-- Shared Button Style with Hover Effect -->
+    <!-- Shared Button Style -->
     <Style TargetType="Button">
         <Setter Property="Width" Value="320"/>
         <Setter Property="Height" Value="45"/>
         <Setter Property="Margin" Value="0,10"/>
-        <Setter Property="Background" Value="#4CAF50"/>
+        <Setter Property="Background" Value="#0078D7"/>
+        <!-- Primary Blue -->
         <Setter Property="Foreground" Value="White"/>
         <Setter Property="FontWeight" Value="Bold"/>
-        <Setter Property="BorderBrush" Value="#4CAF50"/>
+        <Setter Property="BorderBrush" Value="#0078D7"/>
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="Template">
             <Setter.Value>
@@ -91,16 +100,18 @@
                         <ContentPresenter HorizontalAlignment="Center" 
                                           VerticalAlignment="Center"/>
                     </Border>
-                    <!-- Hover Trigger -->
+                    <!-- Hover and Press Triggers -->
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="ButtonBorder" Property="Background" Value="#45A049"/>
-                            <Setter TargetName="ButtonBorder" Property="BorderBrush" Value="#45A049"/>
+                            <Setter TargetName="ButtonBorder" Property="Background" Value="#005A9E"/>
+                            <!-- Darker blue -->
+                            <Setter TargetName="ButtonBorder" Property="BorderBrush" Value="#005A9E"/>
                             <Setter Property="Cursor" Value="Hand"/>
                         </Trigger>
                         <Trigger Property="IsPressed" Value="True">
-                            <Setter TargetName="ButtonBorder" Property="Background" Value="#3E8E41"/>
-                            <Setter TargetName="ButtonBorder" Property="BorderBrush" Value="#3E8E41"/>
+                            <Setter TargetName="ButtonBorder" Property="Background" Value="#004377"/>
+                            <!-- Even darker blue -->
+                            <Setter TargetName="ButtonBorder" Property="BorderBrush" Value="#004377"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -108,38 +119,44 @@
         </Setter>
     </Style>
 
-    <!-- Back Button Style -->
-    <Style x:Key="BackButtonStyle" TargetType="Button">
+    <Style x:Key="BackButtonStyle" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+        <Setter Property="Width" Value="100"/>
+        <Setter Property="Height" Value="40"/>
+        <Setter Property="Margin" Value="10"/>
+        <Setter Property="Background" Value="#E0E0E0"/>
+        <!-- Light gray -->
+        <Setter Property="Foreground" Value="Black"/>
+        <Setter Property="FontWeight" Value="Bold"/>
+        <Setter Property="BorderBrush" Value="#A0A0A0"/>
+        <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
                     <Border x:Name="ButtonBorder"
-                            Background="{TemplateBinding Background}" 
-                            BorderBrush="{TemplateBinding BorderBrush}" 
-                            BorderThickness="{TemplateBinding BorderThickness}" 
-                            CornerRadius="5">
+                        Background="{TemplateBinding Background}" 
+                        BorderBrush="{TemplateBinding BorderBrush}" 
+                        BorderThickness="{TemplateBinding BorderThickness}" 
+                        CornerRadius="5">
                         <ContentPresenter HorizontalAlignment="Center" 
-                                          VerticalAlignment="Center"/>
+                                      VerticalAlignment="Center"/>
                     </Border>
+                    <!-- Hover and Press Triggers -->
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="ButtonBorder" Property="Background" Value="#EFEFEF"/>
-                            <Setter TargetName="ButtonBorder" Property="BorderBrush" Value="#AAA"/>
+                            <Setter TargetName="ButtonBorder" Property="Background" Value="#C0C0C0"/>
+                            <!-- Darker gray -->
+                            <Setter TargetName="ButtonBorder" Property="BorderBrush" Value="#808080"/>
                             <Setter Property="Cursor" Value="Hand"/>
                         </Trigger>
                         <Trigger Property="IsPressed" Value="True">
-                            <Setter TargetName="ButtonBorder" Property="Background" Value="#DDD"/>
-                            <Setter TargetName="ButtonBorder" Property="BorderBrush" Value="#888"/>
+                            <Setter TargetName="ButtonBorder" Property="Background" Value="#A0A0A0"/>
+                            <!-- Even darker gray -->
+                            <Setter TargetName="ButtonBorder" Property="BorderBrush" Value="#606060"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
-        <Setter Property="Background" Value="Transparent"/>
-        <Setter Property="BorderBrush" Value="#CCC"/>
-        <Setter Property="Foreground" Value="#555"/>
-        <Setter Property="FontWeight" Value="Bold"/>
-        <Setter Property="Width" Value="100"/>
-        <Setter Property="Height" Value="40"/>
     </Style>
+
 </ResourceDictionary>
