@@ -105,31 +105,27 @@ namespace FeedbackFactory
                 return;
             }
 
-            string option = string.Empty;
+            int option = 0;
 
-            switch (true)
+            if (Option1.IsChecked == true)
+                option = 1;
+            else if (Option2.IsChecked == true)
+                option = 2;
+            else if (Option3.IsChecked == true)
+                option = 3;
+            else
             {
-                case var _ when Option1.IsChecked == true:
-                    option = "Option 1";
-                    break;
-                case var _ when Option2.IsChecked == true:
-                    option = "Option 2";
-                    break;
-                case var _ when Option3.IsChecked == true:
-                    option = "Option 3";
-                    break;
-                default:
-                    MessageBox.Show("Bitte wählen Sie eine Option.", "Fehler", MessageBoxButton.OK, MessageBoxImage.Error);
-                    return;
+                MessageBox.Show("Bitte wählen Sie eine Option.", "Fehler", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
             }
 
-            string generatedKey = GenerateRandomKey(option);
+            string generatedKey = GenerateRandomKey(option.ToString());
             GeneratedKeyText.Text = generatedKey;
             GeneratedKeyText.Visibility = Visibility.Visible;
             CopyButton.Visibility = Visibility.Visible;
             GenerateKeyButton.IsEnabled = false;
 
-            InsertFeedbackKey(generatedKey);
+            InsertFeedbackKey(generatedKey, option);
         }
 
         private string GenerateRandomKey(string option)
@@ -165,10 +161,9 @@ namespace FeedbackFactory
             }
         }
 
-        private void InsertFeedbackKey(string generatedKey)
+        private void InsertFeedbackKey(string generatedKey, int option)
         {
             string className = ClassComboBox.SelectedItem.ToString().Trim();
-
             int classSize = GetClassSize(className);
 
             if (classSize == -1)
@@ -181,9 +176,10 @@ namespace FeedbackFactory
             {
                 MessageBox.Show("Der generierte Schlüssel existiert bereits. Ein neuer Schlüssel wird erstellt.", "Fehler", MessageBoxButton.OK, MessageBoxImage.Error);
                 generatedKey = GenerateRandomKey("Option 1");
+                option = 1; // Ensure the option is set when regenerating
             }
 
-            string insertQuery = "INSERT INTO Feedbackkeys (`Key`, UsesRemaining) VALUES (@key, @usesRemaining)";
+            string insertQuery = "INSERT INTO Feedbackkeys (`Key`, UsesRemaining, Form) VALUES (@key, @usesRemaining, @form)";
             using (MySqlConnection connection = new MySqlConnection(_dbHandler.ConnectionString))
             {
                 connection.Open();
@@ -191,12 +187,14 @@ namespace FeedbackFactory
                 {
                     cmd.Parameters.AddWithValue("@key", generatedKey);
                     cmd.Parameters.AddWithValue("@usesRemaining", classSize);
+                    cmd.Parameters.AddWithValue("@form", option);
                     cmd.ExecuteNonQuery();
                 }
             }
 
             MessageBox.Show("Der Schlüssel wurde erfolgreich in die Datenbank eingefügt.", "Erfolg", MessageBoxButton.OK, MessageBoxImage.Information);
         }
+
 
         private int GetClassSize(string className)
         {
