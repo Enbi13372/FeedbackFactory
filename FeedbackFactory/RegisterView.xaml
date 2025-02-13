@@ -12,7 +12,7 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <Grid Background="#F9F9F9" Margin="30">
+    <Grid Background="#D7E4F2" Margin="30">
         <!-- Back Button -->
         <Button x:Name="BackBTN" Content="← Zurück" Width="100" Height="40" Margin="10"
                 HorizontalAlignment="Left" VerticalAlignment="Top"
