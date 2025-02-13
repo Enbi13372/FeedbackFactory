@@ -35,7 +35,7 @@ namespace FeedbackFactory
 
         private void LoadClassData()
         {
-            string query = "SELECT ClassName, Subject FROM Classes WHERE Teacher = @username";
+            string query = "SELECT ClassName FROM Classes WHERE Teacher = @username";
 
             using (MySqlConnection connection = new MySqlConnection(_dbHandler.ConnectionString))
             {
