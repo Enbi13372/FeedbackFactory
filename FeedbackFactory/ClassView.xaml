@@ -18,7 +18,7 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <!-- ListView to show assigned classes -->
+        <!-- Liste Daten -->
         <ListView x:Name="ClassesListView" Grid.Column="0" Grid.Row="1" Width="330" Height="400">
             <ListView.Resources>
                 <Style TargetType="ListViewItem">
@@ -28,13 +28,6 @@
             </ListView.Resources>
             <ListView.View>
                 <GridView>
-                    <GridViewColumn Header="Lehrer" Width="80">
-                        <GridViewColumn.CellTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding Teacher}" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                            </DataTemplate>
-                        </GridViewColumn.CellTemplate>
-                    </GridViewColumn>
                     <GridViewColumn Header="Klasse" Width="80">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
@@ -60,49 +53,56 @@
             </ListView.View>
         </ListView>
 
-        <StackPanel Grid.Column="2" Grid.Row="1">
-            <Button Height="25" Width="50" Content="Klasse"/>
-            <Button Height="25" Width="50" Content="Fach"/>
+        <StackPanel Grid.Column="2" Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Top">
+            <Button Height="25" Width="50" Content="Klasse" Click="BtnKlasse_Click"/>
+            <Button Height="25" Width="50" Content="Fach" Click="BtnFach_Click" />
         </StackPanel>
         
         <!-- Buttons to add and remove classes -->
         <StackPanel Grid.Column="0" Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Left">
             <!-- Widened buttons -->
-            <Button x:Name="AddButton" Content="➕ Hinzufügen" Width="120" Margin="5" Click="AddButton_Click" />
+            <Button x:Name="AddButton" Content="➕ Hinzufügen" Width="120" Margin="5" Click="AddButton_Click"/>
             <Button x:Name="RemoveButton" Content="➖ Entfernen" Width="120" Margin="5" Click="RemoveButton_Click" />
         </StackPanel>
 
-        <!-- Details Panel -->
+        <!-- Wechsel Panel -->
         <StackPanel Grid.Column="2" Grid.Row="1" Margin="10,84,10,8" Orientation="Vertical">
-            
-            <StackPanel Orientation="Horizontal" Margin="0,5">
-                <Label Content="Klasse:" Width="100" />
-                <TextBox x:Name="ClassNameTextBox" Width="200" />
-            </StackPanel>
-            <StackPanel Orientation="Horizontal" Margin="0,5">
-                <Label Content="Fach:" Width="100" />
-                <TextBox x:Name="SubjectTextBox" Width="200" />
-            </StackPanel>
-            <StackPanel Orientation="Horizontal" Margin="0,5">
-                <Label Content="Schuljahr:" Width="100" />
-                <TextBox x:Name="SchoolYearTextBox" Width="200" />
-            </StackPanel>
-            <StackPanel Orientation="Horizontal" Margin="0,5">
-                <Label Content="Abteilung:" Width="100" />
-                <TextBox x:Name="DepartmentTextBox" Width="200" />
-            </StackPanel>
-            <StackPanel Orientation="Horizontal" Margin="0,5">
-                <Label Content="Jahrgang:" Width="100" />
-                <TextBox x:Name="GradeTextBox" Width="200" />
-            </StackPanel>
-            <StackPanel Orientation="Horizontal" Margin="0,5">
-                <Label Content="Klassengröße:" Width="100" />
-                <TextBox x:Name="ClassSizeTextBox" Width="200" />
+
+            <!-- Panel KLASSE -->
+            <StackPanel x:Name="panelKlasse" Orientation="Vertical">
+                <StackPanel Orientation="Horizontal" Margin="0,5">
+                    <Label Content="Klasse:" Width="100" />
+                    <TextBox x:Name="ClassNameTextBox" Width="200" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="0,5">
+                    <Label Content="Schuljahr:" Width="100" />
+                    <TextBox x:Name="SchoolYearTextBox" Width="200" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="0,5">
+                    <Label Content="Jahrgang:" Width="100" />
+                    <TextBox x:Name="GradeTextBox" Width="200" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="0,5">
+                    <Label Content="Klassengröße:" Width="100" />
+                    <TextBox x:Name="ClassSizeTextBox" Width="200" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="0,5">
+                    <Label Content="Abteilung:" Width="100" />
+                    <TextBox x:Name="DepartmentTextBox" Width="200" />
+                </StackPanel>
             </StackPanel>
 
-            <!-- Save and Abort Buttons -->
+            <!-- Panel FACH -->
+            <StackPanel x:Name="panelFach" Orientation="Vertical" Visibility="Collapsed">
+                
+                <StackPanel Orientation="Horizontal" Margin="0,5">
+                    <Label Content="Fach:" Width="100" />
+                    <TextBox x:Name="SubjectTextBox" Width="200" />
+                </StackPanel>
+                
+            </StackPanel>
+
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="20,10">
-                <!-- Widened buttons for save and abort -->
                 <Button x:Name="SaveButton" Content="💾 Speichern" Width="120" Margin="5" Click="SaveButton_Click" />
                 <Button x:Name="AbortButton" Content="❌ Abbrechen" Width="120" Margin="5" Click="AbortButton_Click" />
             </StackPanel>
