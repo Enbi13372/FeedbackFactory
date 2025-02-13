@@ -12,9 +12,15 @@
             <RadioButton x:Name="Option2" Content="Zielscheibe" GroupName="Options" HorizontalAlignment="Center" Margin="0,5"/>
             <RadioButton x:Name="Option3" Content="Formular 3" GroupName="Options" HorizontalAlignment="Center" Margin="0,5"/>
 
-            <!-- Simple ComboBox for Class and Subject -->
+            <!-- Simple ComboBox for Class -->
             <ComboBox x:Name="ClassComboBox" HorizontalAlignment="Center" Margin="0,10" Width="200" Height="30" MaxDropDownHeight="200"
                       SelectedItem="{Binding SelectedClass, Mode=TwoWay}">
+                <!-- ItemsSource will be populated programmatically -->
+            </ComboBox>
+            
+            <!-- Simple ComboBox for Subject -->
+            <ComboBox x:Name="SubjectComboBox" HorizontalAlignment="Center" Margin="0,10" Width="200" Height="30" MaxDropDownHeight="200"
+          SelectedItem="{Binding SelectedClass, Mode=TwoWay}">
                 <!-- ItemsSource will be populated programmatically -->
             </ComboBox>
 
