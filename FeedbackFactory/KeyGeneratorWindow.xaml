@@ -1,0 +1,38 @@
+﻿<Window x:Class="FeedbackFactory.KeyGeneratorWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Key Generator" Height="400" Width="500" WindowStartupLocation="CenterScreen">
+    <Grid>
+        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+
+            <!-- Optionen -->
+            <TextBlock Text="Wählen Sie eine Option:" FontSize="16" HorizontalAlignment="Center" Margin="10"/>
+
+            <RadioButton x:Name="Option1" Content="Unterichtsbeurteilung" GroupName="Options" HorizontalAlignment="Center" Margin="0,5"/>
+            <RadioButton x:Name="Option2" Content="Zielscheibe" GroupName="Options" HorizontalAlignment="Center" Margin="0,5"/>
+            <RadioButton x:Name="Option3" Content="Formular 3" GroupName="Options" HorizontalAlignment="Center" Margin="0,5"/>
+
+            <!-- Simple ComboBox for Class -->
+            <ComboBox x:Name="ClassComboBox" HorizontalAlignment="Center" Margin="0,10" Width="200" Height="30" MaxDropDownHeight="200"
+                      SelectedItem="{Binding SelectedClass, Mode=TwoWay}">
+                <!-- ItemsSource will be populated programmatically -->
+            </ComboBox>
+            
+            <!-- Simple ComboBox for Subject -->
+            <ComboBox x:Name="SubjectComboBox" HorizontalAlignment="Center" Margin="0,10" Width="200" Height="30" MaxDropDownHeight="200"
+          SelectedItem="{Binding SelectedClass, Mode=TwoWay}">
+                <!-- ItemsSource will be populated programmatically -->
+            </ComboBox>
+
+            <!-- Button zum Generieren des Schlüssels -->
+            <Button Content="Generiere Schlüssel" Width="150" Height="40" HorizontalAlignment="Center" Click="GenerateKeyButton_Click" Margin="0,10" x:Name="GenerateKeyButton"/>
+
+            <!-- Anzeige des generierten Schlüssels und Button zum Kopieren -->
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,10">
+                <TextBlock x:Name="GeneratedKeyText" FontSize="16" HorizontalAlignment="Center" Visibility="Collapsed" />
+                <!-- Clipboard Copy Button -->
+                <Button Content="📋" Width="30" Height="30" Margin="5,0" HorizontalAlignment="Center" VerticalAlignment="Center" Click="CopyToClipboard_Click" Visibility="Collapsed" x:Name="CopyButton"/>
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</Window>
