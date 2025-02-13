@@ -88,10 +88,10 @@
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal">
-                                <Button Content="Rolle ändern" Margin="5" 
+                                <Button Content="Rolle ändern" Width="80" Height="25" Margin="5" 
                                         Command="{Binding DataContext.ChangeRoleCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}" 
                                         CommandParameter="{Binding}" />
-                                <Button Content="Löschen" Margin="5" 
+                                <Button Content="Löschen" Width="80" Height="25" Margin="5" 
                                         Command="{Binding DataContext.DeleteUserCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}" 
                                         CommandParameter="{Binding}" />
                             </StackPanel>
