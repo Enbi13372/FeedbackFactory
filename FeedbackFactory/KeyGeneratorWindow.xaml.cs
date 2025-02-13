@@ -9,33 +9,31 @@ using System.Windows.Controls;
 
 namespace FeedbackFactory
 {
-    /// <summary>
-    /// Interaction logic for KeyGeneratorWindow.xaml
-    /// </summary>
     public partial class KeyGeneratorWindow : Window
     {
         private readonly string _username;
         private readonly DBConnectionHandler _dbHandler;
 
         public string SelectedClass { get; set; }
+        public string SelectedSubject { get; set; }
 
         public KeyGeneratorWindow(string username)
         {
             InitializeComponent();
 
             _username = username;
-        
 
             string configPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources", "config.json");
             _dbHandler = new DBConnectionHandler(configPath);
 
             this.DataContext = this;
             LoadClassData();
+            LoadSubjectData();
         }
 
         private void LoadClassData()
         {
-            string query = "SELECT ClassName, Subject FROM Classes WHERE Teacher = @username";
+            string query = "SELECT ClassName FROM Classes WHERE Teacher = @username";
 
             using (MySqlConnection connection = new MySqlConnection(_dbHandler.ConnectionString))
             {
@@ -50,8 +48,7 @@ namespace FeedbackFactory
                         while (reader.Read())
                         {
                             string className = reader["ClassName"].ToString();
-                            string subject = reader["Subject"].ToString();
-                            classSubjectList.Add($"{className} ({subject})");
+                            classSubjectList.Add(className);
                         }
 
                         if (classSubjectList.Count == 0)
@@ -65,11 +62,46 @@ namespace FeedbackFactory
             }
         }
 
+        private void LoadSubjectData()
+        {
+            string query = "SELECT Subject FROM Subject";
+
+            using (MySqlConnection connection = new MySqlConnection(_dbHandler.ConnectionString))
+            {
+                connection.Open();
+                using (MySqlCommand cmd = new MySqlCommand(query, connection))
+                {
+                    using (MySqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        var subjectList = new ObservableCollection<string>();
+                        while (reader.Read())
+                        {
+                            string subject = reader["Subject"].ToString();
+                            subjectList.Add(subject);
+                        }
+
+                        if (subjectList.Count == 0)
+                        {
+                            subjectList.Add("Keine Fächer verfügbar");
+                        }
+
+                        SubjectComboBox.ItemsSource = subjectList;
+                    }
+                }
+            }
+        }
+
         private void GenerateKeyButton_Click(object sender, RoutedEventArgs e)
         {
             if (ClassComboBox.SelectedItem == null)
             {
                 MessageBox.Show("Bitte wählen Sie eine Klasse aus.", "Fehler", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            if (SubjectComboBox.SelectedItem == null)
+            {
+                MessageBox.Show("Bitte wählen Sie ein Fach aus.", "Fehler", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
@@ -97,7 +129,6 @@ namespace FeedbackFactory
             CopyButton.Visibility = Visibility.Visible;
             GenerateKeyButton.IsEnabled = false;
 
-            // Now insert the key and class size into Feedbackkeys table
             InsertFeedbackKey(generatedKey);
         }
 
@@ -106,7 +137,7 @@ namespace FeedbackFactory
             int keyLength = 16;
             char[] printableChars = Enumerable.Range(32, 95)
                 .Select(i => (char)i)
-                .Where(c => !"~|\\/^°".Contains(c))
+                .Where(c => "~|\\/^°".Contains(c) == false)
                 .ToArray();
 
             using (var rng = RandomNumberGenerator.Create())
@@ -136,14 +167,9 @@ namespace FeedbackFactory
 
         private void InsertFeedbackKey(string generatedKey)
         {
-            // Parse the selected class and subject from the ComboBox
-            string selectedClass = ClassComboBox.SelectedItem.ToString();
-            string[] classSubject = selectedClass.Split('(');
-            string className = classSubject[0].Trim();
-            string subject = classSubject[1].Trim(')', ' ');
+            string className = ClassComboBox.SelectedItem.ToString().Trim();
 
-            // Step 1: Fetch ClassSize from Classes table using ClassName and Subject
-            int classSize = GetClassSize(className, subject);
+            int classSize = GetClassSize(className);
 
             if (classSize == -1)
             {
@@ -151,14 +177,12 @@ namespace FeedbackFactory
                 return;
             }
 
-            // Step 2: Check if the key already exists in Feedbackkeys table
             if (IsKeyExist(generatedKey))
             {
                 MessageBox.Show("Der generierte Schlüssel existiert bereits. Ein neuer Schlüssel wird erstellt.", "Fehler", MessageBoxButton.OK, MessageBoxImage.Error);
-                generatedKey = GenerateRandomKey("Option 1"); // Generate a new unique key
+                generatedKey = GenerateRandomKey("Option 1");
             }
 
-            // Step 3: Insert the new key and class size into the Feedbackkeys table
             string insertQuery = "INSERT INTO Feedbackkeys (`Key`, UsesRemaining) VALUES (@key, @usesRemaining)";
             using (MySqlConnection connection = new MySqlConnection(_dbHandler.ConnectionString))
             {
@@ -174,18 +198,16 @@ namespace FeedbackFactory
             MessageBox.Show("Der Schlüssel wurde erfolgreich in die Datenbank eingefügt.", "Erfolg", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
-
-        private int GetClassSize(string className, string subject)
+        private int GetClassSize(string className)
         {
             int classSize = -1;
-            string query = "SELECT ClassSize FROM Classes WHERE ClassName = @className AND Subject = @subject";
+            string query = "SELECT ClassSize FROM Classes WHERE ClassName = @className";
             using (MySqlConnection connection = new MySqlConnection(_dbHandler.ConnectionString))
             {
                 connection.Open();
                 using (MySqlCommand cmd = new MySqlCommand(query, connection))
                 {
                     cmd.Parameters.AddWithValue("@className", className);
-                    cmd.Parameters.AddWithValue("@subject", subject);
 
                     object result = cmd.ExecuteScalar();
                     if (result != null)
@@ -207,7 +229,7 @@ namespace FeedbackFactory
                 {
                     cmd.Parameters.AddWithValue("@key", generatedKey);
                     int count = Convert.ToInt32(cmd.ExecuteScalar());
-                    return count > 0; // If count > 0, the key already exists
+                    return count > 0;
                 }
             }
         }
