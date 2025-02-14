@@ -1,6 +1,8 @@
 ﻿using MySql.Data.MySqlClient;
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Text.Json;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -10,34 +12,31 @@ namespace FeedbackFactory
     public partial class StudentView : UserControl
     {
         private readonly DBConnectionHandler _dbHandler;
+        private readonly string usedKeysFile;
 
         public StudentView()
         {
             InitializeComponent();
-
             string configPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources", "config.json");
             _dbHandler = new DBConnectionHandler(configPath);
+            usedKeysFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources", "usedKeys.json");
         }
 
         private void StudentView_Loaded(object sender, RoutedEventArgs e)
         {
-            // Set focus to the KeyTB (TextBox for the key) when the view is loaded
             KeyTB.Focus();
         }
 
         private void BackBTN_Click(object sender, RoutedEventArgs e)
         {
-            // Navigate back to the LoginWindow
             Window loginWindow = new LoginWindow();
             loginWindow.Show();
-
-            // Close current view's window if it’s standalone
             Window.GetWindow(this)?.Close();
         }
 
         private void ContinueBTN_Click(object sender, RoutedEventArgs e)
         {
-            string inputKey = KeyTB.Text;
+            string inputKey = KeyTB.Text.Trim();
 
             if (string.IsNullOrWhiteSpace(inputKey))
             {
@@ -45,7 +44,15 @@ namespace FeedbackFactory
                 return;
             }
 
-            // Define query to check key in the Feedbackkeys table
+            var usedKeys = LoadUsedKeys();
+
+            // If the key was used before and is marked as 1 (fully used), deny access
+            if (usedKeys.ContainsKey(inputKey) && usedKeys[inputKey] == 1)
+            {
+                MessageBox.Show("Dieser Schlüssel wurde bereits verwendet.", "Fehler", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
             string keyQuery = "SELECT Form, UsesRemaining FROM Feedbackkeys WHERE `Key` = @Key";
             var keyParameter = new MySqlParameter("@Key", inputKey);
 
@@ -54,64 +61,41 @@ namespace FeedbackFactory
                 using (MySqlConnection connection = new MySqlConnection(_dbHandler.ConnectionString))
                 {
                     connection.Open();
-
-                    // Check if the key exists in the Feedbackkeys table
                     using (MySqlCommand cmd = new MySqlCommand(keyQuery, connection))
                     {
                         cmd.Parameters.Add(keyParameter);
                         var reader = cmd.ExecuteReader();
 
-                        if (!reader.Read()) // No matching key found
+                        if (!reader.Read())
                         {
                             MessageBox.Show("Ungültiger Schlüssel, bitte versuchen Sie es erneut.", "Fehler", MessageBoxButton.OK, MessageBoxImage.Error);
                             return;
                         }
 
-                        // Now safely extract 'Form' and 'UsesRemaining'
                         int form = Convert.ToInt32(reader["Form"]);
                         int usesRemaining = Convert.ToInt32(reader["UsesRemaining"]);
 
-                        // Check if the key has remaining uses
-                        if (usesRemaining <= 0)
+                        // If key is NOT in JSON and has no uses left in DB, block it
+                        if (!usedKeys.ContainsKey(inputKey) && usesRemaining <= 0)
                         {
                             MessageBox.Show("Dieser Schlüssel hat keine verbleibenden Verwendungen.", "Fehler", MessageBoxButton.OK, MessageBoxImage.Warning);
                             return;
                         }
-
-                        // Check if the key has already been used
-                        if (IsKeyUsed(inputKey))
-                        {
-                            MessageBox.Show("Dieser Schlüssel wurde bereits verwendet.", "Fehler", MessageBoxButton.OK, MessageBoxImage.Warning);
-                            return;
-                        }
-
-                        // Now handle the form based on the value of the "Form" column
-                        if (form == 1)
-                        {
-                            // Open UnterrichtsBeurteilung.xaml UserControl in StudentFormWindow
-                            var studentFormWindow = new StudentFormWindow(inputKey, "UnterrichtsBeurteilung");
-                            studentFormWindow.Show();
-                        }
-                        else if (form == 2)
-                        {
-                            // Open Zielscheibe.xaml UserControl in StudentFormWindow
-                            var studentFormWindow = new StudentFormWindow(inputKey, "Zielscheibe");
-                            studentFormWindow.Show();
-                        }
-                        else
-                        {
-                            // This else is to handle the case when the Form column has an unexpected value
-                            MessageBox.Show("Ungültiges Formular.", "Fehler", MessageBoxButton.OK, MessageBoxImage.Error);
-                            return;
-                        }
-
-                        // Update the database to decrement UsesRemaining
-                        UpdateKeyUses(inputKey);
-
-                        // Close the current window (if any)
-                        Window.GetWindow(this)?.Close();
                     }
                 }
+
+                // Open the correct form
+                OpenForm(inputKey);
+
+                // If key is NOT in JSON, update UsesRemaining and add to JSON with 0
+                if (!usedKeys.ContainsKey(inputKey))
+                {
+                    UpdateKeyUses(inputKey);
+                    usedKeys[inputKey] = 0;
+                    SaveUsedKeys(usedKeys);
+                }
+
+                Window.GetWindow(this)?.Close();
             }
             catch (MySqlException ex)
             {
@@ -123,31 +107,85 @@ namespace FeedbackFactory
             }
         }
 
-
-
-        private bool IsKeyUsed(string inputKey)
+        private void OpenForm(string inputKey)
         {
-            // Check if the key is listed in the usedKeys.json file
-            string usedKeysFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources", "usedKeys.json");
+            string keyQuery = "SELECT Form FROM Feedbackkeys WHERE `Key` = @Key";
+            var keyParameter = new MySqlParameter("@Key", inputKey);
 
-            if (File.Exists(usedKeysFile))
+            try
             {
-                string[] usedKeys = File.ReadAllLines(usedKeysFile);
-                foreach (var usedKey in usedKeys)
+                using (MySqlConnection connection = new MySqlConnection(_dbHandler.ConnectionString))
                 {
-                    if (usedKey == inputKey)
+                    connection.Open();
+                    using (MySqlCommand cmd = new MySqlCommand(keyQuery, connection))
                     {
-                        return true;
+                        cmd.Parameters.Add(keyParameter);
+                        var formValue = cmd.ExecuteScalar();
+
+                        if (formValue == null)
+                        {
+                            MessageBox.Show("Ungültiges Formular.", "Fehler", MessageBoxButton.OK, MessageBoxImage.Error);
+                            return;
+                        }
+
+                        int form = Convert.ToInt32(formValue);
+
+                        if (form == 1)
+                        {
+                            var studentFormWindow = new StudentFormWindow(inputKey, "UnterrichtsBeurteilung");
+                            studentFormWindow.Show();
+                        }
+                        else if (form == 2)
+                        {
+                            var studentFormWindow = new StudentFormWindow(inputKey, "Zielscheibe");
+                            studentFormWindow.Show();
+                        }
+                        else
+                        {
+                            MessageBox.Show("Ungültiges Formular.", "Fehler", MessageBoxButton.OK, MessageBoxImage.Error);
+                        }
                     }
                 }
             }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Fehler beim Öffnen des Formulars: {ex.Message}", "Fehler", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
 
-            return false;
+        private Dictionary<string, int> LoadUsedKeys()
+        {
+            try
+            {
+                if (File.Exists(usedKeysFile))
+                {
+                    string json = File.ReadAllText(usedKeysFile);
+                    return JsonSerializer.Deserialize<Dictionary<string, int>>(json) ?? new Dictionary<string, int>();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Fehler beim Laden der verwendeten Schlüssel: {ex.Message}", "Fehler", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+
+            return new Dictionary<string, int>();
+        }
+
+        private void SaveUsedKeys(Dictionary<string, int> usedKeys)
+        {
+            try
+            {
+                string json = JsonSerializer.Serialize(usedKeys, new JsonSerializerOptions { WriteIndented = true });
+                File.WriteAllText(usedKeysFile, json);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Fehler beim Speichern der verwendeten Schlüssel: {ex.Message}", "Fehler", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private void UpdateKeyUses(string inputKey)
         {
-            // Update the UsesRemaining field by decrementing by 1
             string updateQuery = "UPDATE Feedbackkeys SET UsesRemaining = UsesRemaining - 1 WHERE `Key` = @Key";
             var parameters = new MySqlParameter[]
             {
@@ -160,10 +198,6 @@ namespace FeedbackFactory
             {
                 MessageBox.Show("Die Verwendungsanzahl konnte nicht aktualisiert werden.", "Fehler", MessageBoxButton.OK, MessageBoxImage.Error);
             }
-
-            // Write the key to usedKeys.json to prevent re-using it
-            string usedKeysFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources", "usedKeys.json");
-            File.AppendAllText(usedKeysFile, inputKey + Environment.NewLine);
         }
     }
 }
