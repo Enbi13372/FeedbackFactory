@@ -21,23 +21,23 @@
         <!-- Inhalt mit Scroll -->
         <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
             <StackPanel>
-                
+
                 <Grid Margin="0,0,0,10">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="3*"/>
                         <ColumnDefinition Width="2*"/>
                     </Grid.ColumnDefinitions>
                     <TextBlock Text="" Grid.Column="0"/>
-                    
-                    <TextBlock Grid.Column="1" HorizontalAlignment="Center" FontWeight="Bold" Width="106">
+
+                    <TextBlock Grid.Column="1" HorizontalAlignment="Left" FontWeight="Bold" Width="150" Margin="93,3,0,-3">
                         <Run Text="5   "/>
-                        <Run Language="de-de" Text="  "/>
+                        <Run Language="de-de" Text=""/>
                         <Run Text="4   "/>
-                        <Run Language="de-de" Text="   "/>
+                        <Run Language="de-de" Text=" "/>
                         <Run Text="3   "/>
-                        <Run Language="de-de" Text="  "/>
+                        <Run Language="de-de" Text=" "/>
                         <Run Text="2   "/>
-                        <Run Language="de-de" Text="   "/>
+                        <Run Language="de-de" Text=" "/>
                         <Run Text="1"/>
                     </TextBlock>
                 </Grid>
