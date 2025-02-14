@@ -1,48 +1,32 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace FeedbackFactory
 {
-
     public partial class StudentFormWindow : Window
     {
-        private Dictionary<string, UserControl> _keyViewMapping;
-        public StudentFormWindow(string inputKey)
+        public StudentFormWindow(string key, string formName)
         {
             InitializeComponent();
 
-
-            _keyViewMapping = new Dictionary<string, UserControl>
+            // Set the key and form name if needed, and load the correct UserControl
+            if (formName == "UnterrichtsBeurteilung")
             {
-                { "Key1", new UnterrichtsBeurteilung() },
-                { "Key2", new Zielscheibe() }
-            };
-
-            if (_keyViewMapping.TryGetValue(inputKey, out UserControl selectedView))
+                // Load UnterrichtsBeurteilung.xaml
+                var formControl = new UnterrichtsBeurteilung(); // Make sure to instantiate the correct UserControl
+                this.Content = formControl;
+            }
+            else if (formName == "Zielscheibe")
             {
-
-                ViewContentControl.Content = selectedView;
+                // Load Zielscheibe.xaml
+                var formControl = new Zielscheibe(); // Make sure to instantiate the correct UserControl
+                this.Content = formControl;
             }
             else
             {
-                MessageBox.Show("Ungültiger Schlüssel. Bitte versuchen Sie es erneut.");
+                MessageBox.Show("Ungültiges Formular.", "Fehler", MessageBoxButton.OK, MessageBoxImage.Error);
             }
-
-
-
-
         }
     }
-}
 
+}
