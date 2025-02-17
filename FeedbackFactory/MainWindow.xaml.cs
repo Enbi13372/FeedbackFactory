@@ -75,7 +75,7 @@ namespace FeedbackFactory
 
         private void BtnSettings_Click(object sender, RoutedEventArgs e)
         {
-            MainContent.Content = new SettingsView();
+            MainContent.Content = new SettingsView(_username);
         }
 
         private void BtnAdminView_Click(object sender, RoutedEventArgs e)

@@ -27,7 +27,7 @@
                 </Border>
                 <Button Content="Passwort ändern" Width="180" Height="40" Background="#0078D7" Foreground="White"
                         FontSize="16" BorderThickness="0" Margin="0,10,0,0"
-                        HorizontalAlignment="Left" >
+                        HorizontalAlignment="Left" Click="ChangePassword_Click">
                     <Button.Template>
                         <ControlTemplate TargetType="Button">
                             <Border Background="{TemplateBinding Background}" CornerRadius="10">
@@ -39,31 +39,30 @@
             </StackPanel>
 
             <StackPanel Grid.Column="1" Orientation="Vertical">
-                <TextBlock Text="Sprache ändern" FontSize="20" FontWeight="SemiBold" Foreground="#333" Margin="0,0,0,10"/>
-                <ComboBox x:Name="LanguageDropdown" Width="300" Height="40" Background="#F5F5F5" Foreground="#333"
-                          BorderBrush="#B9D3EE" BorderThickness="1" FontSize="16" Margin="0,0,0,10">
-                    <ComboBoxItem Content="Deutsch" />
-                    <ComboBoxItem Content="Englisch" />
-                </ComboBox>
+                <TextBlock Text="Username ändern" FontSize="20" FontWeight="SemiBold" Foreground="#333" Margin="0,0,0,10"/>
+                <Border Background="#F5F5F5" CornerRadius="10" BorderBrush="#B9D3EE" BorderThickness="1" Margin="0,0,0,10">
+                    <TextBox x:Name="OldUsername" Background="Transparent" BorderThickness="0" Padding="10" />
+                </Border>
+                <Border Background="#F5F5F5" CornerRadius="10" BorderBrush="#B9D3EE" BorderThickness="1" Margin="0,0,0,10">
+                    <TextBox x:Name="NewUsername" Background="Transparent" BorderThickness="0" Padding="10" />
+                </Border>
+                <Button Content="Username ändern" Width="180" Height="40" Background="#0078D7" Foreground="White"
+        FontSize="16" BorderThickness="0" Margin="0,10,0,0"
+        HorizontalAlignment="Left" Click="ChangeUsername_Click" >
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+                            <Border Background="{TemplateBinding Background}" CornerRadius="10">
+                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+                <TextBlock Text="Versionsinfo:" FontSize="20" FontWeight="SemiBold" Foreground="#333" Margin="0,40,0,10"/>
+                <TextBlock Text="FF.1.0.0" FontSize="16" FontWeight="SemiBold" Foreground="#333" Margin="0,0,0,10"/>
 
-                <TextBlock Text="Dark Mode aktivieren" FontSize="20" FontWeight="SemiBold" Foreground="#333" Margin="0,20,0,10"/>
-                <CheckBox x:Name="DarkModeToggle" Content="Dark Mode" VerticalAlignment="Center" FontSize="16" Margin="0,0,0,10" />
-
-                <TextBlock Text="Benachrichtigungen aktivieren" FontSize="20" FontWeight="SemiBold" Foreground="#333" Margin="0,20,0,10"/>
-                <CheckBox x:Name="NotificationsToggle" Content="Benachrichtigungen" VerticalAlignment="Center" FontSize="16" />
             </StackPanel>
         </Grid>
 
-        <Button Grid.Row="2" Grid.ColumnSpan="2" Content="Einstellungen zurücksetzen" Width="240" Height="50"
-                Background="#FF5C5C" Foreground="White" FontSize="16" BorderThickness="0" Margin="0,20,0,0"
-                HorizontalAlignment="Center" >
-            <Button.Template>
-                <ControlTemplate TargetType="Button">
-                    <Border Background="{TemplateBinding Background}" CornerRadius="10">
-                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    </Border>
-                </ControlTemplate>
-            </Button.Template>
-        </Button>
+        
     </Grid>
 </UserControl>
