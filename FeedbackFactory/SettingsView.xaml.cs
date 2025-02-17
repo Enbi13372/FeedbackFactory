@@ -52,7 +52,6 @@ namespace FeedbackFactory
 
             try
             {
-                // Hole das aktuell gespeicherte (gehashte) Passwort aus der Datenbank
                 string storedHashedPassword = null;
                 string query = "SELECT Password FROM Users WHERE Username = @Username;";
                 using (MySqlConnection connection = new MySqlConnection(_dbHandler.ConnectionString))
@@ -77,7 +76,6 @@ namespace FeedbackFactory
                     return;
                 }
 
-                // Überprüfe, ob das eingegebene alte Passwort korrekt ist (bcrypt‑Verifizierung)
                 if (!BCrypt.Net.BCrypt.Verify(oldPassword, storedHashedPassword))
                 {
                     MessageBox.Show("Das alte Passwort ist falsch.", "Fehler", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -114,9 +112,7 @@ namespace FeedbackFactory
             }
         }
 
-        /// <summary>
-        /// Eventhandler für den Button „Username ändern“
-        /// </summary>
+       
         private void ChangeUsername_Click(object sender, RoutedEventArgs e)
         {
             string oldUsername = OldUsername.Text.Trim();
@@ -128,7 +124,6 @@ namespace FeedbackFactory
                 return;
             }
 
-            // Überprüfe, ob das eingegebene alte Username mit dem aktuellen übereinstimmt
             if (!string.Equals(oldUsername, _currentUsername, StringComparison.Ordinal))
             {
                 MessageBox.Show("Das eingegebene alte Username stimmt nicht mit Ihrem aktuellen Benutzernamen überein.", "Fehler", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -137,7 +132,6 @@ namespace FeedbackFactory
 
             try
             {
-                // Prüfen, ob der neue Username bereits existiert
                 string checkQuery = "SELECT COUNT(*) FROM Users WHERE Username = @NewUsername;";
                 using (MySqlConnection connection = new MySqlConnection(_dbHandler.ConnectionString))
                 {
@@ -154,7 +148,6 @@ namespace FeedbackFactory
                     }
                 }
 
-                // Aktualisiere den Benutzernamen in der Datenbank
                 string updateQuery = "UPDATE Users SET Username = @NewUsername WHERE Username = @OldUsername;";
                 using (MySqlConnection connection = new MySqlConnection(_dbHandler.ConnectionString))
                 {
@@ -167,7 +160,6 @@ namespace FeedbackFactory
                         if (affectedRows > 0)
                         {
                             MessageBox.Show("Username wurde erfolgreich geändert.", "Erfolg", MessageBoxButton.OK, MessageBoxImage.Information);
-                            // Aktualisiere den internen Wert, damit weitere Änderungen korrekt erfolgen
                             _currentUsername = newUsername;
                             OldUsername.Text = "";
                             NewUsername.Text = "";
