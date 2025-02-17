@@ -21,9 +21,7 @@ namespace FeedbackFactory
         private readonly DBConnectionHandler _dbHandler;
         private string _currentUsername;
 
-        /// <summary>
-        /// Konstruktor – erwartet den aktuellen Benutzernamen, um Änderungen gezielt vornehmen zu können.
-        /// </summary>
+        >
         /// <param name="currentUsername">Aktueller Benutzername</param>
         public SettingsView(string currentUsername)
         {
@@ -31,14 +29,11 @@ namespace FeedbackFactory
 
             _currentUsername = currentUsername;
 
-            // Initialisiere den DB-Handler (angepasst an Deinen Pfad zur config.json)
             string configPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources", "config.json");
             _dbHandler = new DBConnectionHandler(configPath);
         }
 
-        /// <summary>
-        /// Eventhandler für den Button „Passwort ändern“
-        /// </summary>
+        /
         private void ChangePassword_Click(object sender, RoutedEventArgs e)
         {
             string oldPassword = OldPassword.Password;
@@ -82,7 +77,6 @@ namespace FeedbackFactory
                     return;
                 }
 
-                // Neuen Passwort-Hash erzeugen und in der Datenbank speichern
                 string newHashedPassword = BCrypt.Net.BCrypt.HashPassword(newPassword);
                 string updateQuery = "UPDATE Users SET Password = @NewPassword WHERE Username = @Username;";
                 using (MySqlConnection connection = new MySqlConnection(_dbHandler.ConnectionString))
