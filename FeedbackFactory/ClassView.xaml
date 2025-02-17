@@ -8,8 +8,8 @@
              d:DesignHeight="500" d:DesignWidth="900">
     <Grid Background="#D7E4F2" Margin="10">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto"/>
-            <ColumnDefinition Width="10"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="20"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
@@ -18,8 +18,8 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <!-- Daten -->
-        <ListView x:Name="ClassesListView" Grid.Column="0" Grid.Row="1" Width="330" Height="400" Margin="5">
+        <!-- Liste: Klasse und Schuljahr (links oben) -->
+        <ListView x:Name="ClassesListView" Grid.Column="0" Grid.Row="0" Width="300" Height="250" Margin="5" ItemsSource="{Binding Classes}">
             <ListView.Resources>
                 <Style TargetType="ListViewItem">
                     <Setter Property="HorizontalContentAlignment" Value="Center" />
@@ -28,82 +28,75 @@
             </ListView.Resources>
             <ListView.View>
                 <GridView>
-                    <GridViewColumn Header="Klasse" Width="80">
-                        <GridViewColumn.CellTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding ClassName}" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                            </DataTemplate>
-                        </GridViewColumn.CellTemplate>
-                    </GridViewColumn>
-                    <GridViewColumn Header="Fach" Width="80">
-                        <GridViewColumn.CellTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding Subject}" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                            </DataTemplate>
-                        </GridViewColumn.CellTemplate>
-                    </GridViewColumn>
-                    <GridViewColumn Header="Schuljahr" Width="80">
-                        <GridViewColumn.CellTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding SchoolYear}" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                            </DataTemplate>
-                        </GridViewColumn.CellTemplate>
-                    </GridViewColumn>
+                    <GridViewColumn Header="Klasse" DisplayMemberBinding="{Binding ClassName}" Width="120"/>
+                    <GridViewColumn Header="Schuljahr" DisplayMemberBinding="{Binding SchoolYear}" Width="120"/>
                 </GridView>
             </ListView.View>
         </ListView>
 
-        <!-- Umschalt Panels -->
-        <StackPanel Grid.Column="2" Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,10">
-            <Button Height="25" Width="60" Content="Klasse" Click="BtnKlasse_Click"/>
-            <Button Height="25" Width="60" Content="Fach" Click="BtnFach_Click"/>
+        <!-- Liste: Fach (links unten) -->
+        <ListView x:Name="SubjectsListView" Grid.Column="0" Grid.Row="1" Width="300" Height="250" Margin="5" ItemsSource="{Binding Subjects}">
+            <ListView.Resources>
+                <Style TargetType="ListViewItem">
+                    <Setter Property="HorizontalContentAlignment" Value="Center" />
+                    <Setter Property="VerticalContentAlignment" Value="Center" />
+                </Style>
+            </ListView.Resources>
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="Fach" DisplayMemberBinding="{Binding Subject}" Width="270"/>
+                </GridView>
+            </ListView.View>
+        </ListView>
+
+        <!-- Umschalt Panels für "Klasse" und "Fach" oben zentriert -->
+        <StackPanel Grid.Column="2" Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="5">
+            <Button Height="25" Width="80" Content="Klasse" Click="BtnKlasse_Click"/>
+            <Button Height="25" Width="80" Content="Fach" Click="BtnFach_Click"/>
+        </StackPanel>
+
+        <!-- Eingabefelder nach rechts (Klasse und Schuljahr) -->
+        <StackPanel x:Name="panelKlasse" Grid.Column="2" Orientation="Vertical" HorizontalAlignment="Left" Margin="45,40,0,20">
+            <StackPanel Orientation="Horizontal" Margin="0,5">
+                <Label Content="Klasse:" Width="100"/>
+                <TextBox x:Name="ClassNameTextBox" Width="200"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Margin="0,5">
+                <Label Content="Schuljahr:" Width="100"/>
+                <TextBox x:Name="SchoolYearTextBox" Width="200"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Margin="0,5">
+                <Label Content="Jahrgang:" Width="100"/>
+                <TextBox x:Name="GradeTextBox" Width="200"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Margin="0,5">
+                <Label Content="Klassengröße:" Width="100"/>
+                <TextBox x:Name="ClassSizeTextBox" Width="200"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Margin="0,5">
+                <Label Content="Abteilung:" Width="100"/>
+                <TextBox x:Name="DepartmentTextBox" Width="200"/>
+            </StackPanel>
+        </StackPanel>
+
+        <!-- Eingabefelder (Fach) -->
+        <StackPanel x:Name="panelFach" Grid.Column="2" Grid.Row="1" Orientation="Vertical" Visibility="Collapsed" Margin="10">
+            <StackPanel Orientation="Horizontal" Margin="0,5">
+                <Label Content="Fach:" Width="100"/>
+                <TextBox x:Name="SubjectTextBox" Width="200"/>
+            </StackPanel>
         </StackPanel>
 
         <!-- Buttons Hinzufügen/Entfernen -->
-        <StackPanel Grid.Column="0" Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Left" Margin="5">
+        <StackPanel Grid.Column="0" Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center" Margin="5">
             <Button x:Name="AddButton" Content="➕ Hinzufügen" Width="120" Margin="5" Click="AddButton_Click"/>
             <Button x:Name="RemoveButton" Content="➖ Entfernen" Width="120" Margin="5" Click="RemoveButton_Click"/>
         </StackPanel>
 
-        <!-- Wechselpanel -->
-        <StackPanel Grid.Column="2" Grid.Row="1" Margin="10,60,10,10" Orientation="Vertical">
-            <!-- Panel KLASSE -->
-            <StackPanel x:Name="panelKlasse" Orientation="Vertical" Margin="0,5">
-                <StackPanel Orientation="Horizontal" Margin="0,5">
-                    <Label Content="Klasse:" Width="100"/>
-                    <TextBox x:Name="ClassNameTextBox" Width="200"/>
-                </StackPanel>
-                <StackPanel Orientation="Horizontal" Margin="0,5">
-                    <Label Content="Schuljahr:" Width="100"/>
-                    <TextBox x:Name="SchoolYearTextBox" Width="200"/>
-                </StackPanel>
-                <StackPanel Orientation="Horizontal" Margin="0,5">
-                    <Label Content="Jahrgang:" Width="100"/>
-                    <TextBox x:Name="GradeTextBox" Width="200"/>
-                </StackPanel>
-                <StackPanel Orientation="Horizontal" Margin="0,5">
-                    <Label Content="Klassengröße:" Width="100"/>
-                    <TextBox x:Name="ClassSizeTextBox" Width="200"/>
-                </StackPanel>
-                <StackPanel Orientation="Horizontal" Margin="0,5">
-                    <Label Content="Abteilung:" Width="100"/>
-                    <TextBox x:Name="DepartmentTextBox" Width="200"/>
-                </StackPanel>
-            </StackPanel>
-
-            <!-- Panel FACH -->
-            <StackPanel x:Name="panelFach" Orientation="Vertical" Visibility="Collapsed" Margin="0,5">
-                <StackPanel Orientation="Horizontal" Margin="0,5">
-                    <Label Content="Fach:" Width="100"/>
-                    <TextBox x:Name="SubjectTextBox" Width="200"/>
-                </StackPanel>
-            </StackPanel>
-
-            <!-- Speichern/Abbrechen-Buttons -->
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="20,10">
-                <Button x:Name="SaveButton" Content="💾 Speichern" Width="120" Margin="5" Click="SaveButton_Click"/>
-                <Button x:Name="AbortButton" Content="❌ Abbrechen" Width="120" Margin="5" Click="AbortButton_Click"/>
-            </StackPanel>
+        <!-- Speichern/Abbrechen-Buttons unter den Eingabefeldern -->
+        <StackPanel Grid.Column="2" Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="10">
+            <Button x:Name="SaveButton" Content="💾 Speichern" Width="120" Margin="5" Click="SaveButton_Click"/>
+            <Button x:Name="AbortButton" Content="❌ Abbrechen" Width="120" Margin="5" Click="AbortButton_Click"/>
         </StackPanel>
     </Grid>
 </UserControl>
