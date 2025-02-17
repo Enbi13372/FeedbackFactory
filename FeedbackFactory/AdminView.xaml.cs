@@ -338,6 +338,11 @@ namespace FeedbackFactory
             return new string(Enumerable.Repeat(chars, length)
                               .Select(s => s[random.Next(s.Length)]).ToArray());
         }
+
+        private void RoleInput_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
+        }
     }
 
     public class Benutzer

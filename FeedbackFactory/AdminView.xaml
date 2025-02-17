@@ -14,25 +14,34 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <!-- Top section with key labels and buttons -->
-        <StackPanel Orientation="Horizontal" Margin="10" HorizontalAlignment="Right">
-            <!-- Vertical StackPanel grouping each label pair -->
-            <StackPanel Orientation="Vertical">
-                <!-- First row: Schlüssel label pair -->
-                <StackPanel Orientation="Horizontal">
-                    <Label Content="Schlüssel:" Width="80" />
-                    <!-- This label will hold the generated key dynamically -->
-                    <Label x:Name="GeneratedKeyLabel" Content="" Width="165" />
+        <Grid Grid.Row="0" Margin="10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                    <Label Content="Schlüssel:" Width="80" FontSize="14"/>
+                    <Label x:Name="GeneratedKeyLabel" Content="" Width="165" FontSize="14"/>
                 </StackPanel>
-                <!-- Second row: Gültigkeit label pair -->
                 <StackPanel Orientation="Horizontal">
-                    <Label Content="Gültigkeit:" Width="80" />
-                    <!-- This label will hold the validity info dynamically -->
-                    <Label x:Name="ValidityLabel" Content="" Width="165" />
+                    <Label Content="Gültigkeit:" Width="80" FontSize="14" />
+                    <Label x:Name="ValidityLabel" Content="" Width="165" FontSize="14"/>
                 </StackPanel>
             </StackPanel>
-            <!-- Copy button with hover and pressed effects -->
-            <Button Background="Transparent" BorderThickness="0" Margin="5" ToolTip="Kopieren" Click="CopyKeyButton_Click" Content="⎘">
+
+            <Button Grid.Column="1" Height="40" Width="40" Margin="10,0"
+        ToolTip="Kopieren" Click="CopyKeyButton_Click">
+                <Button.Content>
+                    <Viewbox Width="24" Height="24">
+                        <Canvas Width="24" Height="24">
+                            <Path Fill="Black" Data="M16,1H4c-1.1,0-2,0.9-2,2v12h2V3h12V1z M19,5H8c-1.1,0-2,0.9-2,2v14c0,1.1,0.9,2,2,2h11c1.1,0,2-0.9,2-2V7
+                        C21,5.9,20.1,5,19,5z M19,21H8V7h11V21z"/>
+                        </Canvas>
+                    </Viewbox>
+                </Button.Content>
                 <Button.Style>
                     <Style TargetType="Button">
                         <Setter Property="Background" Value="Transparent"/>
@@ -50,55 +59,80 @@
                     </Style>
                 </Button.Style>
             </Button>
-            <Button Content="Schlüssel Generieren" Click="GenerateKeyButton_Click" Width="175" Height="22" />
-            <!-- Generate key button -->
-        </StackPanel>
 
-        <!-- Middle section for user input -->
-        <StackPanel Orientation="Horizontal" Margin="10" Grid.Row="1">
-            <StackPanel Margin="5">
-                <TextBlock Text="Benutzername:" />
-                <TextBox x:Name="UsernameInput" Width="200" />
+            <Button Grid.Column="2" Content="Schlüssel Generieren" Width="175" Height="30" Margin="10,0"
+                    Click="GenerateKeyButton_Click" VerticalAlignment="Center" />
+        </Grid>
+
+       
+        <Grid Grid.Row="1" Margin="10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Grid.Column="0" Margin="5">
+                <TextBlock Text="Benutzername:" Margin="0,0,0,5" FontSize="16" />
+                <TextBox x:Name="UsernameInput" Width="200" Height="40"  VerticalContentAlignment="Center"/>
             </StackPanel>
-            <StackPanel Margin="5">
-                <TextBlock Text="Passwort:" />
-                <PasswordBox x:Name="PasswordInput" Width="200" />
+            <StackPanel Grid.Column="1" Margin="5">
+                <TextBlock Text="Passwort:" Margin="0,0,0,5" FontSize="16"/>
+                <PasswordBox x:Name="PasswordInput" Width="200" Height="40"  VerticalContentAlignment="Center"/>
             </StackPanel>
-            <StackPanel Margin="5">
-                <TextBlock Text="Rolle:" />
-                <ComboBox x:Name="RoleInput" Width="150">
+            <StackPanel Grid.Column="2" Margin="10">
+                <TextBlock Text="Rolle:" Margin="0,0,0,5" FontSize="16"/>
+                <ComboBox x:Name="RoleInput" Width="150" Height="40" FontSize="16">
                     <ComboBoxItem Content="Lehrer" Tag="0" />
                     <ComboBoxItem Content="Admin" Tag="1" />
                 </ComboBox>
             </StackPanel>
-            <Button Content="Benutzer hinzufügen" Click="AddUserButton_Click" Width="175" Height="22" Margin="5" VerticalAlignment="Bottom" />
-        </StackPanel>
+            <Button Grid.Column="3" Content="Benutzer hinzufügen" Click="AddUserButton_Click" 
+                    Width="175" Height="40" Margin="10, 25, 0 ,0" VerticalAlignment="Center"/>
+        </Grid>
 
-        <!-- DataGrid section -->
         <DataGrid Grid.Row="2" ItemsSource="{Binding BenutzerListe}" 
-                  AutoGenerateColumns="False" 
-                  CanUserAddRows="False"
-                  HorizontalAlignment="Stretch" 
-                  VerticalAlignment="Stretch" 
-                  Margin="10">
+          AutoGenerateColumns="False" 
+          CanUserAddRows="False"
+          Margin="10" 
+          HorizontalAlignment="Stretch" 
+          VerticalAlignment="Stretch">
+
+            <DataGrid.Resources>
+
+                <Style TargetType="DataGridColumnHeader">
+                    <Setter Property="FontSize" Value="16"/>
+                    <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                </Style>
+
+                <Style TargetType="DataGridCell">
+                    <Setter Property="Padding" Value="20,0" />
+                </Style>
+
+            </DataGrid.Resources>
+
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Benutzername" Binding="{Binding Name}" />
                 <DataGridTextColumn Header="Rolle" Binding="{Binding Rolle, Converter={StaticResource RoleConverter}}" />
+                <DataGridTextColumn Width="*" IsReadOnly="True"  />
                 <DataGridTemplateColumn Header="Aktionen">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal">
-                                <Button Content="Rolle ändern" Width="80" Height="25" Margin="5" 
-                                        Command="{Binding DataContext.ChangeRoleCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}" 
-                                        CommandParameter="{Binding}" />
-                                <Button Content="Löschen" Width="80" Height="25" Margin="5" 
-                                        Command="{Binding DataContext.DeleteUserCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}" 
-                                        CommandParameter="{Binding}" />
+                                <Button Content="Rolle ändern" Width="90" Height="30" Margin="5" 
+                                Command="{Binding DataContext.ChangeRoleCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}" 
+                                CommandParameter="{Binding}" />
+                                <Button Content="Löschen" Width="90" Height="30" Margin="5" 
+                                Command="{Binding DataContext.DeleteUserCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}" 
+                                CommandParameter="{Binding}" />
                             </StackPanel>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
             </DataGrid.Columns>
         </DataGrid>
+
+
     </Grid>
 </UserControl>
