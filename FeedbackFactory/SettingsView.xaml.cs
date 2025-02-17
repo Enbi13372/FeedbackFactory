@@ -21,7 +21,7 @@ namespace FeedbackFactory
         private readonly DBConnectionHandler _dbHandler;
         private string _currentUsername;
 
-        >
+        
         /// <param name="currentUsername">Aktueller Benutzername</param>
         public SettingsView(string currentUsername)
         {
@@ -33,7 +33,7 @@ namespace FeedbackFactory
             _dbHandler = new DBConnectionHandler(configPath);
         }
 
-        /
+        
         private void ChangePassword_Click(object sender, RoutedEventArgs e)
         {
             string oldPassword = OldPassword.Password;
