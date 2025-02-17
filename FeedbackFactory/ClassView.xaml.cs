@@ -248,6 +248,11 @@ namespace FeedbackFactory
             panelKlasse.Visibility = Visibility.Collapsed;
             panelFach.Visibility = Visibility.Visible;
         }
+
+        private void ClassesListView_SelectionChanged_1(object sender, SelectionChangedEventArgs e)
+        {
+
+        }
     }
 
     public class Class
