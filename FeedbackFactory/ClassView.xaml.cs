@@ -10,7 +10,7 @@ namespace FeedbackFactory
     {
         private readonly DBConnectionHandler _dbHandler;
         private ObservableCollection<Class> _classes;
-        private ObservableCollection<string> _subjects;  // Liste für die Fächer
+        private ObservableCollection<string> _subjects;  
         private Class _selectedClass;
         private Class _newClass;
 
@@ -20,7 +20,7 @@ namespace FeedbackFactory
             string configPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources", "config.json");
             _dbHandler = new DBConnectionHandler(configPath);
             LoadClasses();
-            LoadSubjects();  // Lade die Fächer in das ListView
+            LoadSubjects();  
         }
 
         private void LoadClasses()
@@ -41,12 +41,24 @@ namespace FeedbackFactory
                             {
                                 _classes.Add(new Class
                                 {
-                                    Teacher = reader.GetString("Teacher"),
-                                    ClassName = reader.GetString("ClassName"),
-                                    SchoolYear = reader.GetString("SchoolYear"),
-                                    Department = reader.GetString("Department"),
-                                    Grade = reader.GetInt32("Grade"),
-                                    ClassSize = reader.GetInt32("ClassSize")
+                                    Teacher = reader.IsDBNull(reader.GetOrdinal("Teacher"))
+                                        ? ""
+                                        : reader.GetString("Teacher"),
+                                    ClassName = reader.IsDBNull(reader.GetOrdinal("ClassName"))
+                                        ? ""
+                                        : reader.GetString("ClassName"),
+                                    SchoolYear = reader.IsDBNull(reader.GetOrdinal("SchoolYear"))
+                                        ? ""
+                                        : reader.GetString("SchoolYear"),
+                                    Department = reader.IsDBNull(reader.GetOrdinal("Department"))
+                                        ? ""
+                                        : reader.GetString("Department"),
+                                    Grade = reader.IsDBNull(reader.GetOrdinal("Grade"))
+                                        ? 0
+                                        : reader.GetInt32("Grade"),
+                                    ClassSize = reader.IsDBNull(reader.GetOrdinal("ClassSize"))
+                                        ? 0
+                                        : reader.GetInt32("ClassSize")
                                 });
                             }
                         }
@@ -64,7 +76,7 @@ namespace FeedbackFactory
         private void LoadSubjects()
         {
             _subjects = new ObservableCollection<string>();  // Liste für Fächer
-            string query = "SELECT Subject FROM Subject;";  // Tabelle 'Subject' statt 'Subjects'
+            string query = "SELECT Subject FROM Subject;";  
 
             try
             {
@@ -77,13 +89,16 @@ namespace FeedbackFactory
                         {
                             while (reader.Read())
                             {
-                                _subjects.Add(reader.GetString("Subject"));
+                                string subjectValue = reader.IsDBNull(reader.GetOrdinal("Subject"))
+                                    ? ""
+                                    : reader.GetString("Subject");
+
+                                _subjects.Add(subjectValue);
                             }
                         }
                     }
                 }
 
-                // Setze das ItemsSource des ListView für die Fächer
                 SubjectsListView.ItemsSource = _subjects;
             }
             catch (Exception ex)
@@ -107,7 +122,6 @@ namespace FeedbackFactory
 
         private void SaveButton_Click(object sender, RoutedEventArgs e)
         {
-            // Versuche, die Eingaben in Ganzzahlen umzuwandeln und prüfe auf Fehler.
             if (!int.TryParse(GradeTextBox.Text, out int grade))
             {
                 MessageBox.Show("Bitte geben Sie einen gültigen Wert für das Grade ein.");
@@ -119,8 +133,6 @@ namespace FeedbackFactory
                 return;
             }
 
-            // Wenn weder eine bestehende noch eine neue Klasse initialisiert ist, 
-            // gehe davon aus, dass eine neue Klasse erstellt werden soll.
             if (_selectedClass == null && _newClass == null)
             {
                 _newClass = new Class();
@@ -128,29 +140,25 @@ namespace FeedbackFactory
 
             if (_selectedClass != null)
             {
-                // Werte der bestehenden Klasse aktualisieren.
                 _selectedClass.ClassName = ClassNameTextBox.Text;
                 _selectedClass.SchoolYear = SchoolYearTextBox.Text;
                 _selectedClass.Department = DepartmentTextBox.Text;
                 _selectedClass.Grade = grade;
                 _selectedClass.ClassSize = classSize;
-                // Optional: Update in der Datenbank vornehmen
                 UpdateClassInDatabase(_selectedClass);
             }
             else if (_newClass != null)
             {
-                // Werte der neuen Klasse setzen.
                 _newClass.ClassName = ClassNameTextBox.Text;
                 _newClass.SchoolYear = SchoolYearTextBox.Text;
                 _newClass.Department = DepartmentTextBox.Text;
                 _newClass.Grade = grade;
                 _newClass.ClassSize = classSize;
-                AddClassToDatabase(_newClass);  // Neue Klasse zur DB hinzufügen
+                AddClassToDatabase(_newClass);  
             }
         }
 
-        // Beispielmethode zum Aktualisieren einer bestehenden Klasse in der Datenbank.
-        // Passe die WHERE-Bedingung ggf. an, z.B. mittels einer eindeutigen ID.
+       
         private void UpdateClassInDatabase(Class existingClass)
         {
             string query = "UPDATE Classes SET Teacher=@Teacher, SchoolYear=@SchoolYear, Department=@Department, Grade=@Grade, ClassSize=@ClassSize WHERE ClassName=@ClassName;";
@@ -199,7 +207,7 @@ namespace FeedbackFactory
                         cmd.ExecuteNonQuery();
                     }
                 }
-                LoadClasses();  // Lade die Klassenliste nach dem Hinzufügen neu.
+                LoadClasses();  // Lade Klassenliste neu.
             }
             catch (Exception ex)
             {
@@ -221,7 +229,7 @@ namespace FeedbackFactory
 
         private void AbortButton_Click(object sender, RoutedEventArgs e)
         {
-            // Deine Logik für Abbrechen
+            // Logik für Abbrechen
         }
     }
 
