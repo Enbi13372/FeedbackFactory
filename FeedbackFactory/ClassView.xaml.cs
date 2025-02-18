@@ -10,7 +10,8 @@ namespace FeedbackFactory
     {
         private readonly DBConnectionHandler _dbHandler;
         private ObservableCollection<Class> _classes;
-        private ObservableCollection<string> _subjects;  
+        private ObservableCollection<string> _subjects;
+
         private Class _selectedClass;
         private Class _newClass;
 
@@ -19,10 +20,12 @@ namespace FeedbackFactory
             InitializeComponent();
             string configPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources", "config.json");
             _dbHandler = new DBConnectionHandler(configPath);
+
             LoadClasses();
-            LoadSubjects();  
+            LoadSubjects();
         }
 
+        #region Load Classes / Subjects
         private void LoadClasses()
         {
             _classes = new ObservableCollection<Class>();
@@ -75,8 +78,8 @@ namespace FeedbackFactory
 
         private void LoadSubjects()
         {
-            _subjects = new ObservableCollection<string>();  // Liste für Fächer
-            string query = "SELECT Subject FROM Subject;";  
+            _subjects = new ObservableCollection<string>();
+            string query = "SELECT Subject FROM Subject;";
 
             try
             {
@@ -106,7 +109,9 @@ namespace FeedbackFactory
                 MessageBox.Show($"Error loading subjects: {ex.Message}");
             }
         }
+        #endregion
 
+        #region SelectionChanged (Klassenliste)
         private void ClassesListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             _selectedClass = (Class)ClassesListView.SelectedItem;
@@ -119,9 +124,26 @@ namespace FeedbackFactory
                 ClassSizeTextBox.Text = _selectedClass.ClassSize.ToString();
             }
         }
+        #endregion
 
+        #region Save Button (entscheidet, ob Klasse oder Fach gespeichert wird)
         private void SaveButton_Click(object sender, RoutedEventArgs e)
         {
+            if (panelKlasse.Visibility == Visibility.Visible)
+            {
+                SaveClass();
+            }
+            else if (panelFach.Visibility == Visibility.Visible)
+            {
+                SaveSubject();
+            }
+        }
+        #endregion
+
+        #region Speichern von Klassen
+        private void SaveClass()
+        {
+            // Felder prüfen
             if (!int.TryParse(GradeTextBox.Text, out int grade))
             {
                 MessageBox.Show("Bitte geben Sie einen gültigen Wert für das Grade ein.");
@@ -140,25 +162,28 @@ namespace FeedbackFactory
 
             if (_selectedClass != null)
             {
+                // Bestehende Klasse aktualisieren
                 _selectedClass.ClassName = ClassNameTextBox.Text;
                 _selectedClass.SchoolYear = SchoolYearTextBox.Text;
                 _selectedClass.Department = DepartmentTextBox.Text;
                 _selectedClass.Grade = grade;
                 _selectedClass.ClassSize = classSize;
+
                 UpdateClassInDatabase(_selectedClass);
             }
             else if (_newClass != null)
             {
+                // Neue Klasse anlegen
                 _newClass.ClassName = ClassNameTextBox.Text;
                 _newClass.SchoolYear = SchoolYearTextBox.Text;
                 _newClass.Department = DepartmentTextBox.Text;
                 _newClass.Grade = grade;
                 _newClass.ClassSize = classSize;
-                AddClassToDatabase(_newClass);  
+
+                AddClassToDatabase(_newClass);
             }
         }
 
-       
         private void UpdateClassInDatabase(Class existingClass)
         {
             string query = "UPDATE Classes SET Teacher=@Teacher, SchoolYear=@SchoolYear, Department=@Department, Grade=@Grade, ClassSize=@ClassSize WHERE ClassName=@ClassName;";
@@ -178,7 +203,7 @@ namespace FeedbackFactory
                         cmd.ExecuteNonQuery();
                     }
                 }
-                LoadClasses(); // Klassenliste neu laden, um die Änderungen anzuzeigen.
+                LoadClasses();
             }
             catch (Exception ex)
             {
@@ -207,14 +232,55 @@ namespace FeedbackFactory
                         cmd.ExecuteNonQuery();
                     }
                 }
-                LoadClasses();  // Lade Klassenliste neu.
+                LoadClasses();
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Error adding class: {ex.Message}");
             }
         }
+        #endregion
 
+        #region Speichern von Fächern
+        private void SaveSubject()
+        {
+            string subject = SubjectTextBox.Text?.Trim();
+            if (string.IsNullOrWhiteSpace(subject))
+            {
+                MessageBox.Show("Bitte geben Sie ein Fach ein.");
+                return;
+            }
+
+            AddSubjectToDatabase(subject);
+
+            // Textfeld leeren
+            SubjectTextBox.Text = "";
+        }
+
+        private void AddSubjectToDatabase(string subject)
+        {
+            string query = "INSERT INTO Subject (Subject) VALUES (@Subject)";
+            try
+            {
+                using (MySqlConnection connection = new MySqlConnection(_dbHandler.ConnectionString))
+                {
+                    connection.Open();
+                    using (MySqlCommand cmd = new MySqlCommand(query, connection))
+                    {
+                        cmd.Parameters.AddWithValue("@Subject", subject);
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+                LoadSubjects();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Fehler beim Hinzufügen des Fachs: {ex.Message}");
+            }
+        }
+        #endregion
+
+        #region Buttons
         private void BtnKlasse_Click(object sender, RoutedEventArgs e)
         {
             panelKlasse.Visibility = Visibility.Visible;
@@ -229,8 +295,9 @@ namespace FeedbackFactory
 
         private void AbortButton_Click(object sender, RoutedEventArgs e)
         {
-            // Logik für Abbrechen
+            // Logik für Abbrechen oder Schließen
         }
+        #endregion
     }
 
     public class Class
