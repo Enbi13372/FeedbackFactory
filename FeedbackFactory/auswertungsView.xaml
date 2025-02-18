@@ -1,44 +1,61 @@
 ﻿<UserControl x:Class="FeedbackFactory.auswertungsView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:FeedbackFactory" 
+             xmlns:local="clr-namespace:FeedbackFactory"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              mc:Ignorable="d" d:DesignHeight="600" d:DesignWidth="900">
+
+    <!-- Falls du einen BarHeightConverter o. Ä. verwenden möchtest -->
     <UserControl.Resources>
-
-        <local:BarHeightConverter x:Key="BarHeightConverter"
-                                  MaxValue="5"      
-            MaxHeight="200"/>
-
+        <local:BarHeightConverter x:Key="BarHeightConverter" 
+                                  MaxValue="10"
+                                  MaxHeight="200"/>
     </UserControl.Resources>
 
     <Grid>
         <StackPanel Orientation="Vertical" Margin="10">
+
+            <!-- Filter-Bereich -->
             <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
                 <Label Content="Fach:" VerticalAlignment="Center" />
-                <ComboBox x:Name="ComboBoxSubject" Width="150" Margin="5,0"
-          DisplayMemberPath="SubjectName"
-          SelectedValuePath="SubjectID"/>
+                <ComboBox x:Name="ComboBoxSubject" Width="120" Margin="5,0"/>
 
                 <Label Content="Klasse:" VerticalAlignment="Center" />
-                <ComboBox x:Name="ComboBoxClass" Width="150" Margin="5,0"
-                          DisplayMemberPath="ClassName"
-                          SelectedValuePath="ClassID"/>
+                <ComboBox x:Name="ComboBoxClass" Width="120" Margin="5,0"/>
+
+                <Label Content="Lehrer:" VerticalAlignment="Center" />
+                <ComboBox x:Name="ComboBoxTeacher" Width="120" Margin="5,0"/>
 
                 <Label Content="Erfassungsdatum von:" VerticalAlignment="Center" />
-                <DatePicker x:Name="DatePickerStart" Width="120" Margin="5,0"/>
+                <DatePicker x:Name="DatePickerStart" Width="130" Margin="5,0"/>
 
                 <Label Content="bis:" VerticalAlignment="Center" />
-                <DatePicker x:Name="DatePickerEnd" Width="120" Margin="5,0"/>
+                <DatePicker x:Name="DatePickerEnd" Width="130" Margin="5,0"/>
 
                 <Button Content="Filtern" Click="BtnFilter_Click" Margin="5,0"/>
             </StackPanel>
 
-            <DataGrid x:Name="DataGridFeedback" AutoGenerateColumns="True" Height="250"/>
+            <!-- DataGrid nur mit den relevanten Spalten -->
+            <DataGrid x:Name="DataGridFeedback" AutoGenerateColumns="False" Height="250">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Frage1" Binding="{Binding Frage1}" Width="*" />
+                    <DataGridTextColumn Header="Frage2" Binding="{Binding Frage2}" Width="*" />
+                    <DataGridTextColumn Header="Frage3" Binding="{Binding Frage3}" Width="*" />
+                    <DataGridTextColumn Header="Frage4" Binding="{Binding Frage4}" Width="*" />
+                    <DataGridTextColumn Header="Frage5" Binding="{Binding Frage5}" Width="*" />
+                    <DataGridTextColumn Header="Frage6" Binding="{Binding Frage6}" Width="*" />
+                    <DataGridTextColumn Header="Frage7" Binding="{Binding Frage7}" Width="*" />
+                    <DataGridTextColumn Header="Frage8" Binding="{Binding Frage8}" Width="*" />
+                    <DataGridTextColumn Header="TextRichtig" Binding="{Binding TextRichtig}" Width="*" />
+                    <DataGridTextColumn Header="TextAnders" Binding="{Binding TextAnders}" Width="*" />
+                </DataGrid.Columns>
+            </DataGrid>
 
+            <!-- Anzeige Durchschnitt -->
             <TextBlock x:Name="TxtAverage" FontWeight="Bold" FontSize="16" Margin="0,10"/>
 
+            <!-- Einfaches Balkendiagramm mit ItemsControl -->
             <ItemsControl x:Name="ChartItemsControl" Margin="10">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
@@ -55,8 +72,8 @@
                                 </Rectangle.Height>
                             </Rectangle>
 
-                            <TextBlock Text="{Binding Key}" HorizontalAlignment="Center" Margin="0,5,0,0"/>
-
+                            <TextBlock Text="{Binding Key}" 
+                                       HorizontalAlignment="Center" Margin="0,5,0,0"/>
                             <TextBlock Text="{Binding Value, StringFormat={}{0:F2}}" 
                                        HorizontalAlignment="Center"/>
                         </StackPanel>

@@ -12,24 +12,27 @@ namespace FeedbackFactory
     {
         private readonly DBConnectionHandler _dbHandler;
 
-        // Hier sammeln wir die geladenen Feedback-Daten
-        public ObservableCollection<FeedbackData> FeedbackList { get; set; } = new ObservableCollection<FeedbackData>();
+        // Hier sammeln wir die geladenen Daten aus "Zielscheibe"
+        public ObservableCollection<ZielscheibeData> ZielscheibeList { get; set; }
+            = new ObservableCollection<ZielscheibeData>();
 
         public auswertungsView()
         {
             InitializeComponent();
 
             // DB-Connection
-            string configPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources", "config.json");
+            string configPath = System.IO.Path.Combine(
+                AppDomain.CurrentDomain.BaseDirectory, "Resources", "config.json");
             _dbHandler = new DBConnectionHandler(configPath);
 
+            // ComboBoxen füllen
             LoadSubjectsFromDatabase();
             LoadClassesFromDatabase();
+            LoadTeachersFromDatabase();
         }
 
         /// <summary>
-        /// Lädt alle verfügbaren Fächer aus der Tabelle "Subject" und befüllt ComboBoxSubject.
-        /// Achtung: Passe die Spaltennamen an deine DB-Struktur an!
+        /// Lädt alle distinct Subject-Einträge direkt aus Zielscheibe.
         /// </summary>
         private void LoadSubjectsFromDatabase()
         {
@@ -39,34 +42,26 @@ namespace FeedbackFactory
                 {
                     connection.Open();
 
-                    // Beispiel: Tabelle "Subject" mit Spalten "ID" und "SubjectName".
-                    // Falls deine Spalten anders heißen, bitte anpassen.
-                    string query = "SELECT ID, SubjectName FROM Subject ORDER BY SubjectName;";
+                    // DISTINCT Subject aus "Zielscheibe" holen
+                    string query = "SELECT DISTINCT Subject FROM Zielscheibe ORDER BY Subject;";
                     using (MySqlCommand cmd = new MySqlCommand(query, connection))
                     {
                         using (MySqlDataReader reader = cmd.ExecuteReader())
                         {
-                            var subjectItems = new List<SubjectItem>
+                            var subjectList = new List<string>
                             {
-                                // Dummy-Eintrag für "(kein Filter)"
-                                new SubjectItem { SubjectID = -1, SubjectName = "(kein Filter)" }
+                                "(kein Filter)"
                             };
 
                             while (reader.Read())
                             {
-                                subjectItems.Add(new SubjectItem
+                                if (reader["Subject"] != DBNull.Value)
                                 {
-                                    SubjectID = Convert.ToInt32(reader["ID"]),
-                                    SubjectName = reader["SubjectName"].ToString()
-                                });
+                                    subjectList.Add(reader["Subject"].ToString());
+                                }
                             }
 
-                            ComboBoxSubject.ItemsSource = subjectItems;
-                            // Der ComboBox sagen, welche Eigenschaft den Value liefert
-                            ComboBoxSubject.SelectedValuePath = nameof(SubjectItem.SubjectID);
-                            // Der ComboBox sagen, welche Eigenschaft angezeigt wird
-                            ComboBoxSubject.DisplayMemberPath = nameof(SubjectItem.SubjectName);
-
+                            ComboBoxSubject.ItemsSource = subjectList;
                             ComboBoxSubject.SelectedIndex = 0; // Standard: "(kein Filter)"
                         }
                     }
@@ -74,13 +69,13 @@ namespace FeedbackFactory
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Fehler beim Laden der Fächer: " + ex.Message, "Fehler", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("Fehler beim Laden der Fächer: " + ex.Message,
+                                "Fehler", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
         /// <summary>
-        /// Lädt alle verfügbaren Klassen aus der Tabelle "Classes" und befüllt ComboBoxClass.
-        /// Achtung: Passe die Spaltennamen an deine DB-Struktur an!
+        /// Lädt alle distinct Klassen-Einträge direkt aus Zielscheibe.
         /// </summary>
         private void LoadClassesFromDatabase()
         {
@@ -90,72 +85,115 @@ namespace FeedbackFactory
                 {
                     connection.Open();
 
-                    // Beispiel: Tabelle "Classes" mit Spalten "ID" und "Name".
-                    // Falls deine Spalten anders heißen, bitte anpassen.
-                    string query = "SELECT ID, Name FROM Classes ORDER BY Name;";
+                    // DISTINCT ClassName aus "Zielscheibe" holen
+                    string query = "SELECT DISTINCT ClassName FROM Zielscheibe ORDER BY ClassName;";
                     using (MySqlCommand cmd = new MySqlCommand(query, connection))
                     {
                         using (MySqlDataReader reader = cmd.ExecuteReader())
                         {
-                            var classItems = new List<ClassItem>
+                            var classList = new List<string>
                             {
-                                // Dummy-Eintrag für "(kein Filter)"
-                                new ClassItem { ClassID = -1, ClassName = "(kein Filter)" }
+                                "(kein Filter)"
                             };
 
                             while (reader.Read())
                             {
-                                classItems.Add(new ClassItem
+                                if (reader["ClassName"] != DBNull.Value)
                                 {
-                                    ClassID = Convert.ToInt32(reader["ID"]),
-                                    ClassName = reader["Name"].ToString()
-                                });
+                                    classList.Add(reader["ClassName"].ToString());
+                                }
                             }
 
-                            ComboBoxClass.ItemsSource = classItems;
-                            // Der ComboBox sagen, welche Eigenschaft den Value liefert
-                            ComboBoxClass.SelectedValuePath = nameof(ClassItem.ClassID);
-                            // Der ComboBox sagen, welche Eigenschaft angezeigt wird
-                            ComboBoxClass.DisplayMemberPath = nameof(ClassItem.ClassName);
-
-                            ComboBoxClass.SelectedIndex = 0; // Standard: "(kein Filter)"
+                            ComboBoxClass.ItemsSource = classList;
+                            ComboBoxClass.SelectedIndex = 0;
                         }
                     }
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Fehler beim Laden der Klassen: " + ex.Message, "Fehler", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("Fehler beim Laden der Klassen: " + ex.Message,
+                                "Fehler", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        /// <summary>
+        /// Lädt alle distinct Lehrer-Einträge direkt aus Zielscheibe.
+        /// </summary>
+        private void LoadTeachersFromDatabase()
+        {
+            try
+            {
+                using (MySqlConnection connection = new MySqlConnection(_dbHandler.ConnectionString))
+                {
+                    connection.Open();
+
+                    // DISTINCT Teacher aus "Zielscheibe" holen
+                    string query = "SELECT DISTINCT Teacher FROM Zielscheibe ORDER BY Teacher;";
+                    using (MySqlCommand cmd = new MySqlCommand(query, connection))
+                    {
+                        using (MySqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            var teacherList = new List<string>
+                            {
+                                "(kein Filter)"
+                            };
+
+                            while (reader.Read())
+                            {
+                                if (reader["Teacher"] != DBNull.Value)
+                                {
+                                    teacherList.Add(reader["Teacher"].ToString());
+                                }
+                            }
+
+                            ComboBoxTeacher.ItemsSource = teacherList;
+                            ComboBoxTeacher.SelectedIndex = 0;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Fehler beim Laden der Lehrer: " + ex.Message,
+                                "Fehler", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
         /// <summary>
         /// Klick auf den "Filtern"-Button:
-        /// Liest die ausgewählten Filter (Fach, Klasse, Datum) und ruft LoadFeedbackData auf.
+        /// Liest die ausgewählten Filter (Fach, Klasse, Lehrer, Datum) und ruft LoadZielscheibeData auf.
         /// </summary>
         private void BtnFilter_Click(object sender, RoutedEventArgs e)
         {
-            // Ausgewählte IDs ermitteln
-            int? selectedSubjectId = ComboBoxSubject.SelectedValue as int?;
-            int? selectedClassId = ComboBoxClass.SelectedValue as int?;
+            // Subject
+            string selectedSubject = ComboBoxSubject.SelectedItem as string;
+            if (selectedSubject == "(kein Filter)") selectedSubject = null;
 
-            // Falls -1 => "(kein Filter)", dann null verwenden
-            if (selectedSubjectId == -1) selectedSubjectId = null;
-            if (selectedClassId == -1) selectedClassId = null;
+            // ClassName
+            string selectedClass = ComboBoxClass.SelectedItem as string;
+            if (selectedClass == "(kein Filter)") selectedClass = null;
 
+            // Teacher
+            string selectedTeacher = ComboBoxTeacher.SelectedItem as string;
+            if (selectedTeacher == "(kein Filter)") selectedTeacher = null;
+
+            // Datum
             DateTime? startDate = DatePickerStart.SelectedDate;
             DateTime? endDate = DatePickerEnd.SelectedDate;
 
-            LoadFeedbackData(selectedSubjectId, selectedClassId, startDate, endDate);
+            LoadZielscheibeData(selectedSubject, selectedClass, selectedTeacher, startDate, endDate);
         }
 
         /// <summary>
-        /// Lädt gefilterte Daten aus der Tabelle "Zielscheibe" (statt "feedbacks")
-        /// und verbindet sie über LEFT JOIN mit "Subject" (Fach) und "Classes" (Klasse).
+        /// Lädt gefilterte Daten aus der Tabelle "Zielscheibe".
+        /// Filter auf: Subject, ClassName, Teacher, Erfassungsdatum.
+        /// Zeigt und wertet aber nur Frage1..Frage8, TextRichtig, TextAnders.
         /// </summary>
-        private void LoadFeedbackData(int? subjectId, int? classId, DateTime? startDate, DateTime? endDate)
+        private void LoadZielscheibeData(string subject, string className, string teacher,
+                                         DateTime? startDate, DateTime? endDate)
         {
-            FeedbackList.Clear();
+            ZielscheibeList.Clear();
 
             try
             {
@@ -163,48 +201,40 @@ namespace FeedbackFactory
                 {
                     connection.Open();
 
-                    // Beispielhafter Aufbau der Tabelle "Zielscheibe":
-                    //   ID, Ausdauer, Umsetzung, Theoriewert, Praxiswert, Fach (FK), Klasse (FK),
-                    //   Thema, Kommentar, Notiz, Erfassungsdatum, ...
-                    //
-                    // Wichtig: In den SELECTs alias verwenden, damit wir die Werte
-                    //          später sauber aus dem Reader auslesen können.
-                    //
-                    // Die WHERE-Bedingungen nutzen Parameter, damit wir optional filtern können.
-
+                    // Wir holen alle relevanten Spalten (Frage1..Frage8, TextRichtig, TextAnders,
+                    // Erfassungsdatum, Subject, Teacher, ClassName) aus Zielscheibe
                     string query = @"
                         SELECT 
-                            z.ID,
-                            z.Ausdauer,
-                            z.Umsetzung,
-                            z.Theoriewert,
-                            z.Praxiswert,
-                            z.Fach,
-                            z.Klasse,
-                            z.Thema,
-                            z.Kommentar,
-                            z.Notiz,
+                            z.Frage1,
+                            z.Frage2,
+                            z.Frage3,
+                            z.Frage4,
+                            z.Frage5,
+                            z.Frage6,
+                            z.Frage7,
+                            z.Frage8,
+                            z.TextRichtig,
+                            z.TextAnders,
                             z.Erfassungsdatum,
-
-                            s.SubjectName AS SubjectName,
-                            c.Name AS ClassName
+                            z.Subject,
+                            z.Teacher,
+                            z.ClassName
 
                         FROM Zielscheibe z
-                        LEFT JOIN Subject s ON z.Fach = s.ID
-                        LEFT JOIN Classes c ON z.Klasse = c.ID
-
                         WHERE
-                            (@subjectId IS NULL OR z.Fach = @subjectId)
-                            AND (@classId IS NULL OR z.Klasse = @classId)
+                            (@subject IS NULL OR z.Subject = @subject)
+                            AND (@className IS NULL OR z.ClassName = @className)
+                            AND (@teacher IS NULL OR z.Teacher = @teacher)
                             AND (@startDate IS NULL OR z.Erfassungsdatum >= @startDate)
                             AND (@endDate IS NULL OR z.Erfassungsdatum <= @endDate)
                     ";
 
                     using (MySqlCommand cmd = new MySqlCommand(query, connection))
                     {
-                        // Parameter zuweisen
-                        cmd.Parameters.AddWithValue("@subjectId", (object?)subjectId ?? DBNull.Value);
-                        cmd.Parameters.AddWithValue("@classId", (object?)classId ?? DBNull.Value);
+                        // Parameter belegen
+                        cmd.Parameters.AddWithValue("@subject", (object?)subject ?? DBNull.Value);
+                        cmd.Parameters.AddWithValue("@className", (object?)className ?? DBNull.Value);
+                        cmd.Parameters.AddWithValue("@teacher", (object?)teacher ?? DBNull.Value);
                         cmd.Parameters.AddWithValue("@startDate", (object?)startDate ?? DBNull.Value);
                         cmd.Parameters.AddWithValue("@endDate", (object?)endDate ?? DBNull.Value);
 
@@ -212,101 +242,93 @@ namespace FeedbackFactory
                         {
                             while (reader.Read())
                             {
-                                // Beim Auslesen der Spalten anpassen an die echten Spaltennamen!
-                                var item = new FeedbackData
+                                // Achtung: Stelle sicher, dass in der DB wirklich INT-Werte für Frage1..Frage8 stehen
+                                var item = new ZielscheibeData
                                 {
-                                    Id = Convert.ToInt32(reader["ID"]),
+                                    Frage1 = reader["Frage1"] != DBNull.Value ? Convert.ToInt32(reader["Frage1"]) : 0,
+                                    Frage2 = reader["Frage2"] != DBNull.Value ? Convert.ToInt32(reader["Frage2"]) : 0,
+                                    Frage3 = reader["Frage3"] != DBNull.Value ? Convert.ToInt32(reader["Frage3"]) : 0,
+                                    Frage4 = reader["Frage4"] != DBNull.Value ? Convert.ToInt32(reader["Frage4"]) : 0,
+                                    Frage5 = reader["Frage5"] != DBNull.Value ? Convert.ToInt32(reader["Frage5"]) : 0,
+                                    Frage6 = reader["Frage6"] != DBNull.Value ? Convert.ToInt32(reader["Frage6"]) : 0,
+                                    Frage7 = reader["Frage7"] != DBNull.Value ? Convert.ToInt32(reader["Frage7"]) : 0,
+                                    Frage8 = reader["Frage8"] != DBNull.Value ? Convert.ToInt32(reader["Frage8"]) : 0,
 
-                                    // Fremdschlüssel
-                                    SubjectKey = reader["Fach"] != DBNull.Value
-                                                 ? Convert.ToInt32(reader["Fach"])
-                                                 : (int?)null,
-                                    ClassKey = reader["Klasse"] != DBNull.Value
-                                               ? Convert.ToInt32(reader["Klasse"])
-                                               : (int?)null,
+                                    TextRichtig = reader["TextRichtig"]?.ToString() ?? "",
+                                    TextAnders = reader["TextAnders"]?.ToString() ?? "",
 
-                                    // Ratings
-                                    Ausdauer = Convert.ToInt32(reader["Ausdauer"]),
-                                    Umsetzung = Convert.ToInt32(reader["Umsetzung"]),
-                                    Theoriewert = Convert.ToInt32(reader["Theoriewert"]),
-                                    Praxiswert = Convert.ToInt32(reader["Praxiswert"]),
+                                    Erfassungsdatum = reader["Erfassungsdatum"] != DBNull.Value
+                                                     ? Convert.ToDateTime(reader["Erfassungsdatum"])
+                                                     : DateTime.MinValue,
 
-                                    // Textliche Felder
-                                    Kommentar = reader["Kommentar"] != DBNull.Value
-                                                ? reader["Kommentar"].ToString()
-                                                : "",
-                                    Notiz = reader["Notiz"] != DBNull.Value
-                                            ? reader["Notiz"].ToString()
-                                            : "",
-                                    Thema = reader["Thema"] != DBNull.Value
-                                            ? reader["Thema"].ToString()
-                                            : "",
-
-                                    Erfassungsdatum = Convert.ToDateTime(reader["Erfassungsdatum"]),
-
-                                    // Aus den Joins
-                                    SubjectName = reader["SubjectName"] != DBNull.Value
-                                                  ? reader["SubjectName"].ToString()
-                                                  : "",
-                                    ClassName = reader["ClassName"] != DBNull.Value
-                                                ? reader["ClassName"].ToString()
-                                                : ""
+                                    Subject = reader["Subject"]?.ToString() ?? "",
+                                    Teacher = reader["Teacher"]?.ToString() ?? "",
+                                    ClassName = reader["ClassName"]?.ToString() ?? ""
                                 };
 
-                                FeedbackList.Add(item);
+                                ZielscheibeList.Add(item);
                             }
                         }
                     }
                 }
 
                 // DataGrid befüllen
-                DataGridFeedback.ItemsSource = FeedbackList;
+                DataGridFeedback.ItemsSource = ZielscheibeList;
 
                 // Durchschnittswerte berechnen & Diagramm aktualisieren
                 CalculateAndShowAverages();
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Fehler beim Laden der Daten: " + ex.Message, "Fehler", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("Fehler beim Laden der Daten: " + ex.Message,
+                                "Fehler", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
         /// <summary>
-        /// Berechnet Durchschnittswerte (hier nur über 4 Spalten: Ausdauer, Umsetzung, Theoriewert, Praxiswert)
-        /// und aktualisiert das Balkendiagramm.
+        /// Berechnet Durchschnittswerte über die 8 Fragen und aktualisiert das Balkendiagramm.
         /// </summary>
         private void CalculateAndShowAverages()
         {
-            if (FeedbackList.Count == 0)
+            if (ZielscheibeList.Count == 0)
             {
                 TxtAverage.Text = "Keine Daten für diesen Filter.";
                 ChartItemsControl.ItemsSource = null;
                 return;
             }
 
-            // 1) Durchschnitt aller 4 Fragen pro Datensatz bilden, dann Mittelwert über alle Datensätze
+            // 1) Durchschnitt aller 8 Fragen pro Datensatz bilden, dann den Mittelwert über alle Datensätze
             double totalSumOfAverages = 0;
-            foreach (var item in FeedbackList)
+            foreach (var item in ZielscheibeList)
             {
-                double itemAvg = (item.Ausdauer + item.Umsetzung + item.Theoriewert + item.Praxiswert) / 4.0;
+                double itemAvg = (item.Frage1 + item.Frage2 + item.Frage3 + item.Frage4
+                                  + item.Frage5 + item.Frage6 + item.Frage7 + item.Frage8) / 8.0;
                 totalSumOfAverages += itemAvg;
             }
-            double overallAverage = totalSumOfAverages / FeedbackList.Count;
-            TxtAverage.Text = $"Durchschnitt aller Fragen: {overallAverage:F2}";
+            double overallAverage = totalSumOfAverages / ZielscheibeList.Count;
+            TxtAverage.Text = $"Durchschnitt aller 8 Fragen: {overallAverage:F2}";
 
             // 2) Durchschnitt pro Frage (Spalte) berechnen
-            double avgAusdauer = FeedbackList.Average(f => f.Ausdauer);
-            double avgUmsetzung = FeedbackList.Average(f => f.Umsetzung);
-            double avgTheorie = FeedbackList.Average(f => f.Theoriewert);
-            double avgPraxis = FeedbackList.Average(f => f.Praxiswert);
+            double avgF1 = ZielscheibeList.Average(x => x.Frage1);
+            double avgF2 = ZielscheibeList.Average(x => x.Frage2);
+            double avgF3 = ZielscheibeList.Average(x => x.Frage3);
+            double avgF4 = ZielscheibeList.Average(x => x.Frage4);
+            double avgF5 = ZielscheibeList.Average(x => x.Frage5);
+            double avgF6 = ZielscheibeList.Average(x => x.Frage6);
+            double avgF7 = ZielscheibeList.Average(x => x.Frage7);
+            double avgF8 = ZielscheibeList.Average(x => x.Frage8);
 
-            // 3) Liste von KeyValuePairs für das Diagramm
+            // 3) KeyValuePairs fürs Diagramm
             var avgData = new List<KeyValuePair<string, double>>
             {
-                new KeyValuePair<string, double>("Ausdauer", avgAusdauer),
-                new KeyValuePair<string, double>("Umsetzung", avgUmsetzung),
-                new KeyValuePair<string, double>("Theorie", avgTheorie),
-                new KeyValuePair<string, double>("Praxis", avgPraxis)
+                new KeyValuePair<string, double>("Frage1", avgF1),
+                new KeyValuePair<string, double>("Frage2", avgF2),
+                new KeyValuePair<string, double>("Frage3", avgF3),
+                new KeyValuePair<string, double>("Frage4", avgF4),
+                new KeyValuePair<string, double>("Frage5", avgF5),
+                new KeyValuePair<string, double>("Frage6", avgF6),
+                new KeyValuePair<string, double>("Frage7", avgF7),
+                new KeyValuePair<string, double>("Frage8", avgF8),
             };
 
             // Diagramm aktualisieren
@@ -315,50 +337,30 @@ namespace FeedbackFactory
     }
 
     /// <summary>
-    /// Datenmodell für die Feedback-Daten aus der Tabelle "Zielscheibe".
-    /// Passe es an deine tatsächlichen Spalten an.
+    /// Datenmodell für die Tabelle "Zielscheibe" mit 8 Fragen und Textfeldern.
+    /// Erfassungsdatum/Subject/Teacher/ClassName nur für Filter, 
+    /// werden aber nicht im DataGrid angezeigt.
     /// </summary>
-    public class FeedbackData
+    public class ZielscheibeData
     {
-        public int Id { get; set; }
-
-        // Fremdschlüssel
-        public int? SubjectKey { get; set; }
-        public int? ClassKey { get; set; }
-
         // Numerische Bewertungs-Spalten
-        public int Ausdauer { get; set; }
-        public int Umsetzung { get; set; }
-        public int Theoriewert { get; set; }
-        public int Praxiswert { get; set; }
+        public int Frage1 { get; set; }
+        public int Frage2 { get; set; }
+        public int Frage3 { get; set; }
+        public int Frage4 { get; set; }
+        public int Frage5 { get; set; }
+        public int Frage6 { get; set; }
+        public int Frage7 { get; set; }
+        public int Frage8 { get; set; }
 
         // Text-Spalten
-        public string Kommentar { get; set; }
-        public string Notiz { get; set; }
-        public string Thema { get; set; }
+        public string TextRichtig { get; set; }
+        public string TextAnders { get; set; }
 
+        // Nur fürs Filtern (Datum, Fach, Lehrer, Klasse)
         public DateTime Erfassungsdatum { get; set; }
-
-        // Aus den Joins (Subject, Classes)
-        public string SubjectName { get; set; }
-        public string ClassName { get; set; }
-    }
-
-    /// <summary>
-    /// Hilfsklasse für die Fächer-ComboBox.
-    /// </summary>
-    public class SubjectItem
-    {
-        public int SubjectID { get; set; }
-        public string SubjectName { get; set; }
-    }
-
-    /// <summary>
-    /// Hilfsklasse für die Klassen-ComboBox.
-    /// </summary>
-    public class ClassItem
-    {
-        public int ClassID { get; set; }
+        public string Subject { get; set; }
+        public string Teacher { get; set; }
         public string ClassName { get; set; }
     }
 }
