@@ -90,13 +90,7 @@
             </StackPanel>
         </StackPanel>
 
-        <!-- Buttons Hinzufügen/Entfernen -->
-        <StackPanel Grid.Column="0" Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center" Margin="5">
-            <Button x:Name="AddButton" Content="➕ Hinzufügen" Width="120" Margin="5" Click="AddButton_Click"/>
-            <Button x:Name="RemoveButton" Content="➖ Entfernen" Width="120" Margin="5" Click="RemoveButton_Click"/>
-        </StackPanel>
-
-        <!-- Speichern/Abbrechen-Buttons unter den Eingabefeldern -->
+               <!-- Speichern/Abbrechen-Buttons unter den Eingabefeldern -->
         <StackPanel Grid.Column="2" Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="10">
             <Button x:Name="SaveButton" Content="💾 Speichern" Width="120" Margin="5" Click="SaveButton_Click"/>
             <Button x:Name="AbortButton" Content="❌ Abbrechen" Width="120" Margin="5" Click="AbortButton_Click"/>

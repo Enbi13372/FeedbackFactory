@@ -107,22 +107,74 @@ namespace FeedbackFactory
 
         private void SaveButton_Click(object sender, RoutedEventArgs e)
         {
+            // Versuche, die Eingaben in Ganzzahlen umzuwandeln und prüfe auf Fehler.
+            if (!int.TryParse(GradeTextBox.Text, out int grade))
+            {
+                MessageBox.Show("Bitte geben Sie einen gültigen Wert für das Grade ein.");
+                return;
+            }
+            if (!int.TryParse(ClassSizeTextBox.Text, out int classSize))
+            {
+                MessageBox.Show("Bitte geben Sie einen gültigen Wert für die Klassengröße ein.");
+                return;
+            }
+
+            // Wenn weder eine bestehende noch eine neue Klasse initialisiert ist, 
+            // gehe davon aus, dass eine neue Klasse erstellt werden soll.
+            if (_selectedClass == null && _newClass == null)
+            {
+                _newClass = new Class();
+            }
+
             if (_selectedClass != null)
             {
+                // Werte der bestehenden Klasse aktualisieren.
                 _selectedClass.ClassName = ClassNameTextBox.Text;
                 _selectedClass.SchoolYear = SchoolYearTextBox.Text;
                 _selectedClass.Department = DepartmentTextBox.Text;
-                _selectedClass.Grade = int.Parse(GradeTextBox.Text);
-                _selectedClass.ClassSize = int.Parse(ClassSizeTextBox.Text);
+                _selectedClass.Grade = grade;
+                _selectedClass.ClassSize = classSize;
+                // Optional: Update in der Datenbank vornehmen
+                UpdateClassInDatabase(_selectedClass);
             }
             else if (_newClass != null)
             {
+                // Werte der neuen Klasse setzen.
                 _newClass.ClassName = ClassNameTextBox.Text;
                 _newClass.SchoolYear = SchoolYearTextBox.Text;
                 _newClass.Department = DepartmentTextBox.Text;
-                _newClass.Grade = int.Parse(GradeTextBox.Text);
-                _newClass.ClassSize = int.Parse(ClassSizeTextBox.Text);
+                _newClass.Grade = grade;
+                _newClass.ClassSize = classSize;
                 AddClassToDatabase(_newClass);  // Neue Klasse zur DB hinzufügen
+            }
+        }
+
+        // Beispielmethode zum Aktualisieren einer bestehenden Klasse in der Datenbank.
+        // Passe die WHERE-Bedingung ggf. an, z.B. mittels einer eindeutigen ID.
+        private void UpdateClassInDatabase(Class existingClass)
+        {
+            string query = "UPDATE Classes SET Teacher=@Teacher, SchoolYear=@SchoolYear, Department=@Department, Grade=@Grade, ClassSize=@ClassSize WHERE ClassName=@ClassName;";
+            try
+            {
+                using (MySqlConnection connection = new MySqlConnection(_dbHandler.ConnectionString))
+                {
+                    connection.Open();
+                    using (MySqlCommand cmd = new MySqlCommand(query, connection))
+                    {
+                        cmd.Parameters.AddWithValue("@Teacher", existingClass.Teacher);
+                        cmd.Parameters.AddWithValue("@ClassName", existingClass.ClassName);
+                        cmd.Parameters.AddWithValue("@SchoolYear", existingClass.SchoolYear);
+                        cmd.Parameters.AddWithValue("@Department", existingClass.Department);
+                        cmd.Parameters.AddWithValue("@Grade", existingClass.Grade);
+                        cmd.Parameters.AddWithValue("@ClassSize", existingClass.ClassSize);
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+                LoadClasses(); // Klassenliste neu laden, um die Änderungen anzuzeigen.
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error updating class: {ex.Message}");
             }
         }
 
@@ -147,7 +199,7 @@ namespace FeedbackFactory
                         cmd.ExecuteNonQuery();
                     }
                 }
-                LoadClasses();  // Lade die Klassen nach dem Hinzufügen neu
+                LoadClasses();  // Lade die Klassenliste nach dem Hinzufügen neu.
             }
             catch (Exception ex)
             {
@@ -165,17 +217,6 @@ namespace FeedbackFactory
         {
             panelKlasse.Visibility = Visibility.Collapsed;
             panelFach.Visibility = Visibility.Visible;
-        }
-
-
-        private void AddButton_Click(object sender, RoutedEventArgs e)
-        {
-            // Deine Logik für Hinzufügen eines neuen Eintrags
-        }
-
-        private void RemoveButton_Click(object sender, RoutedEventArgs e)
-        {
-            // Deine Logik für Entfernen eines Eintrags
         }
 
         private void AbortButton_Click(object sender, RoutedEventArgs e)
