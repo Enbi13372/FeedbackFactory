@@ -19,7 +19,6 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <!-- Liste: Klasse und Schuljahr (links oben) -->
         <ListView x:Name="ClassesListView" Grid.Column="0" Grid.Row="0" Width="400" Height="300" Margin="5" ItemsSource="{Binding Classes}">
             <ListView.Resources>
                 <Style TargetType="ListViewItem">
@@ -35,7 +34,6 @@
             </ListView.View>
         </ListView>
 
-        <!-- Liste: Fach (links unten) mit ScrollViewer -->
         <ScrollViewer Grid.Column="1" Grid.Row="0" Margin="5" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
             <ListView x:Name="SubjectsListView" ItemsSource="{Binding Subjects}" Height="300">
                 <ListView.Resources>
@@ -52,13 +50,11 @@
             </ListView>
         </ScrollViewer>
 
-        <!-- Umschalt Panels für "Klasse" und "Fach" oben zentriert -->
         <StackPanel Grid.Column="2" Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="5">
             <Button Height="25" Width="80" Content="Klasse" Click="BtnKlasse_Click"/>
             <Button Height="25" Width="80" Content="Fach" Click="BtnFach_Click"/>
         </StackPanel>
 
-        <!-- Eingabefelder für Fach -->
         <StackPanel x:Name="panelFach" Grid.Column="2" Orientation="Vertical" HorizontalAlignment="Center" Margin="45,40,0,20" Height="300" Visibility="Collapsed">
             <StackPanel Orientation="Horizontal" Margin="0,5">
                 <Label Content="Fach:" Width="100" VerticalAlignment="Center"/>
@@ -66,7 +62,6 @@
             </StackPanel>
         </StackPanel>
 
-        <!-- Eingabefelder für Klasse -->
         <StackPanel x:Name="panelKlasse" Grid.Column="2" Orientation="Vertical" HorizontalAlignment="Center" Margin="45,40,0,20" Height="300">
             <StackPanel Orientation="Horizontal" Margin="0,5">
                 <Label Content="Klasse:" Width="100" VerticalAlignment="Center"/>
@@ -90,13 +85,6 @@
             </StackPanel>
         </StackPanel>
 
-        <!-- Buttons Hinzufügen/Entfernen -->
-        <StackPanel Grid.Column="0" Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center" Margin="5">
-            <Button x:Name="AddButton" Content="➕ Hinzufügen" Width="120" Margin="5" Click="AddButton_Click"/>
-            <Button x:Name="RemoveButton" Content="➖ Entfernen" Width="120" Margin="5" Click="RemoveButton_Click"/>
-        </StackPanel>
-
-        <!-- Speichern/Abbrechen-Buttons unter den Eingabefeldern -->
         <StackPanel Grid.Column="2" Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="10">
             <Button x:Name="SaveButton" Content="💾 Speichern" Width="120" Margin="5" Click="SaveButton_Click"/>
             <Button x:Name="AbortButton" Content="❌ Abbrechen" Width="120" Margin="5" Click="AbortButton_Click"/>

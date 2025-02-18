@@ -10,7 +10,7 @@ namespace FeedbackFactory
     {
         private readonly DBConnectionHandler _dbHandler;
         private ObservableCollection<Class> _classes;
-        private ObservableCollection<string> _subjects;  // Liste für die Fächer
+        private ObservableCollection<string> _subjects;  
         private Class _selectedClass;
         private Class _newClass;
 
@@ -20,7 +20,7 @@ namespace FeedbackFactory
             string configPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources", "config.json");
             _dbHandler = new DBConnectionHandler(configPath);
             LoadClasses();
-            LoadSubjects();  // Lade die Fächer in das ListView
+            LoadSubjects();  
         }
 
         private void LoadClasses()
@@ -41,12 +41,24 @@ namespace FeedbackFactory
                             {
                                 _classes.Add(new Class
                                 {
-                                    Teacher = reader.GetString("Teacher"),
-                                    ClassName = reader.GetString("ClassName"),
-                                    SchoolYear = reader.GetString("SchoolYear"),
-                                    Department = reader.GetString("Department"),
-                                    Grade = reader.GetInt32("Grade"),
-                                    ClassSize = reader.GetInt32("ClassSize")
+                                    Teacher = reader.IsDBNull(reader.GetOrdinal("Teacher"))
+                                        ? ""
+                                        : reader.GetString("Teacher"),
+                                    ClassName = reader.IsDBNull(reader.GetOrdinal("ClassName"))
+                                        ? ""
+                                        : reader.GetString("ClassName"),
+                                    SchoolYear = reader.IsDBNull(reader.GetOrdinal("SchoolYear"))
+                                        ? ""
+                                        : reader.GetString("SchoolYear"),
+                                    Department = reader.IsDBNull(reader.GetOrdinal("Department"))
+                                        ? ""
+                                        : reader.GetString("Department"),
+                                    Grade = reader.IsDBNull(reader.GetOrdinal("Grade"))
+                                        ? 0
+                                        : reader.GetInt32("Grade"),
+                                    ClassSize = reader.IsDBNull(reader.GetOrdinal("ClassSize"))
+                                        ? 0
+                                        : reader.GetInt32("ClassSize")
                                 });
                             }
                         }
@@ -64,7 +76,7 @@ namespace FeedbackFactory
         private void LoadSubjects()
         {
             _subjects = new ObservableCollection<string>();  // Liste für Fächer
-            string query = "SELECT Subject FROM Subject;";  // Tabelle 'Subject' statt 'Subjects'
+            string query = "SELECT Subject FROM Subject;";  
 
             try
             {
@@ -77,13 +89,16 @@ namespace FeedbackFactory
                         {
                             while (reader.Read())
                             {
-                                _subjects.Add(reader.GetString("Subject"));
+                                string subjectValue = reader.IsDBNull(reader.GetOrdinal("Subject"))
+                                    ? ""
+                                    : reader.GetString("Subject");
+
+                                _subjects.Add(subjectValue);
                             }
                         }
                     }
                 }
 
-                // Setze das ItemsSource des ListView für die Fächer
                 SubjectsListView.ItemsSource = _subjects;
             }
             catch (Exception ex)
@@ -107,22 +122,67 @@ namespace FeedbackFactory
 
         private void SaveButton_Click(object sender, RoutedEventArgs e)
         {
+            if (!int.TryParse(GradeTextBox.Text, out int grade))
+            {
+                MessageBox.Show("Bitte geben Sie einen gültigen Wert für das Grade ein.");
+                return;
+            }
+            if (!int.TryParse(ClassSizeTextBox.Text, out int classSize))
+            {
+                MessageBox.Show("Bitte geben Sie einen gültigen Wert für die Klassengröße ein.");
+                return;
+            }
+
+            if (_selectedClass == null && _newClass == null)
+            {
+                _newClass = new Class();
+            }
+
             if (_selectedClass != null)
             {
                 _selectedClass.ClassName = ClassNameTextBox.Text;
                 _selectedClass.SchoolYear = SchoolYearTextBox.Text;
                 _selectedClass.Department = DepartmentTextBox.Text;
-                _selectedClass.Grade = int.Parse(GradeTextBox.Text);
-                _selectedClass.ClassSize = int.Parse(ClassSizeTextBox.Text);
+                _selectedClass.Grade = grade;
+                _selectedClass.ClassSize = classSize;
+                UpdateClassInDatabase(_selectedClass);
             }
             else if (_newClass != null)
             {
                 _newClass.ClassName = ClassNameTextBox.Text;
                 _newClass.SchoolYear = SchoolYearTextBox.Text;
                 _newClass.Department = DepartmentTextBox.Text;
-                _newClass.Grade = int.Parse(GradeTextBox.Text);
-                _newClass.ClassSize = int.Parse(ClassSizeTextBox.Text);
-                AddClassToDatabase(_newClass);  // Neue Klasse zur DB hinzufügen
+                _newClass.Grade = grade;
+                _newClass.ClassSize = classSize;
+                AddClassToDatabase(_newClass);  
+            }
+        }
+
+       
+        private void UpdateClassInDatabase(Class existingClass)
+        {
+            string query = "UPDATE Classes SET Teacher=@Teacher, SchoolYear=@SchoolYear, Department=@Department, Grade=@Grade, ClassSize=@ClassSize WHERE ClassName=@ClassName;";
+            try
+            {
+                using (MySqlConnection connection = new MySqlConnection(_dbHandler.ConnectionString))
+                {
+                    connection.Open();
+                    using (MySqlCommand cmd = new MySqlCommand(query, connection))
+                    {
+                        cmd.Parameters.AddWithValue("@Teacher", existingClass.Teacher);
+                        cmd.Parameters.AddWithValue("@ClassName", existingClass.ClassName);
+                        cmd.Parameters.AddWithValue("@SchoolYear", existingClass.SchoolYear);
+                        cmd.Parameters.AddWithValue("@Department", existingClass.Department);
+                        cmd.Parameters.AddWithValue("@Grade", existingClass.Grade);
+                        cmd.Parameters.AddWithValue("@ClassSize", existingClass.ClassSize);
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+                LoadClasses(); // Klassenliste neu laden, um die Änderungen anzuzeigen.
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error updating class: {ex.Message}");
             }
         }
 
@@ -147,7 +207,7 @@ namespace FeedbackFactory
                         cmd.ExecuteNonQuery();
                     }
                 }
-                LoadClasses();  // Lade die Klassen nach dem Hinzufügen neu
+                LoadClasses();  // Lade Klassenliste neu.
             }
             catch (Exception ex)
             {
@@ -167,20 +227,9 @@ namespace FeedbackFactory
             panelFach.Visibility = Visibility.Visible;
         }
 
-
-        private void AddButton_Click(object sender, RoutedEventArgs e)
-        {
-            // Deine Logik für Hinzufügen eines neuen Eintrags
-        }
-
-        private void RemoveButton_Click(object sender, RoutedEventArgs e)
-        {
-            // Deine Logik für Entfernen eines Eintrags
-        }
-
         private void AbortButton_Click(object sender, RoutedEventArgs e)
         {
-            // Deine Logik für Abbrechen
+            // Logik für Abbrechen
         }
     }
 
