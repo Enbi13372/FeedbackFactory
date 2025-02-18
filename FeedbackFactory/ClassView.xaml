@@ -44,7 +44,7 @@
             </ListView.Resources>
             <ListView.View>
                 <GridView>
-                    <GridViewColumn Header="Fach" DisplayMemberBinding="{Binding Subject}" Width="270"/>
+                    <GridViewColumn Header="Fach" DisplayMemberBinding="{Binding}" Width="270"/>
                 </GridView>
             </ListView.View>
         </ListView>
