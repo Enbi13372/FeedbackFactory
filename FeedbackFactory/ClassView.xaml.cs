@@ -64,7 +64,7 @@ namespace FeedbackFactory
         private void LoadSubjects()
         {
             _subjects = new ObservableCollection<string>();  // Liste für Fächer
-            string query = "SELECT Subject FROM Subjects;";
+            string query = "SELECT Subject FROM Subject;";  // Tabelle 'Subject' statt 'Subjects'
 
             try
             {
@@ -203,4 +203,3 @@ namespace FeedbackFactory
         }
     }
 }
-
