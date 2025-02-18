@@ -27,7 +27,10 @@ namespace FeedbackFactory
             LoadClassesFromDatabase();
         }
 
-        
+        /// <summary>
+        /// Lädt alle verfügbaren Fächer aus der Tabelle "Subject" und befüllt ComboBoxSubject.
+        /// Achtung: Passe die Spaltennamen an deine DB-Struktur an!
+        /// </summary>
         private void LoadSubjectsFromDatabase()
         {
             try
@@ -36,28 +39,34 @@ namespace FeedbackFactory
                 {
                     connection.Open();
 
-                  
-                    string query = "SELECT * FROM Subject ;";
+                    // Beispiel: Tabelle "Subject" mit Spalten "ID" und "SubjectName".
+                    // Falls deine Spalten anders heißen, bitte anpassen.
+                    string query = "SELECT ID, SubjectName FROM Subject ORDER BY SubjectName;";
                     using (MySqlCommand cmd = new MySqlCommand(query, connection))
                     {
                         using (MySqlDataReader reader = cmd.ExecuteReader())
                         {
                             var subjectItems = new List<SubjectItem>
                             {
-                                
-                                new SubjectItem {  SubjectName = "(kein Filter)" }
+                                // Dummy-Eintrag für "(kein Filter)"
+                                new SubjectItem { SubjectID = -1, SubjectName = "(kein Filter)" }
                             };
 
                             while (reader.Read())
                             {
                                 subjectItems.Add(new SubjectItem
                                 {
-                                    
-                                    SubjectName = reader["Subject"].ToString()
+                                    SubjectID = Convert.ToInt32(reader["ID"]),
+                                    SubjectName = reader["SubjectName"].ToString()
                                 });
                             }
 
                             ComboBoxSubject.ItemsSource = subjectItems;
+                            // Der ComboBox sagen, welche Eigenschaft den Value liefert
+                            ComboBoxSubject.SelectedValuePath = nameof(SubjectItem.SubjectID);
+                            // Der ComboBox sagen, welche Eigenschaft angezeigt wird
+                            ComboBoxSubject.DisplayMemberPath = nameof(SubjectItem.SubjectName);
+
                             ComboBoxSubject.SelectedIndex = 0; // Standard: "(kein Filter)"
                         }
                     }
@@ -70,8 +79,8 @@ namespace FeedbackFactory
         }
 
         /// <summary>
-        /// Lädt alle verfügbaren Klassen aus der Tabelle "Classes" und füllt ComboBoxClass.
-        /// Tabelle: Classes (ID, ClassName, ...)
+        /// Lädt alle verfügbaren Klassen aus der Tabelle "Classes" und befüllt ComboBoxClass.
+        /// Achtung: Passe die Spaltennamen an deine DB-Struktur an!
         /// </summary>
         private void LoadClassesFromDatabase()
         {
@@ -81,8 +90,9 @@ namespace FeedbackFactory
                 {
                     connection.Open();
 
-                    
-                    string query = "Name FROM Classes ORDER BY Name;";
+                    // Beispiel: Tabelle "Classes" mit Spalten "ID" und "Name".
+                    // Falls deine Spalten anders heißen, bitte anpassen.
+                    string query = "SELECT ID, Name FROM Classes ORDER BY Name;";
                     using (MySqlCommand cmd = new MySqlCommand(query, connection))
                     {
                         using (MySqlDataReader reader = cmd.ExecuteReader())
@@ -90,19 +100,24 @@ namespace FeedbackFactory
                             var classItems = new List<ClassItem>
                             {
                                 // Dummy-Eintrag für "(kein Filter)"
-                                new ClassItem {  ClassName = "(kein Filter)" }
+                                new ClassItem { ClassID = -1, ClassName = "(kein Filter)" }
                             };
 
                             while (reader.Read())
                             {
                                 classItems.Add(new ClassItem
                                 {
-                                   
+                                    ClassID = Convert.ToInt32(reader["ID"]),
                                     ClassName = reader["Name"].ToString()
                                 });
                             }
 
                             ComboBoxClass.ItemsSource = classItems;
+                            // Der ComboBox sagen, welche Eigenschaft den Value liefert
+                            ComboBoxClass.SelectedValuePath = nameof(ClassItem.ClassID);
+                            // Der ComboBox sagen, welche Eigenschaft angezeigt wird
+                            ComboBoxClass.DisplayMemberPath = nameof(ClassItem.ClassName);
+
                             ComboBoxClass.SelectedIndex = 0; // Standard: "(kein Filter)"
                         }
                     }
@@ -120,6 +135,7 @@ namespace FeedbackFactory
         /// </summary>
         private void BtnFilter_Click(object sender, RoutedEventArgs e)
         {
+            // Ausgewählte IDs ermitteln
             int? selectedSubjectId = ComboBoxSubject.SelectedValue as int?;
             int? selectedClassId = ComboBoxClass.SelectedValue as int?;
 
@@ -134,8 +150,8 @@ namespace FeedbackFactory
         }
 
         /// <summary>
-        /// Lädt gefilterte Daten aus der Tabelle "Zielscheibe" (statt "feedbacks") 
-        /// und verbindet sie über LEFT JOIN mit Subject (Fach) und Classes (Klasse).
+        /// Lädt gefilterte Daten aus der Tabelle "Zielscheibe" (statt "feedbacks")
+        /// und verbindet sie über LEFT JOIN mit "Subject" (Fach) und "Classes" (Klasse).
         /// </summary>
         private void LoadFeedbackData(int? subjectId, int? classId, DateTime? startDate, DateTime? endDate)
         {
@@ -147,30 +163,50 @@ namespace FeedbackFactory
                 {
                     connection.Open();
 
-                    // Tabelle "Zielscheibe" mit den Spalten:
-                    //   ID, Ausdauer, Umsetzung, Theoriewert, Praxiswert, Fach, Klasse,
+                    // Beispielhafter Aufbau der Tabelle "Zielscheibe":
+                    //   ID, Ausdauer, Umsetzung, Theoriewert, Praxiswert, Fach (FK), Klasse (FK),
                     //   Thema, Kommentar, Notiz, Erfassungsdatum, ...
-                    //   s. SubjectName aus "Subject", c. ClassName aus "Classes"
+                    //
+                    // Wichtig: In den SELECTs alias verwenden, damit wir die Werte
+                    //          später sauber aus dem Reader auslesen können.
+                    //
+                    // Die WHERE-Bedingungen nutzen Parameter, damit wir optional filtern können.
 
                     string query = @"
                         SELECT 
-                            z.*,
-                            s.SubjectName,
-                            c.ClassName
+                            z.ID,
+                            z.Ausdauer,
+                            z.Umsetzung,
+                            z.Theoriewert,
+                            z.Praxiswert,
+                            z.Fach,
+                            z.Klasse,
+                            z.Thema,
+                            z.Kommentar,
+                            z.Notiz,
+                            z.Erfassungsdatum,
+
+                            s.SubjectName AS SubjectName,
+                            c.Name AS ClassName
+
                         FROM Zielscheibe z
                         LEFT JOIN Subject s ON z.Fach = s.ID
                         LEFT JOIN Classes c ON z.Klasse = c.ID
-                        WHERE 
-                            
-                            (@startDate IS NULL OR z.Erfassungsdatum >= @startDate)
-                            AND (@endDate IS NULL OR z.Erfassungsdatum <= @endDate);
+
+                        WHERE
+                            (@subjectId IS NULL OR z.Fach = @subjectId)
+                            AND (@classId IS NULL OR z.Klasse = @classId)
+                            AND (@startDate IS NULL OR z.Erfassungsdatum >= @startDate)
+                            AND (@endDate IS NULL OR z.Erfassungsdatum <= @endDate)
                     ";
 
                     using (MySqlCommand cmd = new MySqlCommand(query, connection))
                     {
-
-                        cmd.Parameters.AddWithValue("@startDate", startDate.HasValue ? (object)startDate.Value : DBNull.Value);
-                        cmd.Parameters.AddWithValue("@endDate", endDate.HasValue ? (object)endDate.Value : DBNull.Value);
+                        // Parameter zuweisen
+                        cmd.Parameters.AddWithValue("@subjectId", (object?)subjectId ?? DBNull.Value);
+                        cmd.Parameters.AddWithValue("@classId", (object?)classId ?? DBNull.Value);
+                        cmd.Parameters.AddWithValue("@startDate", (object?)startDate ?? DBNull.Value);
+                        cmd.Parameters.AddWithValue("@endDate", (object?)endDate ?? DBNull.Value);
 
                         using (MySqlDataReader reader = cmd.ExecuteReader())
                         {
@@ -202,8 +238,6 @@ namespace FeedbackFactory
                                     Notiz = reader["Notiz"] != DBNull.Value
                                             ? reader["Notiz"].ToString()
                                             : "",
-
-                                    // Weitere Spalte "Thema" (falls vorhanden)
                                     Thema = reader["Thema"] != DBNull.Value
                                             ? reader["Thema"].ToString()
                                             : "",

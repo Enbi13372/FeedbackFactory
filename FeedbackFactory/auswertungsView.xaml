@@ -18,8 +18,8 @@
             <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
                 <Label Content="Fach:" VerticalAlignment="Center" />
                 <ComboBox x:Name="ComboBoxSubject" Width="150" Margin="5,0"
-                          DisplayMemberPath="SubjectName"
-                          SelectedValuePath="SubjectID"/>
+          DisplayMemberPath="SubjectName"
+          SelectedValuePath="SubjectID"/>
 
                 <Label Content="Klasse:" VerticalAlignment="Center" />
                 <ComboBox x:Name="ComboBoxClass" Width="150" Margin="5,0"
