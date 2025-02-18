@@ -2,9 +2,9 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Linq;
 
 namespace FeedbackFactory
 {
@@ -12,7 +12,10 @@ namespace FeedbackFactory
     {
         private readonly DBConnectionHandler _dbHandler;
 
-        // Hier sammeln wir die geladenen Daten aus "Zielscheibe"
+        // Flag, um Endlosschleifen bei SelectionChanged zu vermeiden
+        private bool _isUpdatingFilters;
+
+        
         public ObservableCollection<ZielscheibeData> ZielscheibeList { get; set; }
             = new ObservableCollection<ZielscheibeData>();
 
@@ -20,229 +23,219 @@ namespace FeedbackFactory
         {
             InitializeComponent();
 
-            // DB-Connection
+           
             string configPath = System.IO.Path.Combine(
                 AppDomain.CurrentDomain.BaseDirectory, "Resources", "config.json");
             _dbHandler = new DBConnectionHandler(configPath);
 
-            // ComboBoxen füllen
-            LoadSubjectsFromDatabase();
-            LoadClassesFromDatabase();
-            LoadTeachersFromDatabase();
+            
+            UpdateFilterCombos();
         }
 
-        /// <summary>
-        /// Lädt alle distinct Subject-Einträge direkt aus Zielscheibe.
-        /// </summary>
-        private void LoadSubjectsFromDatabase()
+        #region SelectionChanged-Events der ComboBoxen
+
+        private void ComboBoxSubject_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            try
-            {
-                using (MySqlConnection connection = new MySqlConnection(_dbHandler.ConnectionString))
-                {
-                    connection.Open();
-
-                    // DISTINCT Subject aus "Zielscheibe" holen
-                    string query = "SELECT DISTINCT Subject FROM Zielscheibe ORDER BY Subject;";
-                    using (MySqlCommand cmd = new MySqlCommand(query, connection))
-                    {
-                        using (MySqlDataReader reader = cmd.ExecuteReader())
-                        {
-                            var subjectList = new List<string>
-                            {
-                                "(kein Filter)"
-                            };
-
-                            while (reader.Read())
-                            {
-                                if (reader["Subject"] != DBNull.Value)
-                                {
-                                    subjectList.Add(reader["Subject"].ToString());
-                                }
-                            }
-
-                            ComboBoxSubject.ItemsSource = subjectList;
-                            ComboBoxSubject.SelectedIndex = 0; // Standard: "(kein Filter)"
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Fehler beim Laden der Fächer: " + ex.Message,
-                                "Fehler", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
+            if (_isUpdatingFilters) return;
+            UpdateFilterCombos();
         }
 
-        /// <summary>
-        /// Lädt alle distinct Klassen-Einträge direkt aus Zielscheibe.
-        /// </summary>
-        private void LoadClassesFromDatabase()
+        private void ComboBoxClass_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            try
-            {
-                using (MySqlConnection connection = new MySqlConnection(_dbHandler.ConnectionString))
-                {
-                    connection.Open();
-
-                    // DISTINCT ClassName aus "Zielscheibe" holen
-                    string query = "SELECT DISTINCT ClassName FROM Zielscheibe ORDER BY ClassName;";
-                    using (MySqlCommand cmd = new MySqlCommand(query, connection))
-                    {
-                        using (MySqlDataReader reader = cmd.ExecuteReader())
-                        {
-                            var classList = new List<string>
-                            {
-                                "(kein Filter)"
-                            };
-
-                            while (reader.Read())
-                            {
-                                if (reader["ClassName"] != DBNull.Value)
-                                {
-                                    classList.Add(reader["ClassName"].ToString());
-                                }
-                            }
-
-                            ComboBoxClass.ItemsSource = classList;
-                            ComboBoxClass.SelectedIndex = 0;
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Fehler beim Laden der Klassen: " + ex.Message,
-                                "Fehler", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
+            if (_isUpdatingFilters) return;
+            UpdateFilterCombos();
         }
 
-        /// <summary>
-        /// Lädt alle distinct Lehrer-Einträge direkt aus Zielscheibe.
-        /// </summary>
-        private void LoadTeachersFromDatabase()
+        private void ComboBoxTeacher_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            try
-            {
-                using (MySqlConnection connection = new MySqlConnection(_dbHandler.ConnectionString))
-                {
-                    connection.Open();
-
-                    // DISTINCT Teacher aus "Zielscheibe" holen
-                    string query = "SELECT DISTINCT Teacher FROM Zielscheibe ORDER BY Teacher;";
-                    using (MySqlCommand cmd = new MySqlCommand(query, connection))
-                    {
-                        using (MySqlDataReader reader = cmd.ExecuteReader())
-                        {
-                            var teacherList = new List<string>
-                            {
-                                "(kein Filter)"
-                            };
-
-                            while (reader.Read())
-                            {
-                                if (reader["Teacher"] != DBNull.Value)
-                                {
-                                    teacherList.Add(reader["Teacher"].ToString());
-                                }
-                            }
-
-                            ComboBoxTeacher.ItemsSource = teacherList;
-                            ComboBoxTeacher.SelectedIndex = 0;
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Fehler beim Laden der Lehrer: " + ex.Message,
-                                "Fehler", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
+            if (_isUpdatingFilters) return;
+            UpdateFilterCombos();
         }
 
-        /// <summary>
-        /// Klick auf den "Filtern"-Button:
-        /// Liest die ausgewählten Filter (Fach, Klasse, Lehrer, Datum) und ruft LoadZielscheibeData auf.
-        /// </summary>
+        #endregion
+
+        #region Button "Filtern" (für Datum) 
         private void BtnFilter_Click(object sender, RoutedEventArgs e)
         {
-            // Subject
-            string selectedSubject = ComboBoxSubject.SelectedItem as string;
-            if (selectedSubject == "(kein Filter)") selectedSubject = null;
+           
+            LoadZielscheibeData();
+        }
+        #endregion
 
-            // ClassName
-            string selectedClass = ComboBoxClass.SelectedItem as string;
-            if (selectedClass == "(kein Filter)") selectedClass = null;
+        
+        private void UpdateFilterCombos()
+        {
+            _isUpdatingFilters = true;
+            try
+            {
+                // Aktuelle Auswahl 
+                string selectedSubject = GetSelectedValue(ComboBoxSubject);
+                string selectedClass = GetSelectedValue(ComboBoxClass);
+                string selectedTeacher = GetSelectedValue(ComboBoxTeacher);
 
-            // Teacher
-            string selectedTeacher = ComboBoxTeacher.SelectedItem as string;
-            if (selectedTeacher == "(kein Filter)") selectedTeacher = null;
+                // 1) Subject-Liste ermitteln (Klasse + Lehrer)
+                var newSubjects = GetDistinctValuesFromDB(
+                    columnName: "Subject",
+                    otherColumn1: "ClassName", otherValue1: selectedClass,
+                    otherColumn2: "Teacher", otherValue2: selectedTeacher
+                );
 
-            // Datum
-            DateTime? startDate = DatePickerStart.SelectedDate;
-            DateTime? endDate = DatePickerEnd.SelectedDate;
+                // 2) Class-Liste ermitteln ( Subject + Teacher)
+                var newClasses = GetDistinctValuesFromDB(
+                    columnName: "ClassName",
+                    otherColumn1: "Subject", otherValue1: selectedSubject,
+                    otherColumn2: "Teacher", otherValue2: selectedTeacher
+                );
 
-            LoadZielscheibeData(selectedSubject, selectedClass, selectedTeacher, startDate, endDate);
+                // 3) Teacher-Liste ermitteln (Subject + Class)
+                var newTeachers = GetDistinctValuesFromDB(
+                    columnName: "Teacher",
+                    otherColumn1: "Subject", otherValue1: selectedSubject,
+                    otherColumn2: "ClassName", otherValue2: selectedClass
+                );
+
+                // ComboBoxen aktualisieren
+                UpdateComboBox(ComboBoxSubject, newSubjects, ref selectedSubject);
+                UpdateComboBox(ComboBoxClass, newClasses, ref selectedClass);
+                UpdateComboBox(ComboBoxTeacher, newTeachers, ref selectedTeacher);
+
+                // Anschließend gefilterte Datensätze laden
+                LoadZielscheibeData();
+            }
+            finally
+            {
+                _isUpdatingFilters = false;
+            }
         }
 
-        /// <summary>
-        /// Lädt gefilterte Daten aus der Tabelle "Zielscheibe".
-        /// Filter auf: Subject, ClassName, Teacher, Erfassungsdatum.
-        /// Zeigt und wertet aber nur Frage1..Frage8, TextRichtig, TextAnders.
-        /// </summary>
-        private void LoadZielscheibeData(string subject, string className, string teacher,
-                                         DateTime? startDate, DateTime? endDate)
+      
+        private List<string> GetDistinctValuesFromDB(
+            string columnName,
+            string otherColumn1, string otherValue1,
+            string otherColumn2, string otherValue2)
+        {
+            var result = new List<string>();
+            try
+            {
+                using (var conn = new MySqlConnection(_dbHandler.ConnectionString))
+                {
+                    conn.Open();
+
+                    string sql = $@"
+                        SELECT DISTINCT {columnName}
+                        FROM Zielscheibe
+                        WHERE
+                            (@val1 IS NULL OR {otherColumn1} = @val1)
+                            AND (@val2 IS NULL OR {otherColumn2} = @val2)
+                        ORDER BY {columnName};
+                    ";
+
+                    using (var cmd = new MySqlCommand(sql, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@val1", (object?)otherValue1 ?? DBNull.Value);
+                        cmd.Parameters.AddWithValue("@val2", (object?)otherValue2 ?? DBNull.Value);
+
+                        using (var reader = cmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                if (reader[columnName] != DBNull.Value)
+                                {
+                                    result.Add(reader[columnName].ToString());
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Fehler bei GetDistinctValuesFromDB({columnName}): {ex.Message}");
+            }
+            return result;
+        }
+
+        private void UpdateComboBox(ComboBox combo, List<string> newValues, ref string selectedValue)
+        {
+            // "(kein Filter)" vorne anhängen
+            var finalList = new List<string> { "(kein Filter)" };
+            finalList.AddRange(newValues);
+
+            combo.ItemsSource = finalList;
+
+            
+            if (selectedValue != null && !finalList.Contains(selectedValue))
+            {
+                selectedValue = null;
+            }
+
+           
+            if (selectedValue == null)
+            {
+                combo.SelectedIndex = 0; // "(kein Filter)"
+            }
+            else
+            {
+                combo.SelectedItem = selectedValue;
+            }
+        }
+
+        private string GetSelectedValue(ComboBox combo)
+        {
+            var val = combo.SelectedItem as string;
+            if (val == null || val == "(kein Filter)")
+                return null;
+            return val;
+        }
+
+        
+        private void LoadZielscheibeData()
         {
             ZielscheibeList.Clear();
 
+            // Datum auslesen
+            DateTime? startDate = DatePickerStart.SelectedDate;
+            DateTime? endDate = DatePickerEnd.SelectedDate;
+
+            // ComboBox-Filter auslesen
+            string subject = GetSelectedValue(ComboBoxSubject);
+            string className = GetSelectedValue(ComboBoxClass);
+            string teacher = GetSelectedValue(ComboBoxTeacher);
+
             try
             {
-                using (MySqlConnection connection = new MySqlConnection(_dbHandler.ConnectionString))
+                using (var conn = new MySqlConnection(_dbHandler.ConnectionString))
                 {
-                    connection.Open();
+                    conn.Open();
 
-                    // Wir holen alle relevanten Spalten (Frage1..Frage8, TextRichtig, TextAnders,
-                    // Erfassungsdatum, Subject, Teacher, ClassName) aus Zielscheibe
-                    string query = @"
-                        SELECT 
-                            z.Frage1,
-                            z.Frage2,
-                            z.Frage3,
-                            z.Frage4,
-                            z.Frage5,
-                            z.Frage6,
-                            z.Frage7,
-                            z.Frage8,
-                            z.TextRichtig,
-                            z.TextAnders,
-                            z.Erfassungsdatum,
-                            z.Subject,
-                            z.Teacher,
-                            z.ClassName
-
-                        FROM Zielscheibe z
+                    string sql = @"
+                        SELECT
+                            Frage1, Frage2, Frage3, Frage4,
+                            Frage5, Frage6, Frage7, Frage8,
+                            TextRichtig, TextAnders,
+                            Subject, ClassName, Teacher,
+                            Erfassungsdatum
+                        FROM Zielscheibe
                         WHERE
-                            (@subject IS NULL OR z.Subject = @subject)
-                            AND (@className IS NULL OR z.ClassName = @className)
-                            AND (@teacher IS NULL OR z.Teacher = @teacher)
-                            AND (@startDate IS NULL OR z.Erfassungsdatum >= @startDate)
-                            AND (@endDate IS NULL OR z.Erfassungsdatum <= @endDate)
+                            (@subject IS NULL OR Subject = @subject)
+                            AND (@className IS NULL OR ClassName = @className)
+                            AND (@teacher IS NULL OR Teacher = @teacher)
+                            AND (@startDate IS NULL OR Erfassungsdatum >= @startDate)
+                            AND (@endDate IS NULL OR Erfassungsdatum <= @endDate)
                     ";
 
-                    using (MySqlCommand cmd = new MySqlCommand(query, connection))
+                    using (var cmd = new MySqlCommand(sql, conn))
                     {
-                        // Parameter belegen
                         cmd.Parameters.AddWithValue("@subject", (object?)subject ?? DBNull.Value);
                         cmd.Parameters.AddWithValue("@className", (object?)className ?? DBNull.Value);
                         cmd.Parameters.AddWithValue("@teacher", (object?)teacher ?? DBNull.Value);
                         cmd.Parameters.AddWithValue("@startDate", (object?)startDate ?? DBNull.Value);
                         cmd.Parameters.AddWithValue("@endDate", (object?)endDate ?? DBNull.Value);
 
-                        using (MySqlDataReader reader = cmd.ExecuteReader())
+                        using (var reader = cmd.ExecuteReader())
                         {
                             while (reader.Read())
                             {
-                                // Achtung: Stelle sicher, dass in der DB wirklich INT-Werte für Frage1..Frage8 stehen
                                 var item = new ZielscheibeData
                                 {
                                     Frage1 = reader["Frage1"] != DBNull.Value ? Convert.ToInt32(reader["Frage1"]) : 0,
@@ -257,13 +250,12 @@ namespace FeedbackFactory
                                     TextRichtig = reader["TextRichtig"]?.ToString() ?? "",
                                     TextAnders = reader["TextAnders"]?.ToString() ?? "",
 
-                                    Erfassungsdatum = reader["Erfassungsdatum"] != DBNull.Value
-                                                     ? Convert.ToDateTime(reader["Erfassungsdatum"])
-                                                     : DateTime.MinValue,
-
                                     Subject = reader["Subject"]?.ToString() ?? "",
+                                    ClassName = reader["ClassName"]?.ToString() ?? "",
                                     Teacher = reader["Teacher"]?.ToString() ?? "",
-                                    ClassName = reader["ClassName"]?.ToString() ?? ""
+                                    Erfassungsdatum = reader["Erfassungsdatum"] != DBNull.Value
+                                        ? Convert.ToDateTime(reader["Erfassungsdatum"])
+                                        : DateTime.MinValue
                                 };
 
                                 ZielscheibeList.Add(item);
@@ -272,22 +264,18 @@ namespace FeedbackFactory
                     }
                 }
 
-                // DataGrid befüllen
                 DataGridFeedback.ItemsSource = ZielscheibeList;
 
-                // Durchschnittswerte berechnen & Diagramm aktualisieren
+                // Beispiel: Durchschnittswerte berechnen
                 CalculateAndShowAverages();
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Fehler beim Laden der Daten: " + ex.Message,
-                                "Fehler", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Fehler beim Laden der Daten: {ex.Message}");
             }
         }
 
-        /// <summary>
-        /// Berechnet Durchschnittswerte über die 8 Fragen und aktualisiert das Balkendiagramm.
-        /// </summary>
+        
         private void CalculateAndShowAverages()
         {
             if (ZielscheibeList.Count == 0)
@@ -297,53 +285,45 @@ namespace FeedbackFactory
                 return;
             }
 
-            // 1) Durchschnitt aller 8 Fragen pro Datensatz bilden, dann den Mittelwert über alle Datensätze
             double totalSumOfAverages = 0;
             foreach (var item in ZielscheibeList)
             {
-                double itemAvg = (item.Frage1 + item.Frage2 + item.Frage3 + item.Frage4
-                                  + item.Frage5 + item.Frage6 + item.Frage7 + item.Frage8) / 8.0;
-                totalSumOfAverages += itemAvg;
+                double avg = (item.Frage1 + item.Frage2 + item.Frage3 + item.Frage4
+                              + item.Frage5 + item.Frage6 + item.Frage7 + item.Frage8) / 8.0;
+                totalSumOfAverages += avg;
             }
-            double overallAverage = totalSumOfAverages / ZielscheibeList.Count;
-            TxtAverage.Text = $"Durchschnitt aller 8 Fragen: {overallAverage:F2}";
+            double overallAvg = totalSumOfAverages / ZielscheibeList.Count;
+            TxtAverage.Text = $"Durchschnitt (8 Fragen): {overallAvg:F2}";
 
-            // 2) Durchschnitt pro Frage (Spalte) berechnen
-            double avgF1 = ZielscheibeList.Average(x => x.Frage1);
-            double avgF2 = ZielscheibeList.Average(x => x.Frage2);
-            double avgF3 = ZielscheibeList.Average(x => x.Frage3);
-            double avgF4 = ZielscheibeList.Average(x => x.Frage4);
-            double avgF5 = ZielscheibeList.Average(x => x.Frage5);
-            double avgF6 = ZielscheibeList.Average(x => x.Frage6);
-            double avgF7 = ZielscheibeList.Average(x => x.Frage7);
-            double avgF8 = ZielscheibeList.Average(x => x.Frage8);
+            // Für ein kleines Diagramm pro Frage:
+            var avgF1 = ZielscheibeList.Average(x => x.Frage1);
+            var avgF2 = ZielscheibeList.Average(x => x.Frage2);
+            var avgF3 = ZielscheibeList.Average(x => x.Frage3);
+            var avgF4 = ZielscheibeList.Average(x => x.Frage4);
+            var avgF5 = ZielscheibeList.Average(x => x.Frage5);
+            var avgF6 = ZielscheibeList.Average(x => x.Frage6);
+            var avgF7 = ZielscheibeList.Average(x => x.Frage7);
+            var avgF8 = ZielscheibeList.Average(x => x.Frage8);
 
-            // 3) KeyValuePairs fürs Diagramm
-            var avgData = new List<KeyValuePair<string, double>>
+            var chartData = new List<KeyValuePair<string, double>>
             {
-                new KeyValuePair<string, double>("Frage1", avgF1),
-                new KeyValuePair<string, double>("Frage2", avgF2),
-                new KeyValuePair<string, double>("Frage3", avgF3),
-                new KeyValuePair<string, double>("Frage4", avgF4),
-                new KeyValuePair<string, double>("Frage5", avgF5),
-                new KeyValuePair<string, double>("Frage6", avgF6),
-                new KeyValuePair<string, double>("Frage7", avgF7),
-                new KeyValuePair<string, double>("Frage8", avgF8),
+                new KeyValuePair<string, double>("F1", avgF1),
+                new KeyValuePair<string, double>("F2", avgF2),
+                new KeyValuePair<string, double>("F3", avgF3),
+                new KeyValuePair<string, double>("F4", avgF4),
+                new KeyValuePair<string, double>("F5", avgF5),
+                new KeyValuePair<string, double>("F6", avgF6),
+                new KeyValuePair<string, double>("F7", avgF7),
+                new KeyValuePair<string, double>("F8", avgF8),
             };
 
-            // Diagramm aktualisieren
-            ChartItemsControl.ItemsSource = avgData;
+            ChartItemsControl.ItemsSource = chartData;
         }
     }
 
-    /// <summary>
-    /// Datenmodell für die Tabelle "Zielscheibe" mit 8 Fragen und Textfeldern.
-    /// Erfassungsdatum/Subject/Teacher/ClassName nur für Filter, 
-    /// werden aber nicht im DataGrid angezeigt.
-    /// </summary>
+  
     public class ZielscheibeData
     {
-        // Numerische Bewertungs-Spalten
         public int Frage1 { get; set; }
         public int Frage2 { get; set; }
         public int Frage3 { get; set; }
@@ -353,14 +333,12 @@ namespace FeedbackFactory
         public int Frage7 { get; set; }
         public int Frage8 { get; set; }
 
-        // Text-Spalten
         public string TextRichtig { get; set; }
         public string TextAnders { get; set; }
 
-        // Nur fürs Filtern (Datum, Fach, Lehrer, Klasse)
-        public DateTime Erfassungsdatum { get; set; }
         public string Subject { get; set; }
-        public string Teacher { get; set; }
         public string ClassName { get; set; }
+        public string Teacher { get; set; }
+        public DateTime Erfassungsdatum { get; set; }
     }
 }
