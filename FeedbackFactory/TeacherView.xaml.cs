@@ -1,4 +1,5 @@
 using MySql.Data.MySqlClient;
+using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -13,17 +14,17 @@ namespace FeedbackFactory
         {
             InitializeComponent();
 
-            // Initialize the DB handler (assuming the correct path to your config file)
+            // Initialisieren des DB-Handlers (korrekter Pfad zur Konfigurationsdatei)
             string configPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources", "config.json");
             _dbHandler = new DBConnectionHandler(configPath);
         }
 
         private void TeacherView_Loaded(object sender, RoutedEventArgs e)
         {
-            // Reset keyboard state to avoid handling residual key presses
+            // Tastaturfokus zurücksetzen, um unerwünschte Key-Events zu vermeiden
             Keyboard.ClearFocus();
 
-            // Optionally, delay focus setup slightly to prevent immediate key handling
+            // Fokussierung des Benutzernamen-Feldes mit leichter Verzögerung
             Dispatcher.BeginInvoke(new Action(() =>
             {
                 UsernameTB.Focus();
@@ -43,14 +44,14 @@ namespace FeedbackFactory
             string username = UsernameTB.Text;
             string password = PasswordTB.Password;
 
-            // Check if username and password are filled
+            // Überprüfen, ob beide Felder ausgefüllt sind
             if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
             {
                 MessageBox.Show("Bitte geben Sie sowohl Benutzernamen als auch Passwort ein.", "Login Fehlgeschlagen", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
-            // Query to retrieve the hashed password and role from the database
+            // SQL-Abfrage, um das gehashte Passwort und die Rolle aus der Datenbank abzurufen
             string query = "SELECT Password, Role FROM Users WHERE Username = @Username;";
             var parameters = new MySqlParameter[]
             {
@@ -81,24 +82,27 @@ namespace FeedbackFactory
 
                 if (storedHashedPassword == null || role == null)
                 {
-                    // Username not found in the database
+                    // Benutzername nicht in der Datenbank gefunden
                     MessageBox.Show("Benutzername nicht gefunden.", "Login Fehlgeschlagen", MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
                 }
 
-                // Verify the entered password with the hashed password in the database using bcrypt
+                // Überprüfen des eingegebenen Passworts mittels bcrypt
                 if (BCrypt.Net.BCrypt.Verify(password, storedHashedPassword))
                 {
-                    // Open the main application window with the role
+                    // Globalen Property-Wert setzen, sodass der angemeldete Lehrer in der gesamten Anwendung verfügbar ist
+                    App.Current.Properties["LoggedInTeacher"] = username;
+
+                    // Öffnen des Hauptfensters (MainWindow) unter Übergabe des Benutzernamens und der Rolle
                     MainWindow mainWindow = new MainWindow(username, role.Value);
                     mainWindow.Show();
 
-                    // Close the login window (this view)
+                    // Schließen des Login-Fensters (das Fenster, das diese View enthält)
                     Window.GetWindow(this).Close();
                 }
                 else
                 {
-                    // Incorrect password
+                    // Falsches Passwort
                     MessageBox.Show("Ungültiger Benutzername oder Passwort. Bitte versuchen Sie es erneut.", "Login Fehlgeschlagen", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
