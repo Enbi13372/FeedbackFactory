@@ -122,41 +122,37 @@ namespace FeedbackFactory
                 _newClass.Department = DepartmentTextBox.Text;
                 _newClass.Grade = int.Parse(GradeTextBox.Text);
                 _newClass.ClassSize = int.Parse(ClassSizeTextBox.Text);
-
-                _classes.Add(_newClass);
-                ClassesListView.SelectedItem = _newClass;
-                _newClass = null;
+                AddClassToDatabase(_newClass);  // Neue Klasse zur DB hinzufügen
             }
-            ClassesListView.Items.Refresh();
         }
 
-        private void AddButton_Click(object sender, RoutedEventArgs e)
+        private void AddClassToDatabase(Class newClass)
         {
-            _newClass = new Class
+            string query = "INSERT INTO Classes (Teacher, ClassName, SchoolYear, Department, Grade, ClassSize) " +
+                           "VALUES (@Teacher, @ClassName, @SchoolYear, @Department, @Grade, @ClassSize);";
+
+            try
             {
-                Teacher = "New Teacher",
-                ClassName = "New Class",
-                SchoolYear = "2025",
-                Department = "New Department",
-                Grade = 1,
-                ClassSize = 1
-            };
-
-            ClassNameTextBox.Text = _newClass.ClassName;
-            SchoolYearTextBox.Text = _newClass.SchoolYear;
-            DepartmentTextBox.Text = _newClass.Department;
-            GradeTextBox.Text = _newClass.Grade.ToString();
-            ClassSizeTextBox.Text = _newClass.ClassSize.ToString();
-        }
-
-        private void AbortButton_Click(object sender, RoutedEventArgs e)
-        {
-            // Reset fields and close the form
-            ClassNameTextBox.Clear();
-            SchoolYearTextBox.Clear();
-            DepartmentTextBox.Clear();
-            GradeTextBox.Clear();
-            ClassSizeTextBox.Clear();
+                using (MySqlConnection connection = new MySqlConnection(_dbHandler.ConnectionString))
+                {
+                    connection.Open();
+                    using (MySqlCommand cmd = new MySqlCommand(query, connection))
+                    {
+                        cmd.Parameters.AddWithValue("@Teacher", newClass.Teacher);
+                        cmd.Parameters.AddWithValue("@ClassName", newClass.ClassName);
+                        cmd.Parameters.AddWithValue("@SchoolYear", newClass.SchoolYear);
+                        cmd.Parameters.AddWithValue("@Department", newClass.Department);
+                        cmd.Parameters.AddWithValue("@Grade", newClass.Grade);
+                        cmd.Parameters.AddWithValue("@ClassSize", newClass.ClassSize);
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+                LoadClasses();  // Lade die Klassen nach dem Hinzufügen neu
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error adding class: {ex.Message}");
+            }
         }
 
         private void BtnKlasse_Click(object sender, RoutedEventArgs e)
@@ -171,35 +167,30 @@ namespace FeedbackFactory
             panelFach.Visibility = Visibility.Visible;
         }
 
+
+        private void AddButton_Click(object sender, RoutedEventArgs e)
+        {
+            // Deine Logik für Hinzufügen eines neuen Eintrags
+        }
+
         private void RemoveButton_Click(object sender, RoutedEventArgs e)
         {
-            // Entfernen der ausgewählten Klasse aus der Liste
-            if (_selectedClass != null)
-            {
-                var result = MessageBox.Show($"Möchten Sie die Klasse '{_selectedClass.ClassName}' wirklich entfernen?", "Bestätigung", MessageBoxButton.YesNo);
-                if (result == MessageBoxResult.Yes)
-                {
-                    _classes.Remove(_selectedClass);
-                    _selectedClass = null;
-
-                    // Clear the TextBox fields after removal
-                    ClassNameTextBox.Clear();
-                    SchoolYearTextBox.Clear();
-                    DepartmentTextBox.Clear();
-                    GradeTextBox.Clear();
-                    ClassSizeTextBox.Clear();
-                }
-            }
+            // Deine Logik für Entfernen eines Eintrags
         }
 
-        public class Class
+        private void AbortButton_Click(object sender, RoutedEventArgs e)
         {
-            public string Teacher { get; set; }
-            public string ClassName { get; set; }
-            public string SchoolYear { get; set; }
-            public string Department { get; set; }
-            public int Grade { get; set; }
-            public int ClassSize { get; set; }
+            // Deine Logik für Abbrechen
         }
+    }
+
+    public class Class
+    {
+        public string Teacher { get; set; }
+        public string ClassName { get; set; }
+        public string SchoolYear { get; set; }
+        public string Department { get; set; }
+        public int Grade { get; set; }
+        public int ClassSize { get; set; }
     }
 }
