@@ -6,6 +6,7 @@
              xmlns:local="clr-namespace:FeedbackFactory"
              mc:Ignorable="d" 
              d:DesignHeight="700" d:DesignWidth="1000">
+
     <Grid Background="#D7E4F2" Margin="10">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
@@ -57,35 +58,35 @@
             <Button Height="25" Width="80" Content="Fach" Click="BtnFach_Click"/>
         </StackPanel>
 
-        <!-- Eingabefelder nach rechts (Klasse und Schuljahr) -->
-        <StackPanel x:Name="panelKlasse" Grid.Column="2" Orientation="Vertical" HorizontalAlignment="Center" Margin="45,40,0,20">
+        <!-- Eingabefelder für Fach -->
+        <StackPanel x:Name="panelFach" Grid.Column="2" Orientation="Vertical" HorizontalAlignment="Center" Margin="45,40,0,20" Height="300" Visibility="Collapsed">
             <StackPanel Orientation="Horizontal" Margin="0,5">
-                <Label Content="Klasse:" Width="100"/>
-                <TextBox x:Name="ClassNameTextBox" Width="200"/>
-            </StackPanel>
-            <StackPanel Orientation="Horizontal" Margin="0,5">
-                <Label Content="Schuljahr:" Width="100"/>
-                <TextBox x:Name="SchoolYearTextBox" Width="200"/>
-            </StackPanel>
-            <StackPanel Orientation="Horizontal" Margin="0,5">
-                <Label Content="Jahrgang:" Width="100"/>
-                <TextBox x:Name="GradeTextBox" Width="200"/>
-            </StackPanel>
-            <StackPanel Orientation="Horizontal" Margin="0,5">
-                <Label Content="Klassengröße:" Width="100"/>
-                <TextBox x:Name="ClassSizeTextBox" Width="200"/>
-            </StackPanel>
-            <StackPanel Orientation="Horizontal" Margin="0,5">
-                <Label Content="Abteilung:" Width="100"/>
-                <TextBox x:Name="DepartmentTextBox" Width="200"/>
+                <Label Content="Fach:" Width="100" VerticalAlignment="Center"/>
+                <TextBox x:Name="SubjectTextBox" Width="200" VerticalAlignment="Center"/>
             </StackPanel>
         </StackPanel>
 
-        <!-- Eingabefelder (Fach) -->
-        <StackPanel x:Name="panelFach" Grid.Column="2" Grid.Row="1" Orientation="Vertical" Visibility="Collapsed" Margin="10">
+        <!-- Eingabefelder für Klasse -->
+        <StackPanel x:Name="panelKlasse" Grid.Column="2" Orientation="Vertical" HorizontalAlignment="Center" Margin="45,40,0,20" Height="300">
             <StackPanel Orientation="Horizontal" Margin="0,5">
-                <Label Content="Fach:" Width="100"/>
-                <TextBox x:Name="SubjectTextBox" Width="200"/>
+                <Label Content="Klasse:" Width="100" VerticalAlignment="Center"/>
+                <TextBox x:Name="ClassNameTextBox" Width="200" VerticalAlignment="Center"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Margin="0,5">
+                <Label Content="Schuljahr:" Width="100" VerticalAlignment="Center"/>
+                <TextBox x:Name="SchoolYearTextBox" Width="200" VerticalAlignment="Center"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Margin="0,5">
+                <Label Content="Jahrgang:" Width="100" VerticalAlignment="Center"/>
+                <TextBox x:Name="GradeTextBox" Width="200" VerticalAlignment="Center"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Margin="0,5">
+                <Label Content="Klassengröße:" Width="100" VerticalAlignment="Center"/>
+                <TextBox x:Name="ClassSizeTextBox" Width="200" VerticalAlignment="Center"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Margin="0,5">
+                <Label Content="Abteilung:" Width="100" VerticalAlignment="Center"/>
+                <TextBox x:Name="DepartmentTextBox" Width="200" VerticalAlignment="Center"/>
             </StackPanel>
         </StackPanel>
 
