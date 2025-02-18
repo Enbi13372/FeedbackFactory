@@ -94,5 +94,10 @@ namespace FeedbackFactory
         {
             MainContent.Content = new ClassView();
         }
+
+        private void BtnAuswertung_Click(object sender, RoutedEventArgs e)
+        {
+            MainContent.Content = new auswertungsView();
+        }
     }
 }
