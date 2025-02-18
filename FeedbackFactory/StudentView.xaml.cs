@@ -22,6 +22,14 @@ namespace FeedbackFactory
             usedKeysFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources", "usedKeys.json");
         }
 
+        private void StudentView_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                ContinueBTN_Click(ContinueBTN, new RoutedEventArgs());
+                e.Handled = true;
+            }
+        }
         private void StudentView_Loaded(object sender, RoutedEventArgs e)
         {
             KeyTB.Focus();
