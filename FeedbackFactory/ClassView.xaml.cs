@@ -13,7 +13,6 @@ namespace FeedbackFactory
         private ObservableCollection<string> _subjects;
 
         private Class _selectedClass;
-        private Class _newClass;
 
         public ClassView()
         {
@@ -109,10 +108,18 @@ namespace FeedbackFactory
         }
         #endregion
 
-        #region Save Class
+        #region Save Button Logic
         private void SaveButton_Click(object sender, RoutedEventArgs e)
         {
-            SaveClass();
+            // Prüfe, welcher Modus 
+            if (panelKlasse.Visibility == Visibility.Visible)
+            {
+                SaveClass();
+            }
+            else if (panelFach.Visibility == Visibility.Visible)
+            {
+                SaveSubject();
+            }
         }
 
         private void SaveClass()
@@ -124,7 +131,7 @@ namespace FeedbackFactory
             }
 
             string department = AbteilungComboBox.Text;
-            string schoolYear = GradeComboBox.Text;             // Schuljahr als String (z.B. "2024/25")
+            string schoolYear = GradeComboBox.Text;  
             string buchstabe = BuchstabeCombobox.Text;
 
             if (string.IsNullOrWhiteSpace(department) || string.IsNullOrWhiteSpace(schoolYear) || string.IsNullOrWhiteSpace(buchstabe))
@@ -207,9 +214,38 @@ namespace FeedbackFactory
                 MessageBox.Show($"Error adding class: {ex.Message}");
             }
         }
+
+        private void SaveSubject()
+        {
+            string subject = SubjectTextBox.Text;
+            if (string.IsNullOrWhiteSpace(subject))
+            {
+                MessageBox.Show("Bitte geben Sie ein gültiges Fach ein.");
+                return;
+            }
+
+            string query = "INSERT INTO Subject (Subject) VALUES (@Subject);";
+            try
+            {
+                using (MySqlConnection connection = new MySqlConnection(_dbHandler.ConnectionString))
+                {
+                    connection.Open();
+                    using (MySqlCommand cmd = new MySqlCommand(query, connection))
+                    {
+                        cmd.Parameters.AddWithValue("@Subject", subject);
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+                LoadSubjects();  
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error adding subject: {ex.Message}");
+            }
+        }
         #endregion
 
-        #region Buttons
+        #region Button Clicks for Panel Switching
         private void BtnKlasse_Click(object sender, RoutedEventArgs e)
         {
             panelKlasse.Visibility = Visibility.Visible;
