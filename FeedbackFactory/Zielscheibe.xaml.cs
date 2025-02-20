@@ -12,21 +12,29 @@ namespace FeedbackFactory
         private readonly DBConnectionHandler _dbHandler;
 
         public string FormularKey { get; set; }
+        public string FormularClassName { get; set; }
+        public string FormularSubject { get; set; }
+        public string FormularTeacher { get; set; }
 
-        public Zielscheibe()
+        public Zielscheibe(string key, string className, string subject, string teacher)
         {
             InitializeComponent();
-          // ENTFERNEN NUR ZUM TEST !!!!!!!!!!
-            FormularKey = "TestFormularKey_001";
-            // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+            FormularKey = key;
+            FormularClassName = className;
+            FormularSubject = subject;
+            FormularTeacher = teacher;
 
             string configPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources", "config.json");
             _dbHandler = new DBConnectionHandler(configPath);
         }
 
+        public Zielscheibe() : this("TestFormularKey_001", "TestKlasse", "TestSubject", "TestTeacher")
+        {
+        }
+
         private void Submit_Click(object sender, RoutedEventArgs e)
         {
-            // Ermitteln der Bewertungen für die 8 Fragen.
             int frage1 = GetRating(rdoQ1_5, rdoQ1_4, rdoQ1_3, rdoQ1_2, rdoQ1_1);
             int frage2 = GetRating(rdoQ2_5, rdoQ2_4, rdoQ2_3, rdoQ2_2, rdoQ2_1);
             int frage3 = GetRating(rdoQ3_5, rdoQ3_4, rdoQ3_3, rdoQ3_2, rdoQ3_1);
@@ -53,8 +61,8 @@ namespace FeedbackFactory
                     connection.Open();
 
                     string query = @"INSERT INTO Zielscheibe 
-                                     (FormularKey, Erfassungsdatum, Frage1, Frage2, Frage3, Frage4, Frage5, Frage6, Frage7, Frage8, TextRichtig, TextAnders)
-                                     VALUES (@FormularKey, @Erfassungsdatum, @Frage1, @Frage2, @Frage3, @Frage4, @Frage5, @Frage6, @Frage7, @Frage8, @TextRichtig, @TextAnders)";
+                                     (FormularKey, Erfassungsdatum, Frage1, Frage2, Frage3, Frage4, Frage5, Frage6, Frage7, Frage8, TextRichtig, TextAnders, ClassName, Subject, Teacher)
+                                     VALUES (@FormularKey, @Erfassungsdatum, @Frage1, @Frage2, @Frage3, @Frage4, @Frage5, @Frage6, @Frage7, @Frage8, @TextRichtig, @TextAnders, @ClassName, @Subject, @Teacher)";
                     using (MySqlCommand cmd = new MySqlCommand(query, connection))
                     {
                         cmd.Parameters.AddWithValue("@FormularKey", FormularKey);
@@ -69,6 +77,9 @@ namespace FeedbackFactory
                         cmd.Parameters.AddWithValue("@Frage8", frage8);
                         cmd.Parameters.AddWithValue("@TextRichtig", textRichtig);
                         cmd.Parameters.AddWithValue("@TextAnders", textAnders);
+                        cmd.Parameters.AddWithValue("@ClassName", FormularClassName);
+                        cmd.Parameters.AddWithValue("@Subject", FormularSubject);
+                        cmd.Parameters.AddWithValue("@Teacher", FormularTeacher);
 
                         cmd.ExecuteNonQuery();
                     }

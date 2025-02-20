@@ -5,21 +5,20 @@ namespace FeedbackFactory
 {
     public partial class StudentFormWindow : Window
     {
-        public StudentFormWindow(string key, string formName)
+        // Neuer Konstruktor mit 5 Parametern: key, formName, className, subject und teacher
+        public StudentFormWindow(string key, string formName, string className, string subject, string teacher)
         {
             InitializeComponent();
 
-            // Set the key and form name if needed, and load the correct UserControl
             if (formName == "UnterrichtsBeurteilung")
             {
-                // Load UnterrichtsBeurteilung.xaml
-                var formControl = new UnterrichtsBeurteilung(); // Make sure to instantiate the correct UserControl
+                // Übergabe von 5 Parametern: key, formName, className, subject, teacher
+                var formControl = new UnterrichtsBeurteilung(key, "UnterrichtsBeurteilung", className, subject, teacher);
                 this.Content = formControl;
             }
             else if (formName == "Zielscheibe")
             {
-                // Load Zielscheibe.xaml
-                var formControl = new Zielscheibe(); // Make sure to instantiate the correct UserControl
+                var formControl = new Zielscheibe(key, className, subject, teacher);
                 this.Content = formControl;
             }
             else
@@ -28,5 +27,4 @@ namespace FeedbackFactory
             }
         }
     }
-
 }

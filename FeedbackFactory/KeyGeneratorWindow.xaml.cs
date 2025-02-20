@@ -44,19 +44,19 @@ namespace FeedbackFactory
 
                     using (MySqlDataReader reader = cmd.ExecuteReader())
                     {
-                        var classSubjectList = new ObservableCollection<string>();
+                        var classList = new ObservableCollection<string>();
                         while (reader.Read())
                         {
                             string className = reader["ClassName"].ToString();
-                            classSubjectList.Add(className);
+                            classList.Add(className);
                         }
 
-                        if (classSubjectList.Count == 0)
+                        if (classList.Count == 0)
                         {
-                            classSubjectList.Add("Keine Klassen verfügbar");
+                            classList.Add("Keine Klassen verfügbar");
                         }
 
-                        ClassComboBox.ItemsSource = classSubjectList;
+                        ClassComboBox.ItemsSource = classList;
                     }
                 }
             }
@@ -176,10 +176,11 @@ namespace FeedbackFactory
             {
                 MessageBox.Show("Der generierte Schlüssel existiert bereits. Ein neuer Schlüssel wird erstellt.", "Fehler", MessageBoxButton.OK, MessageBoxImage.Error);
                 generatedKey = GenerateRandomKey("Option 1");
-                option = 1; // Ensure the option is set when regenerating
+                option = 1; 
             }
 
-            string insertQuery = "INSERT INTO Feedbackkeys (`Key`, UsesRemaining, Form) VALUES (@key, @usesRemaining, @form)";
+            string insertQuery = "INSERT INTO Feedbackkeys (`Key`, UsesRemaining, Form, Subject, ClassName, Teacher) " +
+                                 "VALUES (@key, @usesRemaining, @form, @subject, @className, @teacher)";
             using (MySqlConnection connection = new MySqlConnection(_dbHandler.ConnectionString))
             {
                 connection.Open();
@@ -188,13 +189,16 @@ namespace FeedbackFactory
                     cmd.Parameters.AddWithValue("@key", generatedKey);
                     cmd.Parameters.AddWithValue("@usesRemaining", classSize);
                     cmd.Parameters.AddWithValue("@form", option);
+                    cmd.Parameters.AddWithValue("@subject", SubjectComboBox.SelectedItem.ToString());
+                    cmd.Parameters.AddWithValue("@className", className);
+                    cmd.Parameters.AddWithValue("@teacher", _username);
+
                     cmd.ExecuteNonQuery();
                 }
             }
 
             MessageBox.Show("Der Schlüssel wurde erfolgreich in die Datenbank eingefügt.", "Erfolg", MessageBoxButton.OK, MessageBoxImage.Information);
         }
-
 
         private int GetClassSize(string className)
         {

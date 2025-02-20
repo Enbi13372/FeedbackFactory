@@ -54,14 +54,13 @@ namespace FeedbackFactory
 
             var usedKeys = LoadUsedKeys();
 
-            // If the key was used before and is marked as 1 (fully used), deny access
             if (usedKeys.ContainsKey(inputKey) && usedKeys[inputKey] == 1)
             {
                 MessageBox.Show("Dieser Schlüssel wurde bereits verwendet.", "Fehler", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
-            string keyQuery = "SELECT Form, UsesRemaining FROM Feedbackkeys WHERE `Key` = @Key";
+            string keyQuery = "SELECT Form, UsesRemaining, ClassName, Subject, Teacher FROM Feedbackkeys WHERE `Key` = @Key";
             var keyParameter = new MySqlParameter("@Key", inputKey);
 
             try
@@ -72,30 +71,45 @@ namespace FeedbackFactory
                     using (MySqlCommand cmd = new MySqlCommand(keyQuery, connection))
                     {
                         cmd.Parameters.Add(keyParameter);
-                        var reader = cmd.ExecuteReader();
-
-                        if (!reader.Read())
+                        using (var reader = cmd.ExecuteReader())
                         {
-                            MessageBox.Show("Ungültiger Schlüssel, bitte versuchen Sie es erneut.", "Fehler", MessageBoxButton.OK, MessageBoxImage.Error);
-                            return;
-                        }
+                            if (!reader.Read())
+                            {
+                                MessageBox.Show("Ungültiger Schlüssel, bitte versuchen Sie es erneut.", "Fehler", MessageBoxButton.OK, MessageBoxImage.Error);
+                                return;
+                            }
 
-                        int form = Convert.ToInt32(reader["Form"]);
-                        int usesRemaining = Convert.ToInt32(reader["UsesRemaining"]);
+                            int form = Convert.ToInt32(reader["Form"]);
+                            int usesRemaining = Convert.ToInt32(reader["UsesRemaining"]);
+                            string className = reader["ClassName"]?.ToString() ?? string.Empty;
+                            string subject = reader["Subject"]?.ToString() ?? string.Empty;
+                            string teacher = reader["Teacher"]?.ToString() ?? string.Empty;
 
-                        // If key is NOT in JSON and has no uses left in DB, block it
-                        if (!usedKeys.ContainsKey(inputKey) && usesRemaining <= 0)
-                        {
-                            MessageBox.Show("Dieser Schlüssel hat keine verbleibenden Verwendungen.", "Fehler", MessageBoxButton.OK, MessageBoxImage.Warning);
-                            return;
+                            if (!usedKeys.ContainsKey(inputKey) && usesRemaining <= 0)
+                            {
+                                MessageBox.Show("Dieser Schlüssel hat keine verbleibenden Verwendungen.", "Fehler", MessageBoxButton.OK, MessageBoxImage.Warning);
+                                return;
+                            }
+
+                            // Aufruf des Formularfensters Übergabe aller Parameter
+                            if (form == 1)
+                            {
+                                var studentFormWindow = new StudentFormWindow(inputKey, "UnterrichtsBeurteilung", className, subject, teacher);
+                                studentFormWindow.Show();
+                            }
+                            else if (form == 2)
+                            {
+                                var studentFormWindow = new StudentFormWindow(inputKey, "Zielscheibe", className, subject, teacher);
+                                studentFormWindow.Show();
+                            }
+                            else
+                            {
+                                MessageBox.Show("Ungültiges Formular.", "Fehler", MessageBoxButton.OK, MessageBoxImage.Error);
+                            }
                         }
                     }
                 }
 
-                // Open the correct form
-                OpenForm(inputKey);
-
-                // If key is NOT in JSON, update UsesRemaining and add to JSON with 0
                 if (!usedKeys.ContainsKey(inputKey))
                 {
                     UpdateKeyUses(inputKey);
@@ -115,52 +129,6 @@ namespace FeedbackFactory
             }
         }
 
-        private void OpenForm(string inputKey)
-        {
-            string keyQuery = "SELECT Form FROM Feedbackkeys WHERE `Key` = @Key";
-            var keyParameter = new MySqlParameter("@Key", inputKey);
-
-            try
-            {
-                using (MySqlConnection connection = new MySqlConnection(_dbHandler.ConnectionString))
-                {
-                    connection.Open();
-                    using (MySqlCommand cmd = new MySqlCommand(keyQuery, connection))
-                    {
-                        cmd.Parameters.Add(keyParameter);
-                        var formValue = cmd.ExecuteScalar();
-
-                        if (formValue == null)
-                        {
-                            MessageBox.Show("Ungültiges Formular.", "Fehler", MessageBoxButton.OK, MessageBoxImage.Error);
-                            return;
-                        }
-
-                        int form = Convert.ToInt32(formValue);
-
-                        if (form == 1)
-                        {
-                            var studentFormWindow = new StudentFormWindow(inputKey, "UnterrichtsBeurteilung");
-                            studentFormWindow.Show();
-                        }
-                        else if (form == 2)
-                        {
-                            var studentFormWindow = new StudentFormWindow(inputKey, "Zielscheibe");
-                            studentFormWindow.Show();
-                        }
-                        else
-                        {
-                            MessageBox.Show("Ungültiges Formular.", "Fehler", MessageBoxButton.OK, MessageBoxImage.Error);
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Fehler beim Öffnen des Formulars: {ex.Message}", "Fehler", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-        }
-
         private Dictionary<string, int> LoadUsedKeys()
         {
             try
@@ -175,7 +143,6 @@ namespace FeedbackFactory
             {
                 MessageBox.Show($"Fehler beim Laden der verwendeten Schlüssel: {ex.Message}", "Fehler", MessageBoxButton.OK, MessageBoxImage.Error);
             }
-
             return new Dictionary<string, int>();
         }
 

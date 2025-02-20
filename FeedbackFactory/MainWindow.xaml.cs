@@ -5,9 +5,7 @@ using System.Windows.Controls;
 
 namespace FeedbackFactory
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
+   
     public partial class MainWindow : Window
     {
         private readonly string _username;
@@ -31,7 +29,6 @@ namespace FeedbackFactory
                 .AddValueChanged(MainContent, MainContent_ContentChanged);
         }
 
-        // Adjust UI based on role
         private void ConfigureUIBasedOnRole()
         {
             if (_role == 1)
@@ -43,13 +40,11 @@ namespace FeedbackFactory
             }
         }
 
-        // Event-Handler for changes in the Content property
         private void MainContent_ContentChanged(object sender, EventArgs e)
         {
             AktualisiereButtonSichtbarkeit();
         }
 
-        // Updates the visibility of the "Formular erstellen" button
         private void AktualisiereButtonSichtbarkeit()
         {
             if (MainContent.Content is FormularView)
@@ -85,9 +80,8 @@ namespace FeedbackFactory
 
         private void BtnFormularErstellen_Click(object sender, RoutedEventArgs e)
         {
-            // Pass the username to the KeyGeneratorWindow
             KeyGeneratorWindow keyGeneratorWindow = new KeyGeneratorWindow(_username);
-            keyGeneratorWindow.ShowDialog(); // ShowDialog opens it as a modal window
+            keyGeneratorWindow.ShowDialog(); 
         }
 
         private void BtnClasses_Click(object sender, RoutedEventArgs e)
