@@ -118,9 +118,9 @@ namespace FeedbackFactory
             if (_selectedClass != null)
             {
                 ClassNameTextBox.Text = _selectedClass.ClassName;
-                SchoolYearTextBox.Text = _selectedClass.SchoolYear;
+                GradeComboBox.Text = _selectedClass.SchoolYear;
                 DepartmentTextBox.Text = _selectedClass.Department;
-                GradeTextBox.Text = _selectedClass.Grade.ToString();
+                YearComboBox.Text = _selectedClass.Grade.ToString();
                 ClassSizeTextBox.Text = _selectedClass.ClassSize.ToString();
             }
         }
@@ -144,9 +144,9 @@ namespace FeedbackFactory
         private void SaveClass()
         {
             // Felder prüfen
-            if (!int.TryParse(GradeTextBox.Text, out int grade))
+            if (!int.TryParse(YearComboBox.Text, out int grade))
             {
-                MessageBox.Show("Bitte geben Sie einen gültigen Wert für das Grade ein.");
+               // MessageBox.Show("Bitte geben Sie einen gültigen Wert für das Grade ein.");
                 return;
             }
             if (!int.TryParse(ClassSizeTextBox.Text, out int classSize))
@@ -164,7 +164,7 @@ namespace FeedbackFactory
             {
                 // Bestehende Klasse aktualisieren
                 _selectedClass.ClassName = ClassNameTextBox.Text;
-                _selectedClass.SchoolYear = SchoolYearTextBox.Text;
+                _selectedClass.SchoolYear = GradeComboBox.Text;
                 _selectedClass.Department = DepartmentTextBox.Text;
                 _selectedClass.Grade = grade;
                 _selectedClass.ClassSize = classSize;
@@ -175,7 +175,7 @@ namespace FeedbackFactory
             {
                 // Neue Klasse anlegen
                 _newClass.ClassName = ClassNameTextBox.Text;
-                _newClass.SchoolYear = SchoolYearTextBox.Text;
+                _newClass.SchoolYear = GradeComboBox.Text;
                 _newClass.Department = DepartmentTextBox.Text;
                 _newClass.Grade = grade;
                 _newClass.ClassSize = classSize;

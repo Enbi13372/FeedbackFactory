@@ -69,11 +69,24 @@
             </StackPanel>
             <StackPanel Orientation="Horizontal" Margin="0,5">
                 <Label Content="Schuljahr:" Width="100" VerticalAlignment="Center"/>
-                <TextBox x:Name="SchoolYearTextBox" Width="200" VerticalAlignment="Center"/>
+                <ComboBox x:Name="GradeComboBox" Width="200" VerticalAlignment="Center" SelectedIndex="0">
+                    <ComboBoxItem Content="2024/25"/>
+                    <ComboBoxItem Content="2025/26"/>
+                    <ComboBoxItem Content="2026/27"/>
+                    <ComboBoxItem Content="2027/28"/>
+                    <ComboBoxItem Content="2028/29"/>
+                    <ComboBoxItem Content="2029/30"/>
+                   
+                </ComboBox>
+
             </StackPanel>
             <StackPanel Orientation="Horizontal" Margin="0,5">
                 <Label Content="Jahrgang:" Width="100" VerticalAlignment="Center"/>
-                <TextBox x:Name="GradeTextBox" Width="200" VerticalAlignment="Center"/>
+                <ComboBox x:Name="YearComboBox" Width="200" VerticalAlignment="Center" SelectedIndex="0">
+                    <ComboBoxItem Content="10"/>
+                    <ComboBoxItem Content="11"/>
+                    <ComboBoxItem Content="12" />
+                </ComboBox>
             </StackPanel>
             <StackPanel Orientation="Horizontal" Margin="0,5">
                 <Label Content="Klassengröße:" Width="100" VerticalAlignment="Center"/>
