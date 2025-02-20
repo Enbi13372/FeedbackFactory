@@ -64,9 +64,56 @@
 
         <StackPanel x:Name="panelKlasse" Grid.Column="2" Orientation="Vertical" HorizontalAlignment="Center" Margin="45,40,0,20" Height="300">
             <StackPanel Orientation="Horizontal" Margin="0,5">
-                <Label Content="Klasse:" Width="100" VerticalAlignment="Center"/>
-                <TextBox x:Name="ClassNameTextBox" Width="200" VerticalAlignment="Center"/>
+                <Label Content="Abteilung:" Width="100" VerticalAlignment="Center"/>
+                <ComboBox x:Name="AbteilungComboBox" Width="200" VerticalAlignment="Center" SelectedIndex="0">
+                    <ComboBoxItem Content="IFA"/>
+                    <ComboBoxItem Content="IFD"/>
+                    <ComboBoxItem Content="IFS"/>
+                    <ComboBoxItem Content="IKD"/>
+                    <ComboBoxItem Content="IKS"/>
+                    <ComboBoxItem Content="ITG"/>
+                    <ComboBoxItem Content="ITK"/>
+                    <ComboBoxItem Content="ITT"/>
+                    <ComboBoxItem Content="JBI"/>
+                    <ComboBoxItem Content="MFI"/>
+                    <ComboBoxItem Content="MFW"/>
+                    <ComboBoxItem Content="MGK"/>
+                    <ComboBoxItem Content="WEC"/>
+                    <ComboBoxItem Content="WEH"/>
+                    <ComboBoxItem Content="WIN"/>
+                    <ComboBoxItem Content="WKB"/>
+                    <ComboBoxItem Content="WLA"/>
+                    <ComboBoxItem Content="WTK"/>
+                    <ComboBoxItem Content="TAI"/>
+                    <ComboBoxItem Content="XTG"/>
+                    <ComboBoxItem Content="XTP"/>
+
+                </ComboBox>
             </StackPanel>
+            
+            <StackPanel Orientation="Horizontal" Margin="0,5">
+                <Label Content="Jahrgang:" Width="100" VerticalAlignment="Center"/>
+                <ComboBox x:Name="YearComboBox" Width="200" VerticalAlignment="Center" SelectedIndex="0">
+                    <ComboBoxItem Content="10"/>
+                    <ComboBoxItem Content="11"/>
+                    <ComboBoxItem Content="12" />
+                    <ComboBoxItem Content ="13" />
+                </ComboBox>
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal" Margin="0,5">
+                <Label Content="Buchstabe:" Width="100" VerticalAlignment="Center"/>
+                <ComboBox x:Name="BuchstabeCombobox" Width="200" VerticalAlignment="Center" SelectedIndex="0">
+                    <ComboBoxItem Content="A"/>
+                    <ComboBoxItem Content="B"/>
+                    <ComboBoxItem Content="C"/>
+                    <ComboBoxItem Content="D"/>
+                    <ComboBoxItem Content="E"/>
+                    <ComboBoxItem Content="F"/>
+
+                </ComboBox>
+            </StackPanel>
+
             <StackPanel Orientation="Horizontal" Margin="0,5">
                 <Label Content="Schuljahr:" Width="100" VerticalAlignment="Center"/>
                 <ComboBox x:Name="GradeComboBox" Width="200" VerticalAlignment="Center" SelectedIndex="0">
@@ -76,31 +123,22 @@
                     <ComboBoxItem Content="2027/28"/>
                     <ComboBoxItem Content="2028/29"/>
                     <ComboBoxItem Content="2029/30"/>
-                   
+
                 </ComboBox>
 
-            </StackPanel>
-            <StackPanel Orientation="Horizontal" Margin="0,5">
-                <Label Content="Jahrgang:" Width="100" VerticalAlignment="Center"/>
-                <ComboBox x:Name="YearComboBox" Width="200" VerticalAlignment="Center" SelectedIndex="0">
-                    <ComboBoxItem Content="10"/>
-                    <ComboBoxItem Content="11"/>
-                    <ComboBoxItem Content="12" />
-                </ComboBox>
             </StackPanel>
             <StackPanel Orientation="Horizontal" Margin="0,5">
                 <Label Content="Klassengröße:" Width="100" VerticalAlignment="Center"/>
                 <TextBox x:Name="ClassSizeTextBox" Width="200" VerticalAlignment="Center"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal" Margin="0,5">
-                <Label Content="Abteilung:" Width="100" VerticalAlignment="Center"/>
-                <TextBox x:Name="DepartmentTextBox" Width="200" VerticalAlignment="Center"/>
+                <Label Content="Bereich:" Width="100" VerticalAlignment="Center"/>
+                <TextBox x:Name="BereichTextBox" Width="200" VerticalAlignment="Center"/>
             </StackPanel>
         </StackPanel>
 
         <StackPanel Grid.Column="2" Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="10">
             <Button x:Name="SaveButton" Content="💾 Speichern" Width="120" Margin="5" Click="SaveButton_Click"/>
-            <Button x:Name="AbortButton" Content="❌ Abbrechen" Width="120" Margin="5" Click="AbortButton_Click"/>
         </StackPanel>
     </Grid>
 </UserControl>
