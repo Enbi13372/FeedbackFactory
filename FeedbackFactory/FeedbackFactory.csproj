@@ -19,7 +19,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="Resources\ImageLogo\logoBsLif.png" />
+    <Content Include="Resources\ImageLogo\logoBsLif.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>
