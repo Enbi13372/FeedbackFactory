@@ -44,24 +44,12 @@ namespace FeedbackFactory
                             {
                                 _classes.Add(new Class
                                 {
-                                    Teacher = reader.IsDBNull(reader.GetOrdinal("Teacher"))
-                                        ? ""
-                                        : reader.GetString("Teacher"),
-                                    ClassName = reader.IsDBNull(reader.GetOrdinal("ClassName"))
-                                        ? ""
-                                        : reader.GetString("ClassName"),
-                                    SchoolYear = reader.IsDBNull(reader.GetOrdinal("SchoolYear"))
-                                        ? ""
-                                        : reader.GetString("SchoolYear"),
-                                    Department = reader.IsDBNull(reader.GetOrdinal("Department"))
-                                        ? ""
-                                        : reader.GetString("Department"),
-                                    Grade = reader.IsDBNull(reader.GetOrdinal("Grade"))
-                                        ? 0
-                                        : reader.GetInt32("Grade"),
-                                    ClassSize = reader.IsDBNull(reader.GetOrdinal("ClassSize"))
-                                        ? 0
-                                        : reader.GetInt32("ClassSize")
+                                    Teacher = reader.IsDBNull(reader.GetOrdinal("Teacher")) ? "" : reader.GetString("Teacher"),
+                                    ClassName = reader.IsDBNull(reader.GetOrdinal("ClassName")) ? "" : reader.GetString("ClassName"),
+                                    SchoolYear = reader.IsDBNull(reader.GetOrdinal("SchoolYear")) ? "" : reader.GetString("SchoolYear"),
+                                    Department = reader.IsDBNull(reader.GetOrdinal("Department")) ? "" : reader.GetString("Department"),
+                                    Grade = reader.IsDBNull(reader.GetOrdinal("Grade")) ? 0 : reader.GetInt32("Grade"),
+                                    ClassSize = reader.IsDBNull(reader.GetOrdinal("ClassSize")) ? 0 : reader.GetInt32("ClassSize")
                                 });
                             }
                         }
@@ -92,16 +80,12 @@ namespace FeedbackFactory
                         {
                             while (reader.Read())
                             {
-                                string subjectValue = reader.IsDBNull(reader.GetOrdinal("Subject"))
-                                    ? ""
-                                    : reader.GetString("Subject");
-
+                                string subjectValue = reader.IsDBNull(reader.GetOrdinal("Subject")) ? "" : reader.GetString("Subject");
                                 _subjects.Add(subjectValue);
                             }
                         }
                     }
                 }
-
                 SubjectsListView.ItemsSource = _subjects;
             }
             catch (Exception ex)
@@ -117,76 +101,73 @@ namespace FeedbackFactory
             _selectedClass = (Class)ClassesListView.SelectedItem;
             if (_selectedClass != null)
             {
-                ClassNameTextBox.Text = _selectedClass.ClassName;
-                GradeComboBox.Text = _selectedClass.SchoolYear;
-                DepartmentTextBox.Text = _selectedClass.Department;
+                AbteilungComboBox.Text = _selectedClass.Department;
                 YearComboBox.Text = _selectedClass.Grade.ToString();
+                BuchstabeCombobox.Text = _selectedClass.ClassName.Substring(_selectedClass.ClassName.Length - 1);
                 ClassSizeTextBox.Text = _selectedClass.ClassSize.ToString();
+                BereichTextBox.Text = _selectedClass.Department; // Hier wird BereichTextBox mit dem Department-Wert gefüllt
             }
         }
         #endregion
 
-        #region Save Button (entscheidet, ob Klasse oder Fach gespeichert wird)
+        #region Save Class
+
         private void SaveButton_Click(object sender, RoutedEventArgs e)
         {
-            if (panelKlasse.Visibility == Visibility.Visible)
-            {
-                SaveClass();
-            }
-            else if (panelFach.Visibility == Visibility.Visible)
-            {
-                SaveSubject();
-            }
+            SaveClass();
         }
-        #endregion
 
-        #region Speichern von Klassen
         private void SaveClass()
         {
-            // Felder prüfen
-            if (!int.TryParse(YearComboBox.Text, out int grade))
-            {
-               // MessageBox.Show("Bitte geben Sie einen gültigen Wert für das Grade ein.");
-                return;
-            }
+            // Versuche, die Klassengröße zu parsen
             if (!int.TryParse(ClassSizeTextBox.Text, out int classSize))
             {
-                MessageBox.Show("Bitte geben Sie einen gültigen Wert für die Klassengröße ein.");
+                MessageBox.Show("Bitte geben Sie eine gültige Klassengröße ein.");
                 return;
             }
 
-            if (_selectedClass == null && _newClass == null)
+            string department = BereichTextBox.Text;  // Der Wert aus BereichTextBox
+            string schoolYear = GradeComboBox.Text;   // Hier den Wert aus der GradeComboBox als schoolYear speichern (z.B. "2024/25")
+            string buchstabe = BuchstabeCombobox.Text;
+
+            if (string.IsNullOrWhiteSpace(department) || string.IsNullOrWhiteSpace(schoolYear) || string.IsNullOrWhiteSpace(buchstabe))
             {
-                _newClass = new Class();
+                MessageBox.Show("Bitte alle Felder ausfüllen.");
+                return;
             }
 
+            // Generiere den Klassennamen
+            string className = $"{department}{schoolYear}{buchstabe}";
+
+            // Wenn eine Klasse ausgewählt wurde
             if (_selectedClass != null)
             {
-                // Bestehende Klasse aktualisieren
-                _selectedClass.ClassName = ClassNameTextBox.Text;
-                _selectedClass.SchoolYear = GradeComboBox.Text;
-                _selectedClass.Department = DepartmentTextBox.Text;
-                _selectedClass.Grade = grade;
+                _selectedClass.ClassName = className;
+                _selectedClass.SchoolYear = schoolYear;  // Speichere den schoolYear als String (z.B. "2024/25")
+                _selectedClass.Department = department;
+
+                // Versuche, den Wert von GradeComboBox.Text in eine Zahl zu konvertieren (dies ist der tatsächliche Jahrgang)
+                if (!int.TryParse(GradeComboBox.Text, out int grade))
+                {
+                    MessageBox.Show("Bitte geben Sie eine gültige Klassenstufe (Zahl) ein.");
+                    return;
+                }
+                _selectedClass.Grade = grade;  // Grade wird als Zahl gespeichert
                 _selectedClass.ClassSize = classSize;
-
-                UpdateClassInDatabase(_selectedClass);
+                UpdateClassInDatabase();
             }
-            else if (_newClass != null)
+            else
             {
-                // Neue Klasse anlegen
-                _newClass.ClassName = ClassNameTextBox.Text;
-                _newClass.SchoolYear = GradeComboBox.Text;
-                _newClass.Department = DepartmentTextBox.Text;
-                _newClass.Grade = grade;
-                _newClass.ClassSize = classSize;
-
-                AddClassToDatabase(_newClass);
+                // Wenn keine Klasse ausgewählt ist, füge die neue Klasse in die DB ein
+                AddClassToDatabase(className, schoolYear, department, int.Parse(schoolYear), classSize);  // Grade sollte hier aus der ComboBox kommen
             }
         }
 
-        private void UpdateClassInDatabase(Class existingClass)
+
+
+        private void UpdateClassInDatabase()
         {
-            string query = "UPDATE Classes SET Teacher=@Teacher, SchoolYear=@SchoolYear, Department=@Department, Grade=@Grade, ClassSize=@ClassSize WHERE ClassName=@ClassName;";
+            string query = "UPDATE Classes SET SchoolYear=@SchoolYear, Department=@Department, Grade=@Grade, ClassSize=@ClassSize WHERE ClassName=@ClassName;";
             try
             {
                 using (MySqlConnection connection = new MySqlConnection(_dbHandler.ConnectionString))
@@ -194,12 +175,11 @@ namespace FeedbackFactory
                     connection.Open();
                     using (MySqlCommand cmd = new MySqlCommand(query, connection))
                     {
-                        cmd.Parameters.AddWithValue("@Teacher", existingClass.Teacher);
-                        cmd.Parameters.AddWithValue("@ClassName", existingClass.ClassName);
-                        cmd.Parameters.AddWithValue("@SchoolYear", existingClass.SchoolYear);
-                        cmd.Parameters.AddWithValue("@Department", existingClass.Department);
-                        cmd.Parameters.AddWithValue("@Grade", existingClass.Grade);
-                        cmd.Parameters.AddWithValue("@ClassSize", existingClass.ClassSize);
+                        cmd.Parameters.AddWithValue("@ClassName", _selectedClass.ClassName);
+                        cmd.Parameters.AddWithValue("@SchoolYear", _selectedClass.SchoolYear);
+                        cmd.Parameters.AddWithValue("@Department", _selectedClass.Department);
+                        cmd.Parameters.AddWithValue("@Grade", _selectedClass.Grade);
+                        cmd.Parameters.AddWithValue("@ClassSize", _selectedClass.ClassSize);
                         cmd.ExecuteNonQuery();
                     }
                 }
@@ -211,11 +191,9 @@ namespace FeedbackFactory
             }
         }
 
-        private void AddClassToDatabase(Class newClass)
+        private void AddClassToDatabase(string className, string schoolYear, string department, int grade, int classSize)
         {
-            string query = "INSERT INTO Classes (Teacher, ClassName, SchoolYear, Department, Grade, ClassSize) " +
-                           "VALUES (@Teacher, @ClassName, @SchoolYear, @Department, @Grade, @ClassSize);";
-
+            string query = "INSERT INTO Classes (ClassName, SchoolYear, Department, Grade, ClassSize) VALUES (@ClassName, @SchoolYear, @Department, @Grade, @ClassSize);";
             try
             {
                 using (MySqlConnection connection = new MySqlConnection(_dbHandler.ConnectionString))
@@ -223,12 +201,11 @@ namespace FeedbackFactory
                     connection.Open();
                     using (MySqlCommand cmd = new MySqlCommand(query, connection))
                     {
-                        cmd.Parameters.AddWithValue("@Teacher", newClass.Teacher);
-                        cmd.Parameters.AddWithValue("@ClassName", newClass.ClassName);
-                        cmd.Parameters.AddWithValue("@SchoolYear", newClass.SchoolYear);
-                        cmd.Parameters.AddWithValue("@Department", newClass.Department);
-                        cmd.Parameters.AddWithValue("@Grade", newClass.Grade);
-                        cmd.Parameters.AddWithValue("@ClassSize", newClass.ClassSize);
+                        cmd.Parameters.AddWithValue("@ClassName", className);
+                        cmd.Parameters.AddWithValue("@SchoolYear", schoolYear);
+                        cmd.Parameters.AddWithValue("@Department", department);
+                        cmd.Parameters.AddWithValue("@Grade", grade);
+                        cmd.Parameters.AddWithValue("@ClassSize", classSize);
                         cmd.ExecuteNonQuery();
                     }
                 }
@@ -237,45 +214,6 @@ namespace FeedbackFactory
             catch (Exception ex)
             {
                 MessageBox.Show($"Error adding class: {ex.Message}");
-            }
-        }
-        #endregion
-
-        #region Speichern von Fächern
-        private void SaveSubject()
-        {
-            string subject = SubjectTextBox.Text?.Trim();
-            if (string.IsNullOrWhiteSpace(subject))
-            {
-                MessageBox.Show("Bitte geben Sie ein Fach ein.");
-                return;
-            }
-
-            AddSubjectToDatabase(subject);
-
-            // Textfeld leeren
-            SubjectTextBox.Text = "";
-        }
-
-        private void AddSubjectToDatabase(string subject)
-        {
-            string query = "INSERT INTO Subject (Subject) VALUES (@Subject)";
-            try
-            {
-                using (MySqlConnection connection = new MySqlConnection(_dbHandler.ConnectionString))
-                {
-                    connection.Open();
-                    using (MySqlCommand cmd = new MySqlCommand(query, connection))
-                    {
-                        cmd.Parameters.AddWithValue("@Subject", subject);
-                        cmd.ExecuteNonQuery();
-                    }
-                }
-                LoadSubjects();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Fehler beim Hinzufügen des Fachs: {ex.Message}");
             }
         }
         #endregion
@@ -293,10 +231,7 @@ namespace FeedbackFactory
             panelFach.Visibility = Visibility.Visible;
         }
 
-        private void AbortButton_Click(object sender, RoutedEventArgs e)
-        {
-            // Logik für Abbrechen oder Schließen
-        }
+       
         #endregion
     }
 
