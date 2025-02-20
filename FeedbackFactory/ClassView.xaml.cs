@@ -105,13 +105,11 @@ namespace FeedbackFactory
                 YearComboBox.Text = _selectedClass.Grade.ToString();
                 BuchstabeCombobox.Text = _selectedClass.ClassName.Substring(_selectedClass.ClassName.Length - 1);
                 ClassSizeTextBox.Text = _selectedClass.ClassSize.ToString();
-                BereichTextBox.Text = _selectedClass.Department; // Hier wird BereichTextBox mit dem Department-Wert gefüllt
             }
         }
         #endregion
 
         #region Save Class
-
         private void SaveButton_Click(object sender, RoutedEventArgs e)
         {
             SaveClass();
@@ -119,15 +117,14 @@ namespace FeedbackFactory
 
         private void SaveClass()
         {
-            // Versuche, die Klassengröße zu parsen
             if (!int.TryParse(ClassSizeTextBox.Text, out int classSize))
             {
                 MessageBox.Show("Bitte geben Sie eine gültige Klassengröße ein.");
                 return;
             }
 
-            string department = BereichTextBox.Text;  // Der Wert aus BereichTextBox
-            string schoolYear = GradeComboBox.Text;   // Hier den Wert aus der GradeComboBox als schoolYear speichern (z.B. "2024/25")
+            string department = AbteilungComboBox.Text;
+            string schoolYear = GradeComboBox.Text;             // Schuljahr als String (z.B. "2024/25")
             string buchstabe = BuchstabeCombobox.Text;
 
             if (string.IsNullOrWhiteSpace(department) || string.IsNullOrWhiteSpace(schoolYear) || string.IsNullOrWhiteSpace(buchstabe))
@@ -136,34 +133,28 @@ namespace FeedbackFactory
                 return;
             }
 
-            // Generiere den Klassennamen
-            string className = $"{department}{schoolYear}{buchstabe}";
+            if (!int.TryParse(YearComboBox.Text, out int grade))
+            {
+                MessageBox.Show("Bitte geben Sie eine gültige Klassenstufe (Zahl) ein.");
+                return;
+            }
 
-            // Wenn eine Klasse ausgewählt wurde
+            string className = $"{department}{grade}{buchstabe}";
+
             if (_selectedClass != null)
             {
                 _selectedClass.ClassName = className;
-                _selectedClass.SchoolYear = schoolYear;  // Speichere den schoolYear als String (z.B. "2024/25")
+                _selectedClass.SchoolYear = schoolYear;
                 _selectedClass.Department = department;
-
-                // Versuche, den Wert von GradeComboBox.Text in eine Zahl zu konvertieren (dies ist der tatsächliche Jahrgang)
-                if (!int.TryParse(GradeComboBox.Text, out int grade))
-                {
-                    MessageBox.Show("Bitte geben Sie eine gültige Klassenstufe (Zahl) ein.");
-                    return;
-                }
-                _selectedClass.Grade = grade;  // Grade wird als Zahl gespeichert
+                _selectedClass.Grade = grade;
                 _selectedClass.ClassSize = classSize;
                 UpdateClassInDatabase();
             }
             else
             {
-                // Wenn keine Klasse ausgewählt ist, füge die neue Klasse in die DB ein
-                AddClassToDatabase(className, schoolYear, department, int.Parse(schoolYear), classSize);  // Grade sollte hier aus der ComboBox kommen
+                AddClassToDatabase(className, schoolYear, department, grade, classSize);
             }
         }
-
-
 
         private void UpdateClassInDatabase()
         {
@@ -230,8 +221,6 @@ namespace FeedbackFactory
             panelKlasse.Visibility = Visibility.Collapsed;
             panelFach.Visibility = Visibility.Visible;
         }
-
-       
         #endregion
     }
 
