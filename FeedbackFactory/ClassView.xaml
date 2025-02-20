@@ -131,10 +131,7 @@
                 <Label Content="Klassengröße:" Width="100" VerticalAlignment="Center"/>
                 <TextBox x:Name="ClassSizeTextBox" Width="200" VerticalAlignment="Center"/>
             </StackPanel>
-            <StackPanel Orientation="Horizontal" Margin="0,5">
-                <Label Content="Bereich:" Width="100" VerticalAlignment="Center"/>
-                <TextBox x:Name="BereichTextBox" Width="200" VerticalAlignment="Center"/>
-            </StackPanel>
+            
         </StackPanel>
 
         <StackPanel Grid.Column="2" Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="10">
