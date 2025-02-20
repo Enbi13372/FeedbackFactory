@@ -13,29 +13,6 @@
     <Grid>
         <StackPanel Margin="10">
             <!-- Filter-Bereich -->
-            <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
-                <Label Content="Formular:" VerticalAlignment="Center"/>
-                <ComboBox x:Name="ComboBoxFormular" Width="150" Margin="5,0"
-                          SelectionChanged="ComboBoxFormular_SelectionChanged"/>
-                <Label Content="Fach:" VerticalAlignment="Center"/>
-                <ComboBox x:Name="ComboBoxSubject" Width="120" Margin="5,0"
-                          SelectionChanged="ComboBoxSubject_SelectionChanged"/>
-                <Label Content="Klasse:" VerticalAlignment="Center"/>
-                <ComboBox x:Name="ComboBoxClass" Width="120" Margin="5,0"
-                          SelectionChanged="ComboBoxClass_SelectionChanged"/>
-                <Label Content="Lehrer:" VerticalAlignment="Center"/>
-                <ComboBox x:Name="ComboBoxTeacher" Width="120" Margin="5,0"
-                          SelectionChanged="ComboBoxTeacher_SelectionChanged"/>
-            </StackPanel>
-            <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
-                <Label Content="Erfassungsdatum von:" VerticalAlignment="Center"/>
-                <DatePicker x:Name="DatePickerStart" Width="130" Margin="5,0"/>
-                <Label Content="bis:" VerticalAlignment="Center"/>
-                <DatePicker x:Name="DatePickerEnd" Width="130" Margin="5,0"/>
-                <Button Content="Filtern" Margin="5,0" Click="BtnFilter_Click"/>
-            </StackPanel>
-            <DataGrid x:Name="DataGridFeedback" Height="250"
-                      AutoGenerateColumns="True" Margin="0,0,0,10"/>
             <TextBlock x:Name="TxtAverage" FontWeight="Bold" FontSize="16" Margin="0,10"/>
             <ItemsControl x:Name="ChartItemsControl" Margin="10">
                 <ItemsControl.ItemsPanel>
@@ -57,6 +34,31 @@
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
+
+
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                <Label Content="Formular:" VerticalAlignment="Center"/>
+                <ComboBox x:Name="ComboBoxFormular" Width="150" Margin="5,0"
+                          SelectionChanged="ComboBoxFormular_SelectionChanged"/>
+                <Label Content="Fach:" VerticalAlignment="Center"/>
+                <ComboBox x:Name="ComboBoxSubject" Width="120" Margin="5,0"
+                          SelectionChanged="ComboBoxSubject_SelectionChanged"/>
+                <Label Content="Klasse:" VerticalAlignment="Center"/>
+                <ComboBox x:Name="ComboBoxClass" Width="120" Margin="5,0"
+                          SelectionChanged="ComboBoxClass_SelectionChanged"/>
+                <Label Content="Lehrer:" VerticalAlignment="Center"/>
+                <ComboBox x:Name="ComboBoxTeacher" Width="120" Margin="5,0"
+                          SelectionChanged="ComboBoxTeacher_SelectionChanged"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                <Label Content="Erfassungsdatum von:" VerticalAlignment="Center"/>
+                <DatePicker x:Name="DatePickerStart" Width="130" Margin="5,0"/>
+                <Label Content="bis:" VerticalAlignment="Center"/>
+                <DatePicker x:Name="DatePickerEnd" Width="130" Margin="5,0"/>
+                <Button Content="Filtern" Margin="5,0" Click="BtnFilter_Click"/>
+            </StackPanel>
+            
+            <DataGrid x:Name="DataGridFeedback" Height="250" AutoGenerateColumns="True" Margin="0,0,0,10"/>
         </StackPanel>
     </Grid>
 </UserControl>
