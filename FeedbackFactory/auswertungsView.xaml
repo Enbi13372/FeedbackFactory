@@ -14,6 +14,9 @@
         <StackPanel Margin="10">
             <!-- Filter-Bereich -->
             <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                <Label Content="Formular:" VerticalAlignment="Center"/>
+                <ComboBox x:Name="ComboBoxFormular" Width="150" Margin="5,0"
+                          SelectionChanged="ComboBoxFormular_SelectionChanged"/>
                 <Label Content="Fach:" VerticalAlignment="Center"/>
                 <ComboBox x:Name="ComboBoxSubject" Width="120" Margin="5,0"
                           SelectionChanged="ComboBoxSubject_SelectionChanged"/>
@@ -49,8 +52,7 @@
                                 </Rectangle.Height>
                             </Rectangle>
                             <TextBlock Text="{Binding Key}" HorizontalAlignment="Center" Margin="0,5,0,0"/>
-                            <TextBlock Text="{Binding Value, StringFormat={}{0:F2}}"
-                                       HorizontalAlignment="Center"/>
+                            <TextBlock Text="{Binding Value, StringFormat={}{0:F2}}" HorizontalAlignment="Center"/>
                         </StackPanel>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
