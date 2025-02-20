@@ -11,25 +11,20 @@ namespace FeedbackFactory
     public partial class auswertungsView : UserControl
     {
         private readonly DBConnectionHandler _dbHandler;
-        private readonly string _currentTeacherUsername; 
+        private readonly string _currentTeacherUsername;
         private bool _isUpdatingFilters;
 
-        public ObservableCollection<ZielscheibeData> ZielscheibeList { get; set; }
-            = new ObservableCollection<ZielscheibeData>();
+        public ObservableCollection<ZielscheibeData> ZielscheibeList { get; set; } = new ObservableCollection<ZielscheibeData>();
 
         public auswertungsView()
         {
             InitializeComponent();
 
-            // Beispiel: Den aktuell angemeldeten Lehrer aus einer globalen Property abrufen.
-            // Diese Property muss nach erfolgreicher Anmeldung gesetzt werden.
             _currentTeacherUsername = App.Current.Properties["LoggedInTeacher"] as string;
 
-            string configPath = System.IO.Path.Combine(
-                AppDomain.CurrentDomain.BaseDirectory, "Resources", "config.json");
+            string configPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources", "config.json");
             _dbHandler = new DBConnectionHandler(configPath);
 
-            // Falls ein Lehrer angemeldet ist, wird der Lehrerfilter festgelegt und deaktiviert.
             if (!string.IsNullOrEmpty(_currentTeacherUsername))
             {
                 ComboBoxTeacher.ItemsSource = new List<string> { _currentTeacherUsername };
@@ -37,10 +32,13 @@ namespace FeedbackFactory
                 ComboBoxTeacher.IsEnabled = false;
             }
 
+            ComboBoxFormular.ItemsSource = new List<string> { "(kein Filter)", "Zielscheibe", "UnterrichtsBeurteilung" };
+            ComboBoxFormular.SelectedIndex = 0;
+
             UpdateFilterCombos();
         }
 
-        #region SelectionChanged-Events der ComboBoxen
+        #region ComboBox SelectionChanged-Events
 
         private void ComboBoxSubject_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -60,59 +58,50 @@ namespace FeedbackFactory
             UpdateFilterCombos();
         }
 
-        #endregion
-
-        #region Button "Filtern" (für Datum) 
-
-        private void BtnFilter_Click(object sender, RoutedEventArgs e)
+        private void ComboBoxFormular_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            LoadZielscheibeData();
+            if (_isUpdatingFilters) return;
+            UpdateFilterCombos();
         }
 
         #endregion
+
+        private void BtnFilter_Click(object sender, RoutedEventArgs e)
+        {
+            UpdateFilterCombos();
+        }
 
         private void UpdateFilterCombos()
         {
             _isUpdatingFilters = true;
             try
             {
-                // Aktuelle Auswahl
-                string selectedSubject = GetSelectedValue(ComboBoxSubject);
-                string selectedClass = GetSelectedValue(ComboBoxClass);
-                // Bei deaktivierter Lehrer-ComboBox wird der aktuell angemeldete Lehrer genutzt
-                string selectedTeacher = !ComboBoxTeacher.IsEnabled ? _currentTeacherUsername : GetSelectedValue(ComboBoxTeacher);
+                string selectedFormType = GetSelectedValue(ComboBoxFormular);
 
-                // 1) Subject-Liste ermitteln (Klasse + Lehrer)
-                var newSubjects = GetDistinctValuesFromDB(
-                    columnName: "Subject",
-                    otherColumn1: "ClassName", otherValue1: selectedClass,
-                    otherColumn2: "Teacher", otherValue2: selectedTeacher
-                );
-
-                // 2) Class-Liste ermitteln (Subject + Lehrer)
-                var newClasses = GetDistinctValuesFromDB(
-                    columnName: "ClassName",
-                    otherColumn1: "Subject", otherValue1: selectedSubject,
-                    otherColumn2: "Teacher", otherValue2: selectedTeacher
-                );
-
-                // 3) Teacher-Liste ermitteln (Subject + Klasse) – nur wenn die ComboBox aktiviert ist
-                if (ComboBoxTeacher.IsEnabled)
+                if (string.IsNullOrEmpty(selectedFormType))
                 {
-                    var newTeachers = GetDistinctValuesFromDB(
-                        columnName: "Teacher",
-                        otherColumn1: "Subject", otherValue1: selectedSubject,
-                        otherColumn2: "ClassName", otherValue2: selectedClass
-                    );
-                    UpdateComboBox(ComboBoxTeacher, newTeachers, ref selectedTeacher);
+                    ZielscheibeList.Clear();
+                    DataGridFeedback.ItemsSource = null;
+                    TxtAverage.Text = "Bitte wählen Sie ein Formular aus.";
+                    ChartItemsControl.ItemsSource = null;
+                    return;
                 }
 
-                // ComboBoxen aktualisieren
+                string selectedSubject = GetSelectedValue(ComboBoxSubject);
+                string selectedClass = GetSelectedValue(ComboBoxClass);
+                string selectedTeacher = !ComboBoxTeacher.IsEnabled ? _currentTeacherUsername : GetSelectedValue(ComboBoxTeacher);
+
+                var newSubjects = GetDistinctValuesFromDB("Subject", "ClassName", selectedClass, "Teacher", selectedTeacher);
+                var newClasses = GetDistinctValuesFromDB("ClassName", "Subject", selectedSubject, "Teacher", selectedTeacher);
+                if (ComboBoxTeacher.IsEnabled)
+                {
+                    var newTeachers = GetDistinctValuesFromDB("Teacher", "Subject", selectedSubject, "ClassName", selectedClass);
+                    UpdateComboBox(ComboBoxTeacher, newTeachers, ref selectedTeacher);
+                }
                 UpdateComboBox(ComboBoxSubject, newSubjects, ref selectedSubject);
                 UpdateComboBox(ComboBoxClass, newClasses, ref selectedClass);
 
-                // Anschließend gefilterte Datensätze laden
-                LoadZielscheibeData();
+                LoadFeedbackData(selectedSubject, selectedClass, selectedTeacher, selectedFormType);
             }
             finally
             {
@@ -120,10 +109,7 @@ namespace FeedbackFactory
             }
         }
 
-        private List<string> GetDistinctValuesFromDB(
-            string columnName,
-            string otherColumn1, string otherValue1,
-            string otherColumn2, string otherValue2)
+        private List<string> GetDistinctValuesFromDB(string columnName, string otherColumn1, string otherValue1, string otherColumn2, string otherValue2)
         {
             var result = new List<string>();
             try
@@ -133,13 +119,11 @@ namespace FeedbackFactory
                     conn.Open();
 
                     string sql = $@"
-                        SELECT DISTINCT {columnName}
-                        FROM Zielscheibe
-                        WHERE
-                            (@val1 IS NULL OR {otherColumn1} = @val1)
-                            AND (@val2 IS NULL OR {otherColumn2} = @val2)
-                        ORDER BY {columnName};
-                    ";
+                        SELECT DISTINCT `{columnName}`
+                        FROM `Zielscheibe`
+                        WHERE (@val1 IS NULL OR `{otherColumn1}` = @val1)
+                          AND (@val2 IS NULL OR `{otherColumn2}` = @val2)
+                        ORDER BY `{columnName}`;";
 
                     using (var cmd = new MySqlCommand(sql, conn))
                     {
@@ -151,9 +135,7 @@ namespace FeedbackFactory
                             while (reader.Read())
                             {
                                 if (reader[columnName] != DBNull.Value)
-                                {
                                     result.Add(reader[columnName].ToString());
-                                }
                             }
                         }
                     }
@@ -168,24 +150,17 @@ namespace FeedbackFactory
 
         private void UpdateComboBox(ComboBox combo, List<string> newValues, ref string selectedValue)
         {
-            // "(kein Filter)" als erste Option
             var finalList = new List<string> { "(kein Filter)" };
             finalList.AddRange(newValues);
             combo.ItemsSource = finalList;
 
             if (selectedValue != null && !finalList.Contains(selectedValue))
-            {
                 selectedValue = null;
-            }
 
             if (selectedValue == null)
-            {
                 combo.SelectedIndex = 0;
-            }
             else
-            {
                 combo.SelectedItem = selectedValue;
-            }
         }
 
         private string GetSelectedValue(ComboBox combo)
@@ -196,19 +171,12 @@ namespace FeedbackFactory
             return val;
         }
 
-        private void LoadZielscheibeData()
+        private void LoadFeedbackData(string subject, string className, string teacher, string formType)
         {
             ZielscheibeList.Clear();
 
-            // Datum auslesen
             DateTime? startDate = DatePickerStart.SelectedDate;
             DateTime? endDate = DatePickerEnd.SelectedDate;
-
-            // Filter aus den ComboBoxen auslesen
-            string subject = GetSelectedValue(ComboBoxSubject);
-            string className = GetSelectedValue(ComboBoxClass);
-            // Bei deaktivierter ComboBox wird der aktuell angemeldete Lehrer verwendet
-            string teacher = !ComboBoxTeacher.IsEnabled ? _currentTeacherUsername : GetSelectedValue(ComboBoxTeacher);
 
             try
             {
@@ -216,53 +184,92 @@ namespace FeedbackFactory
                 {
                     conn.Open();
 
-                    string sql = @"
-                        SELECT
-                            Frage1, Frage2, Frage3, Frage4,
-                            Frage5, Frage6, Frage7, Frage8,
-                            TextRichtig, TextAnders,
-                            Subject, ClassName, Teacher,
-                            Erfassungsdatum
-                        FROM Zielscheibe
-                        WHERE
-                            (@subject IS NULL OR Subject = @subject)
-                            AND (@className IS NULL OR ClassName = @className)
-                            AND (@teacher IS NULL OR Teacher = @teacher)
-                            AND (@startDate IS NULL OR Erfassungsdatum >= @startDate)
-                            AND (@endDate IS NULL OR Erfassungsdatum <= @endDate)
-                    ";
+                    string sql = string.Empty;
+                    if (formType == "Zielscheibe")
+                    {
+                        sql = @"
+                            SELECT 
+                                `Frage1`, `Frage2`, `Frage3`, `Frage4`, `Frage5`, `Frage6`, `Frage7`, `Frage8`,
+                                `TextRichtig`, `TextAnders`, `Subject`, `ClassName`, `Teacher`, `Erfassungsdatum`
+                            FROM `Zielscheibe`
+                            WHERE
+                                (@subject IS NULL OR `Subject` = @subject)
+                              AND (@className IS NULL OR `ClassName` = @className)
+                              AND (@teacher IS NULL OR `Teacher` = @teacher)
+                              AND (@startDate IS NULL OR `Erfassungsdatum` >= @startDate)
+                              AND (@endDate IS NULL OR `Erfassungsdatum` <= @endDate);";
+                    }
+                    else
+                    {
+                        sql = @"
+                            SELECT 
+                                `Frage1`, `Frage2`, `Frage3`, `Frage4`, `Frage5`, `Frage6`, `Frage7`, `Frage8`, `Frage9`, `Frage10`,
+                                `TextGut`, `TextSchlecht`, `TextAnders`, `Subject`, `ClassName`, `Teacher`, `Erfassungsdatum`
+                            FROM `UnterrichtsBeurteilung`
+                            WHERE
+                                (@subject IS NULL OR `Subject` = @subject)
+                              AND (@className IS NULL OR `ClassName` = @className)
+                              AND (@teacher IS NULL OR `Teacher` = @teacher);";
+                    }
 
                     using (var cmd = new MySqlCommand(sql, conn))
                     {
                         cmd.Parameters.AddWithValue("@subject", (object?)subject ?? DBNull.Value);
                         cmd.Parameters.AddWithValue("@className", (object?)className ?? DBNull.Value);
                         cmd.Parameters.AddWithValue("@teacher", (object?)teacher ?? DBNull.Value);
-                        cmd.Parameters.AddWithValue("@startDate", (object?)startDate ?? DBNull.Value);
-                        cmd.Parameters.AddWithValue("@endDate", (object?)endDate ?? DBNull.Value);
+
+                        if (formType == "Zielscheibe")
+                        {
+                            cmd.Parameters.AddWithValue("@startDate", (object?)startDate ?? DBNull.Value);
+                            cmd.Parameters.AddWithValue("@endDate", (object?)endDate ?? DBNull.Value);
+                        }
 
                         using (var reader = cmd.ExecuteReader())
                         {
                             while (reader.Read())
                             {
-                                var item = new ZielscheibeData
+                                var item = new ZielscheibeData();
+                                if (formType == "Zielscheibe")
                                 {
-                                    Frage1 = reader["Frage1"] != DBNull.Value ? Convert.ToInt32(reader["Frage1"]) : 0,
-                                    Frage2 = reader["Frage2"] != DBNull.Value ? Convert.ToInt32(reader["Frage2"]) : 0,
-                                    Frage3 = reader["Frage3"] != DBNull.Value ? Convert.ToInt32(reader["Frage3"]) : 0,
-                                    Frage4 = reader["Frage4"] != DBNull.Value ? Convert.ToInt32(reader["Frage4"]) : 0,
-                                    Frage5 = reader["Frage5"] != DBNull.Value ? Convert.ToInt32(reader["Frage5"]) : 0,
-                                    Frage6 = reader["Frage6"] != DBNull.Value ? Convert.ToInt32(reader["Frage6"]) : 0,
-                                    Frage7 = reader["Frage7"] != DBNull.Value ? Convert.ToInt32(reader["Frage7"]) : 0,
-                                    Frage8 = reader["Frage8"] != DBNull.Value ? Convert.ToInt32(reader["Frage8"]) : 0,
-                                    TextRichtig = reader["TextRichtig"]?.ToString() ?? "",
-                                    TextAnders = reader["TextAnders"]?.ToString() ?? "",
-                                    Subject = reader["Subject"]?.ToString() ?? "",
-                                    ClassName = reader["ClassName"]?.ToString() ?? "",
-                                    Teacher = reader["Teacher"]?.ToString() ?? "",
-                                    Erfassungsdatum = reader["Erfassungsdatum"] != DBNull.Value
-                                        ? Convert.ToDateTime(reader["Erfassungsdatum"])
-                                        : DateTime.MinValue
-                                };
+                                    item.Frage1 = reader["Frage1"] != DBNull.Value ? Convert.ToInt32(reader["Frage1"]) : 0;
+                                    item.Frage2 = reader["Frage2"] != DBNull.Value ? Convert.ToInt32(reader["Frage2"]) : 0;
+                                    item.Frage3 = reader["Frage3"] != DBNull.Value ? Convert.ToInt32(reader["Frage3"]) : 0;
+                                    item.Frage4 = reader["Frage4"] != DBNull.Value ? Convert.ToInt32(reader["Frage4"]) : 0;
+                                    item.Frage5 = reader["Frage5"] != DBNull.Value ? Convert.ToInt32(reader["Frage5"]) : 0;
+                                    item.Frage6 = reader["Frage6"] != DBNull.Value ? Convert.ToInt32(reader["Frage6"]) : 0;
+                                    item.Frage7 = reader["Frage7"] != DBNull.Value ? Convert.ToInt32(reader["Frage7"]) : 0;
+                                    item.Frage8 = reader["Frage8"] != DBNull.Value ? Convert.ToInt32(reader["Frage8"]) : 0;
+                                    item.TextRichtig = reader["TextRichtig"]?.ToString() ?? "";
+                                    item.TextAnders = reader["TextAnders"]?.ToString() ?? "";
+                                    item.Subject = reader["Subject"]?.ToString() ?? "";
+                                    item.ClassName = reader["ClassName"]?.ToString() ?? "";
+                                    item.Teacher = reader["Teacher"]?.ToString() ?? "";
+                                    item.Erfassungsdatum = reader["Erfassungsdatum"] != DBNull.Value
+                                        ? Convert.ToDateTime(reader["Erfassungsdatum"]) : DateTime.MinValue;
+                                    item.Formulartyp = "Zielscheibe";
+                                }
+                                else
+                                {
+                                    item.Frage1 = reader["Frage1"] != DBNull.Value ? Convert.ToInt32(reader["Frage1"]) : 0;
+                                    item.Frage2 = reader["Frage2"] != DBNull.Value ? Convert.ToInt32(reader["Frage2"]) : 0;
+                                    item.Frage3 = reader["Frage3"] != DBNull.Value ? Convert.ToInt32(reader["Frage3"]) : 0;
+                                    item.Frage4 = reader["Frage4"] != DBNull.Value ? Convert.ToInt32(reader["Frage4"]) : 0;
+                                    item.Frage5 = reader["Frage5"] != DBNull.Value ? Convert.ToInt32(reader["Frage5"]) : 0;
+                                    item.Frage6 = reader["Frage6"] != DBNull.Value ? Convert.ToInt32(reader["Frage6"]) : 0;
+                                    item.Frage7 = reader["Frage7"] != DBNull.Value ? Convert.ToInt32(reader["Frage7"]) : 0;
+                                    item.Frage8 = reader["Frage8"] != DBNull.Value ? Convert.ToInt32(reader["Frage8"]) : 0;
+                                    item.Frage9 = reader["Frage9"] != DBNull.Value ? Convert.ToInt32(reader["Frage9"]) : 0;
+                                    item.Frage10 = reader["Frage10"] != DBNull.Value ? Convert.ToInt32(reader["Frage10"]) : 0;
+                                    item.TextGut = reader["TextGut"]?.ToString() ?? "";
+                                    item.TextSchlecht = reader["TextSchlecht"]?.ToString() ?? "";
+                                    item.TextAnders = reader["TextAnders"]?.ToString() ?? "";
+                                    item.Subject = reader["Subject"]?.ToString() ?? "";
+                                    item.ClassName = reader["ClassName"]?.ToString() ?? "";
+                                    item.Teacher = reader["Teacher"]?.ToString() ?? "";
+                                    item.Erfassungsdatum = reader["Erfassungsdatum"] != DBNull.Value
+                                        ? Convert.ToDateTime(reader["Erfassungsdatum"]) : DateTime.MinValue;
+                                    item.Formulartyp = "UnterrichtsBeurteilung";
+                                }
 
                                 ZielscheibeList.Add(item);
                             }
@@ -271,7 +278,7 @@ namespace FeedbackFactory
                 }
 
                 DataGridFeedback.ItemsSource = ZielscheibeList;
-                CalculateAndShowAverages();
+                CalculateAndShowAverages(formType);
             }
             catch (Exception ex)
             {
@@ -279,7 +286,7 @@ namespace FeedbackFactory
             }
         }
 
-        private void CalculateAndShowAverages()
+        private void CalculateAndShowAverages(string selectedFormType)
         {
             if (ZielscheibeList.Count == 0)
             {
@@ -288,39 +295,48 @@ namespace FeedbackFactory
                 return;
             }
 
-            double totalSumOfAverages = 0;
-            foreach (var item in ZielscheibeList)
+            double overallAvg = 0;
+            if (selectedFormType == "Zielscheibe")
             {
-                double avg = (item.Frage1 + item.Frage2 + item.Frage3 + item.Frage4 +
-                              item.Frage5 + item.Frage6 + item.Frage7 + item.Frage8) / 8.0;
-                totalSumOfAverages += avg;
+                overallAvg = ZielscheibeList.Average(x =>
+                    (x.Frage1 + x.Frage2 + x.Frage3 + x.Frage4 +
+                     x.Frage5 + x.Frage6 + x.Frage7 + x.Frage8) / 8.0);
+                var chartData = new List<KeyValuePair<string, double>>
+                {
+                    new KeyValuePair<string, double>("F1", ZielscheibeList.Average(x => x.Frage1)),
+                    new KeyValuePair<string, double>("F2", ZielscheibeList.Average(x => x.Frage2)),
+                    new KeyValuePair<string, double>("F3", ZielscheibeList.Average(x => x.Frage3)),
+                    new KeyValuePair<string, double>("F4", ZielscheibeList.Average(x => x.Frage4)),
+                    new KeyValuePair<string, double>("F5", ZielscheibeList.Average(x => x.Frage5)),
+                    new KeyValuePair<string, double>("F6", ZielscheibeList.Average(x => x.Frage6)),
+                    new KeyValuePair<string, double>("F7", ZielscheibeList.Average(x => x.Frage7)),
+                    new KeyValuePair<string, double>("F8", ZielscheibeList.Average(x => x.Frage8))
+                };
+                ChartItemsControl.ItemsSource = chartData;
             }
-            double overallAvg = totalSumOfAverages / ZielscheibeList.Count;
-            TxtAverage.Text = $"Durchschnitt (8 Fragen): {overallAvg:F2}";
-
-            // Durchschnittswerte pro Frage für das Diagramm
-            var avgF1 = ZielscheibeList.Average(x => x.Frage1);
-            var avgF2 = ZielscheibeList.Average(x => x.Frage2);
-            var avgF3 = ZielscheibeList.Average(x => x.Frage3);
-            var avgF4 = ZielscheibeList.Average(x => x.Frage4);
-            var avgF5 = ZielscheibeList.Average(x => x.Frage5);
-            var avgF6 = ZielscheibeList.Average(x => x.Frage6);
-            var avgF7 = ZielscheibeList.Average(x => x.Frage7);
-            var avgF8 = ZielscheibeList.Average(x => x.Frage8);
-
-            var chartData = new List<KeyValuePair<string, double>>
+            else
             {
-                new KeyValuePair<string, double>("F1", avgF1),
-                new KeyValuePair<string, double>("F2", avgF2),
-                new KeyValuePair<string, double>("F3", avgF3),
-                new KeyValuePair<string, double>("F4", avgF4),
-                new KeyValuePair<string, double>("F5", avgF5),
-                new KeyValuePair<string, double>("F6", avgF6),
-                new KeyValuePair<string, double>("F7", avgF7),
-                new KeyValuePair<string, double>("F8", avgF8),
-            };
+                overallAvg = ZielscheibeList.Average(x =>
+                    (x.Frage1 + x.Frage2 + x.Frage3 + x.Frage4 +
+                     x.Frage5 + x.Frage6 + x.Frage7 + x.Frage8 +
+                     x.Frage9 + x.Frage10) / 10.0);
+                var chartData = new List<KeyValuePair<string, double>>
+                {
+                    new KeyValuePair<string, double>("F1", ZielscheibeList.Average(x => x.Frage1)),
+                    new KeyValuePair<string, double>("F2", ZielscheibeList.Average(x => x.Frage2)),
+                    new KeyValuePair<string, double>("F3", ZielscheibeList.Average(x => x.Frage3)),
+                    new KeyValuePair<string, double>("F4", ZielscheibeList.Average(x => x.Frage4)),
+                    new KeyValuePair<string, double>("F5", ZielscheibeList.Average(x => x.Frage5)),
+                    new KeyValuePair<string, double>("F6", ZielscheibeList.Average(x => x.Frage6)),
+                    new KeyValuePair<string, double>("F7", ZielscheibeList.Average(x => x.Frage7)),
+                    new KeyValuePair<string, double>("F8", ZielscheibeList.Average(x => x.Frage8)),
+                    new KeyValuePair<string, double>("F9", ZielscheibeList.Average(x => x.Frage9)),
+                    new KeyValuePair<string, double>("F10", ZielscheibeList.Average(x => x.Frage10))
+                };
+                ChartItemsControl.ItemsSource = chartData;
+            }
 
-            ChartItemsControl.ItemsSource = chartData;
+            TxtAverage.Text = $"Durchschnitt: {overallAvg:F2}";
         }
     }
 
@@ -334,11 +350,19 @@ namespace FeedbackFactory
         public int Frage6 { get; set; }
         public int Frage7 { get; set; }
         public int Frage8 { get; set; }
-        public string TextRichtig { get; set; }
+        public DateTime Erfassungsdatum { get; set; }
+
+        public int Frage9 { get; set; }
+        public int Frage10 { get; set; }
+        public string TextGut { get; set; }
+        public string TextSchlecht { get; set; }
+
+        public string TextRichtig { get; set; }    
         public string TextAnders { get; set; }
         public string Subject { get; set; }
         public string ClassName { get; set; }
         public string Teacher { get; set; }
-        public DateTime Erfassungsdatum { get; set; }
+
+        public string Formulartyp { get; set; }
     }
 }
