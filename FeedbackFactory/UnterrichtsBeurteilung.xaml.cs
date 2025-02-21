@@ -114,6 +114,9 @@ namespace FeedbackFactory
                 }
 
                 MessageBox.Show("Formular wurde erfolgreich übermittelt!", "Erfolg", MessageBoxButton.OK, MessageBoxImage.Information);
+                var loginWindow = new LoginWindow();
+                loginWindow.Show();
+                Window.GetWindow(this)?.Close();
             }
             catch (Exception ex)
             {
