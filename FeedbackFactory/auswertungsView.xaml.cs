@@ -87,15 +87,17 @@ namespace FeedbackFactory
                     return;
                 }
 
+                string tableName = selectedFormType;
+
                 string selectedSubject = GetSelectedValue(ComboBoxSubject);
                 string selectedClass = GetSelectedValue(ComboBoxClass);
                 string selectedTeacher = !ComboBoxTeacher.IsEnabled ? _currentTeacherUsername : GetSelectedValue(ComboBoxTeacher);
 
-                var newSubjects = GetDistinctValuesFromDB("Subject", "ClassName", selectedClass, "Teacher", selectedTeacher);
-                var newClasses = GetDistinctValuesFromDB("ClassName", "Subject", selectedSubject, "Teacher", selectedTeacher);
+                var newSubjects = GetDistinctValuesFromDB("Subject", "ClassName", selectedClass, "Teacher", selectedTeacher, tableName);
+                var newClasses = GetDistinctValuesFromDB("ClassName", "Subject", selectedSubject, "Teacher", selectedTeacher, tableName);
                 if (ComboBoxTeacher.IsEnabled)
                 {
-                    var newTeachers = GetDistinctValuesFromDB("Teacher", "Subject", selectedSubject, "ClassName", selectedClass);
+                    var newTeachers = GetDistinctValuesFromDB("Teacher", "Subject", selectedSubject, "ClassName", selectedClass, tableName);
                     UpdateComboBox(ComboBoxTeacher, newTeachers, ref selectedTeacher);
                 }
                 UpdateComboBox(ComboBoxSubject, newSubjects, ref selectedSubject);
@@ -109,7 +111,7 @@ namespace FeedbackFactory
             }
         }
 
-        private List<string> GetDistinctValuesFromDB(string columnName, string otherColumn1, string otherValue1, string otherColumn2, string otherValue2)
+        private List<string> GetDistinctValuesFromDB(string columnName, string otherColumn1, string otherValue1, string otherColumn2, string otherValue2, string tableName)
         {
             var result = new List<string>();
             try
@@ -120,7 +122,7 @@ namespace FeedbackFactory
 
                     string sql = $@"
                         SELECT DISTINCT `{columnName}`
-                        FROM `Zielscheibe`
+                        FROM `{tableName}`
                         WHERE (@val1 IS NULL OR `{otherColumn1}` = @val1)
                           AND (@val2 IS NULL OR `{otherColumn2}` = @val2)
                         ORDER BY `{columnName}`;";
@@ -357,7 +359,7 @@ namespace FeedbackFactory
         public string TextGut { get; set; }
         public string TextSchlecht { get; set; }
 
-        public string TextRichtig { get; set; }    
+        public string TextRichtig { get; set; }
         public string TextAnders { get; set; }
         public string Subject { get; set; }
         public string ClassName { get; set; }
