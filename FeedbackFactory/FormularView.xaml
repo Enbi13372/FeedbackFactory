@@ -30,7 +30,7 @@
             <!-- Erste Karte -->
             <Border Style="{StaticResource HoverBorderStyle}" Width="300" Height="500" Margin="5">
                 <Button Background="Transparent" BorderThickness="0" Click="Formular1_Click" Width="300" Height="500">
-                    <Viewbox Stretch="Uniform">
+                    <Viewbox Stretch="Uniform" IsHitTestVisible="False">
                         <local:UnterrichtsBeurteilung/>
                     </Viewbox>
                 </Button>
@@ -39,7 +39,7 @@
             <!-- Zweite Karte -->
             <Border Style="{StaticResource HoverBorderStyle}" Width="300" Height="500" Margin="5">
                 <Button Background="Transparent" BorderThickness="0" Click="Formular2_Click" Width="300" Height="500">
-                    <Viewbox Stretch="Uniform">
+                    <Viewbox Stretch="Uniform" IsHitTestVisible="False">
                         <local:Zielscheibe/>
                     </Viewbox>
                 </Button>
@@ -48,7 +48,7 @@
             <!-- Dritte Karte -->
             <Border Style="{StaticResource HoverBorderStyle}" Width="300" Height="500" Margin="5">
                 <Button Background="Transparent" BorderThickness="0" Click="Formular3_Click" Width="300" Height="500">
-                    <Viewbox Stretch="Uniform">
+                    <Viewbox Stretch="Uniform" IsHitTestVisible="False">
                         <TextBlock Text="3" FontSize="100" FontWeight="Bold" Foreground="Gray"/>
                     </Viewbox>
                 </Button>
