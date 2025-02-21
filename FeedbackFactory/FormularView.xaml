@@ -27,28 +27,29 @@
     <Grid>
         <UniformGrid Columns="3" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10">
 
+            <!-- Erste Karte -->
             <Border Style="{StaticResource HoverBorderStyle}" Width="300" Height="500" Margin="5">
-                <Button Background="Transparent" BorderThickness="0" Click="Formular1_Click">
-                    <Viewbox Stretch="Fill">
-                        <local:UnterrichtsBeurteilung IsHitTestVisible="False"/>
-                    </Viewbox>
-                </Button>
-            </Border>
-
-            <Border Style="{StaticResource HoverBorderStyle}" Width="300" Height="500" Margin="5">
-                <Button Background="Transparent" BorderThickness="0" Click="Formular2_Click" >
+                <Button Background="Transparent" BorderThickness="0" Click="Formular1_Click" Width="300" Height="500">
                     <Viewbox Stretch="Uniform">
-                        <local:Zielscheibe IsHitTestVisible="False" />
+                        <local:UnterrichtsBeurteilung/>
                     </Viewbox>
                 </Button>
             </Border>
 
+            <!-- Zweite Karte -->
             <Border Style="{StaticResource HoverBorderStyle}" Width="300" Height="500" Margin="5">
-                <Button Background="Transparent" BorderThickness="0" Click="Formular3_Click">
-                    <Viewbox Stretch="fill">
-                        <Grid Background="White">
-                            <TextBlock Text="3" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="16" FontWeight="Bold" Foreground="Gray" />
-                        </Grid>
+                <Button Background="Transparent" BorderThickness="0" Click="Formular2_Click" Width="300" Height="500">
+                    <Viewbox Stretch="Uniform">
+                        <local:Zielscheibe/>
+                    </Viewbox>
+                </Button>
+            </Border>
+
+            <!-- Dritte Karte -->
+            <Border Style="{StaticResource HoverBorderStyle}" Width="300" Height="500" Margin="5">
+                <Button Background="Transparent" BorderThickness="0" Click="Formular3_Click" Width="300" Height="500">
+                    <Viewbox Stretch="Uniform">
+                        <TextBlock Text="3" FontSize="100" FontWeight="Bold" Foreground="Gray"/>
                     </Viewbox>
                 </Button>
             </Border>
