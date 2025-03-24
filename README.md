@@ -47,3 +47,155 @@ Setting up FeedbackFactory:
 VALUES ('YourNameHere', 'YourPasswordHere', '1');
 
 
+
+
+
+
+
+
+
+**Projekt Dokumentation**
+
+---
+
+# Deckblatt
+
+## Entwicklung eines digitalen Feedbacksystems
+
+**Projektteam:**  
+Merle Goldschmidt, Yannik Durst, Niels Bodenschatz, Tobias Hoelzl  
+**Klasse:** IFA 12  
+**Schule:** Berufsschule Lichtenfels  
+**Fach:** Informatik  
+**Betreuender Lehrer:** [Name des Lehrers]  
+**Abgabedatum:** [Datum]  
+
+---
+
+# Inhaltsverzeichnis
+
+1. Einleitung  
+2. Planung  
+   2.1 Beschreibung des Auftrags  
+   2.2 Rahmenbedingungen und Einflussfaktoren  
+   2.3 Informationsbeschaffung  
+   2.4 Zeitplanung  
+   2.5 Muss-/Kann-Kriterien  
+3. Durchführung  
+   3.1 Aufgabenverteilung innerhalb des Teams  
+   3.2 Sprint 1  
+   3.3 Sprint 2  
+   3.4 Sprint 3  
+   3.5 Sprint 4  
+4. Kontrolle und Bewertung der Ergebnisse  
+   4.1 Darstellung des erzielten Ergebnisses  
+   4.2 Aufgetretene Probleme und deren Lösungen  
+   4.3 Zusammenarbeit im Team  
+   4.4 Verbesserungspotenziale  
+   4.5 Fazit  
+5. Literaturverzeichnis  
+6. Anhang  
+
+---
+
+# Einleitung
+
+Im Rahmen des Schulprojekts wurde ein digitales Feedbacksystem entwickelt, das es Lehrkräften ermöglicht, anonymes Feedback von Schülerinnen und Schülern zu erhalten. Die Anwendung wurde mit Windows Presentation Foundation (WPF) und der Programmiersprache C# umgesetzt. 
+
+Die Idee hinter diesem Projekt entstand aus dem Wunsch, eine effiziente und anonyme Möglichkeit zur Evaluation von Unterrichtsinhalten und Lehrmethoden zu schaffen. Dabei stand die einfache Bedienbarkeit der Software im Vordergrund. 
+
+Die vorliegende Dokumentation beschreibt die verschiedenen Phasen der Entwicklung dieses Systems, angefangen bei der Planungsphase über die Implementierung bis hin zur abschließenden Bewertung der Ergebnisse. Zudem werden Herausforderungen erläutert, die im Projektverlauf auftraten, sowie mögliche Verbesserungen für zukünftige Versionen aufgezeigt. 
+
+---
+
+# Planung
+
+## Beschreibung des Auftrags
+
+Das Ziel des Projekts war die Entwicklung eines digitalen Feedbacksystems für den schulischen Gebrauch. Dieses System ermöglicht es Lehrkräften, Feedbackformulare zu erstellen, zu verwalten und auszuwerten. Schülerinnen und Schüler können anonym Rückmeldungen zu Unterrichtsinhalten und Methoden geben. 
+
+Das System sollte eine intuitive Benutzeroberfläche besitzen und sowohl für Lehrkräfte als auch für Schülerinnen und Schüler leicht verständlich sein. Zudem war eine sichere Speicherung der Daten eine zentrale Anforderung des Projekts. 
+
+## Rahmenbedingungen und Einflussfaktoren
+
+Für die Umsetzung des Projekts wurde die Programmiersprache C# in Kombination mit Windows Presentation Foundation (WPF) verwendet. Die Speicherung der Daten erfolgt über eine MySQL-Datenbank. 
+
+Als Projektmanagement-Methode wurde Scrum gewählt, um eine agile und iterative Entwicklung zu ermöglichen. Zur Versionsverwaltung kam GitHub zum Einsatz, um Änderungen am Code effizient nachzuverfolgen und kollaboratives Arbeiten zu ermöglichen. 
+
+## Informationsbeschaffung
+
+Die benötigten Informationen zur Umsetzung des Projekts wurden aus verschiedenen Quellen bezogen. Dazu gehören offizielle Dokumentationen zu WPF und MySQL, Online-Tutorials sowie Best Practices aus Softwareentwicklungsforen. Zudem wurden Fachbücher zur Softwareentwicklung genutzt, um fundierte Kenntnisse über die gewählten Technologien zu erlangen. 
+
+## Zeitplanung
+
+Das Projekt wurde in mehrere Sprints unterteilt, um eine strukturierte und effiziente Arbeitsweise zu gewährleisten. Jeder Sprint hatte bestimmte Aufgaben, die innerhalb eines festgelegten Zeitraums umgesetzt werden sollten. 
+
+In der ersten Woche lag der Fokus auf der Einrichtung der Projektstruktur und der Datenbank. In der zweiten Woche wurde die Entwicklung der Benutzeranmeldung und Registrierung umgesetzt. Die dritte Woche war der Implementierung der Feedbackbögen sowie der Administrationsfunktionen gewidmet. In der vierten und letzten Woche wurden Optimierungen vorgenommen, Fehler behoben und finale Tests durchgeführt. 
+
+## Muss-/Kann-Kriterien
+
+Das Projekt wurde anhand von Muss- und Kann-Kriterien definiert. Zu den Muss-Kriterien gehörten die Implementierung der Feedbackformulare, die Benutzerverwaltung sowie die Datenbankanbindung. Zu den Kann-Kriterien zählten optionale Erweiterungen wie eine grafische Auswertung der Ergebnisse oder eine Rollenverwaltung für verschiedene Benutzergruppen. 
+
+---
+
+# Durchführung
+
+## Aufgabenverteilung innerhalb des Teams
+
+Das Team arbeitete nach der Scrum-Methode, wobei die Rollen des Scrum-Masters und des Product Owners wöchentlich wechselten. Die Entwicklung der Software übernahmen Niels Bodenschatz und Tobias Hoelzl, während die gesamte Gruppe für die Planung, Dokumentation und Qualitätssicherung verantwortlich war. 
+
+## Sprint 1
+
+Im ersten Sprint wurde das GitHub-Projekt eingerichtet, ein Scrum-Board erstellt und die grundlegende Struktur des Projekts definiert. Zudem wurde die Benutzerregistrierung entwickelt. 
+
+## Sprint 2
+
+Im zweiten Sprint wurde die Verbindung zur MySQL-Datenbank hergestellt. Außerdem wurde eine erste Version der Benutzeroberfläche für Lehrkräfte erstellt, die die Verwaltung der Feedbackformulare ermöglicht. Zudem wurden Code Reviews durchgeführt, um die Code-Qualität sicherzustellen. 
+
+## Sprint 3
+
+Der dritte Sprint konzentrierte sich auf die Verbesserung der Benutzeroberfläche. Zudem wurde eine Funktion zur Passwort-Zurücksetzung entwickelt und die automatische Generierung von Feedbackbögen implementiert. 
+
+## Sprint 4
+
+Im letzten Sprint lag der Fokus auf der Optimierung der Datenbankstruktur und der Implementierung der grafischen Auswertung der Feedback-Ergebnisse. Abschließend wurden Fehler behoben und das System ausführlich getestet. 
+
+---
+
+# Kontrolle und Bewertung der Ergebnisse
+
+## Darstellung des erzielten Ergebnisses
+
+Das entwickelte System ermöglicht es Lehrkräften, Feedbackbögen zu erstellen und die Rückmeldungen der Schülerinnen und Schüler anonymisiert auszuwerten. Zudem wurde eine Benutzerverwaltung integriert, die eine sichere Anmeldung und Verwaltung der Benutzer ermöglicht. 
+
+## Aufgetretene Probleme und deren Lösungen
+
+Während der Entwicklung traten einige Herausforderungen auf. Beispielsweise gab es zu Beginn Verbindungsprobleme mit der Datenbank, die durch eine Neuaufsetzung des Servers behoben wurden. Zudem mussten Inkonsistenzen im Design der Benutzeroberfläche korrigiert werden, um eine einheitliche Benutzererfahrung zu gewährleisten. 
+
+## Zusammenarbeit im Team
+
+Das Team arbeitete effizient zusammen und nutzte regelmäßige Meetings sowie Code Reviews zur Qualitätssicherung. Die Scrum-Methodik erwies sich als hilfreich, um Aufgaben klar zu definieren und Fortschritte strukturiert zu dokumentieren. 
+
+## Verbesserungspotenziale
+
+Für zukünftige Versionen könnte das System um eine erweiterte Benutzerrollen-Verwaltung ergänzt werden. Zudem könnten die grafischen Auswertungsmöglichkeiten weiter verbessert werden. 
+
+## Fazit
+
+Das Projekt wurde erfolgreich abgeschlossen. Die Kernfunktionen des Feedbacksystems sind voll funktionsfähig. Kleinere Optimierungen sind denkbar, jedoch wurde das Ziel des Projekts erreicht. 
+
+---
+
+# Literaturverzeichnis
+
+- Müller, P., (2020), Einstieg in HTML und CSS, Rheinwerk.  
+- https://docs.microsoft.com/en-us/dotnet/ (23.03.2025)  
+
+---
+
+# Anhang
+
+Der Anhang enthält Screenshots der Benutzeroberfläche sowie Code-Snippets zur Veranschaulichung der Implementierung.
+
+
+
