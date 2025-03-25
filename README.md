@@ -195,6 +195,58 @@ Das Projekt wurde erfolgreich abgeschlossen. Die Kernfunktionen des Feedbacksyst
 
 # Anhang
 
+
+
+
+
+
+
+
+
+Agile Entwicklung – Eine iterative und flexible Methode der Softwareentwicklung, die sich auf kontinuierliche Verbesserung und Zusammenarbeit im Team konzentriert.
+
+Anonyme Feedbackfunktion – Eine Funktion des Systems, die es ermöglicht, dass Schülerinnen und Schüler Rückmeldungen geben, ohne identifiziert zu werden.
+
+Benutzeroberfläche (UI, User Interface) – Die grafische Oberfläche der Software, über die Nutzer mit dem System interagieren.
+
+Benutzerverwaltung – Ein Modul des Systems, das die Anmeldung, Registrierung und Verwaltung von Nutzerkonten ermöglicht.
+
+Code Reviews – Eine Methode zur Qualitätssicherung, bei der Teammitglieder den Quellcode überprüfen, um Fehler zu identifizieren und Verbesserungen vorzuschlagen.
+
+Datenbankanbindung – Die Verbindung zwischen der Software und einer MySQL-Datenbank zur Speicherung und Verwaltung der Feedbackdaten.
+
+Feedbackbogen – Ein digitales Formular, mit dem Schülerinnen und Schüler Rückmeldungen zu Unterrichtsinhalten und Methoden geben können.
+
+GitHub – Eine Plattform zur Versionskontrolle und kollaborativen Softwareentwicklung, die für das Projekt genutzt wurde.
+
+Grafische Auswertung – Die visuelle Darstellung der gesammelten Feedbackdaten, um Lehrkräften eine bessere Analyse der Rückmeldungen zu ermöglichen.
+
+Inkonsistenzen im Design – Uneinheitlichkeiten in der Benutzeroberfläche, die die Benutzerfreundlichkeit beeinträchtigen können.
+
+Muss-/Kann-Kriterien – Eine Methode zur Priorisierung von Funktionen: „Muss“-Kriterien sind essenziell, während „Kann“-Kriterien optionale Erweiterungen darstellen.
+
+MySQL – Ein relationales Datenbankmanagementsystem, das für die Speicherung der Feedbackdaten genutzt wurde.
+
+Product Owner – Eine Rolle im Scrum-Team, die sich auf die Definition der Anforderungen und die Priorisierung der Aufgaben konzentriert.
+
+Projektmanagement – Der Prozess der Planung, Organisation und Steuerung von Ressourcen zur Erreichung der Projektziele.
+
+Qualitätssicherung – Maßnahmen zur Sicherstellung der Softwarequalität, einschließlich Tests und Code Reviews.
+
+Scrum – Ein agiles Framework für das Projektmanagement, das iterative Entwicklungsphasen („Sprints“) und regelmäßige Meetings beinhaltet.
+
+Scrum-Board – Ein visuelles Tool zur Verwaltung und Nachverfolgung von Aufgaben im Scrum-Prozess.
+
+Scrum-Master – Eine Rolle im Scrum-Team, die für die Einhaltung der Scrum-Prinzipien und die Unterstützung des Teams verantwortlich ist.
+
+Sprint – Eine Entwicklungsphase innerhalb des Scrum-Prozesses, in der bestimmte Aufgaben innerhalb eines festgelegten Zeitraums umgesetzt werden.
+
+Versionsverwaltung – Die Nachverfolgung und Verwaltung von Änderungen im Quellcode, meist über Plattformen wie GitHub.
+
+Windows Presentation Foundation (WPF) – Eine Technologie von Microsoft zur Entwicklung grafischer Benutzeroberflächen für Windows-Anwendungen.
+
+Zeitanalyse/-planung – Die Organisation und Verteilung von Aufgaben über den gesamten Projektzeitraum hinweg.
+
 Der Anhang enthält Screenshots der Benutzeroberfläche sowie Code-Snippets zur Veranschaulichung der Implementierung.
 
 
